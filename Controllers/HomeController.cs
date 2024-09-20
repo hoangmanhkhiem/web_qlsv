@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using web_qlsv.Models;
+using qlsv.Models;
 
-namespace web_qlsv.Controllers;
+namespace qlsv.Controllers;
 
 public class HomeController : Controller
 {
