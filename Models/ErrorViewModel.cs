@@ -1,4 +1,4 @@
-namespace web_qlsv.Models;
+namespace qlsv.Models;
 
 public class ErrorViewModel
 {
