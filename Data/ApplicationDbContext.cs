@@ -1,8 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-//
-using web_qlsv.Models;
+using qlsv.Models;
 
-namespace web_qlsv.Data
+namespace qlsv.Data
 {
     public class ApplicationDbContext : DbContext
     {
