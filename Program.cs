@@ -1,4 +1,9 @@
 
+using Microsoft.EntityFrameworkCore;
+//
+using web_qlsv.Data;
+
+
 namespace qlsv;
 
 public class Program
@@ -9,6 +14,7 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
+        AddDatabase(builder);
 
         var app = builder.Build();
 
@@ -23,6 +29,17 @@ public class Program
         Router.RouterConfig(app);
 
         app.Run();
+    }
+
+    // Add Database
+    private static void AddDatabase(WebApplicationBuilder builder)
+    {
+        // Add services to the container.
+        builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlServer(
+                builder.Configuration.GetConnectionString("DefaultConnection")
+            )
+        );
     }
 }
 
