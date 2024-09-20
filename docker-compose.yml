@@ -11,6 +11,6 @@ services:
       - '1435:1433'
     volumes:
       # Use in local {path_local}:/var/opt/mssql/ 
-      
+      - /workspaces/local_daya_base:/var/opt/mssql/ 
     restart: unless-stopped
     user: '1000:1000'  # Replace with the appropriate non-root user ID and group ID
