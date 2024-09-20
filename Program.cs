@@ -1,9 +1,15 @@
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 //
 using qlsv.Data;
 using qlsv.Models;
+using qlsv.Helpers;
 
 namespace qlsv;
 
@@ -15,6 +21,8 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
+        AddAuthentication(builder);
+        AddServices(builder);
         AddDatabase(builder);
 
         var app = builder.Build();
@@ -32,6 +40,40 @@ public class Program
         app.Run();
     }
 
+    // Add Services
+    private static void AddServices(WebApplicationBuilder builder)
+    {
+        // Add service helpper 
+        builder.Services.AddScoped<JwtHelper>();
+    }
+
+    // Add Authentication
+    private static void AddAuthentication(WebApplicationBuilder builder)
+    {
+        var jwtSettings = builder.Configuration.GetSection("Jwt");
+        var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]);
+
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = jwtSettings["Issuer"],
+                ValidAudience = jwtSettings["Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(key)
+            };
+        });
+
+    }
+
     // Add Database
     private static void AddDatabase(WebApplicationBuilder builder)
     {
@@ -43,7 +85,7 @@ public class Program
         );
 
         // Add Identity db context 
-        builder.Services.AddDbContext<IdentityDbContext>(options =>
+        builder.Services.AddDbContext<qlsv.Data.IdentityDbContext>(options =>
             options.UseSqlServer(
                 builder.Configuration.GetConnectionString("DefaultConnection")
             )
@@ -51,7 +93,7 @@ public class Program
 
         // Register Identity services
         builder.Services.AddIdentity<UserCustom, IdentityRole>()
-            .AddEntityFrameworkStores<IdentityDbContext>()
+            .AddEntityFrameworkStores<qlsv.Data.IdentityDbContext>()
             .AddDefaultUI()
             .AddDefaultTokenProviders();
     }
