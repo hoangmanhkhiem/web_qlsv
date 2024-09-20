@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using web_qlsv.Data;
+using qlsv.Data;
 
 #nullable disable
 
@@ -22,7 +22,7 @@ namespace web_qlsv.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("web_qlsv.Models.ErrorViewModel", b =>
+            modelBuilder.Entity("qlsv.Models.ErrorViewModel", b =>
                 {
                     b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
