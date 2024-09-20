@@ -1,8 +1,9 @@
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 //
-using web_qlsv.Data;
-
+using qlsv.Data;
+using qlsv.Models;
 
 namespace qlsv;
 
@@ -40,6 +41,19 @@ public class Program
                 builder.Configuration.GetConnectionString("DefaultConnection")
             )
         );
+
+        // Add Identity db context 
+        builder.Services.AddDbContext<IdentityDbContext>(options =>
+            options.UseSqlServer(
+                builder.Configuration.GetConnectionString("DefaultConnection")
+            )
+        );
+
+        // Register Identity services
+        builder.Services.AddIdentity<UserCustom, IdentityRole>()
+            .AddEntityFrameworkStores<IdentityDbContext>()
+            .AddDefaultUI()
+            .AddDefaultTokenProviders();
     }
 }
 
