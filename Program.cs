@@ -27,6 +27,9 @@ public class Program
 
         var app = builder.Build();
 
+        // App initialization
+        AppInit(app);
+
         // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
         {
@@ -155,6 +158,17 @@ public class Program
                 builder.Configuration.GetConnectionString("DefaultConnection")
             )
         );
+    }
+
+    // App initialization
+    private static void AppInit(WebApplication app)
+    {
+        // Initialize the database
+        using (var serviceScope = app.Services.CreateScope())
+        {
+            var services = serviceScope.ServiceProvider;
+            InitDbContext.Initialize(services);
+        }
     }
 }
 
