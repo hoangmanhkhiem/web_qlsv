@@ -44,4 +44,34 @@ public class JwtHelper
         // Return the token as a string
         return tokenHandler.WriteToken(token);
     }
+
+    public bool CheckJwtToken(string token)
+    {
+        // Get JWT settings from appsettings.json
+        var jwtSettings = _configuration.GetSection("Jwt");
+        var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]);
+
+        // Create token handler
+        var tokenHandler = new JwtSecurityTokenHandler();
+
+        try
+        {
+            // Validate token
+            tokenHandler.ValidateToken(token, new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidIssuer = jwtSettings["Issuer"],
+                ValidAudience = jwtSettings["Audience"]
+            }, out SecurityToken validatedToken);
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }
