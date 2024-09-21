@@ -49,8 +49,8 @@ public class LoginController : Controller
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(model.Password);
             var user = _context.Users.FirstOrDefault(
                 u => 
-                    (u.UserName == model.UserNameOrEmail ||
-                        u.Email == model.UserNameOrEmail)
+                    (u.UserName.ToUpper() == model.UserNameOrEmail.ToUpper() ||
+                        u.Email.ToUpper() == model.UserNameOrEmail.ToUpper())
                     && u.PasswordHash == passwordHash
             );
             if (user!=null)
