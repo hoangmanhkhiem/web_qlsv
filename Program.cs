@@ -35,7 +35,17 @@ public class Program
             app.UseHsts();
         }
 
+        // Configure Route
         Router.RouterConfig(app);
+
+        // Enable Swagger in all environments
+        app.UseSwagger();
+
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            c.RoutePrefix = "swagger";
+        });
 
         app.Run();
     }
@@ -43,6 +53,48 @@ public class Program
     // Add Services
     private static void AddServices(WebApplicationBuilder builder)
     {
+        // Add Swagger services
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(options =>
+        {
+            // Add documentation
+            options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+            {
+                Title = "API Test",
+                Version = "v1",
+                Description = "Test Api QLSV",
+                Contact = new Microsoft.OpenApi.Models.OpenApiContact
+                {
+                    Name = "Ly Tran Vinh",
+                    Email = "lytranvinh.work@gmail.com"
+                }
+            });
+            // Add Bearer Token Support
+            options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                Description = "Please enter JWT with Bearer into field",
+                Name = "Authorization",
+                Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+                Scheme = "Bearer"
+            });
+            options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement()
+            {
+                {
+                    new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                    {
+                        Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                        {
+                            Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[] {}
+                }
+            });
+        });
+
         // Add service helpper 
         builder.Services.AddScoped<JwtHelper>();
     }
