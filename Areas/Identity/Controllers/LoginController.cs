@@ -6,6 +6,7 @@ using BCrypt.Net;
 using qlsv.Models;
 using qlsv.ViewModels;
 using qlsv.Helpers;
+using qlsv.Data;
 
 
 namespace qlsv.Identity.Controllers;
@@ -15,13 +16,13 @@ public class LoginController : Controller
 {
     // Variable
     private readonly ILogger<LoginController> _logger;
-    private readonly IdentityDbContext _context;
+    private readonly qlsv.Data.IdentityDbContext _context;
     private readonly JwtHelper _jwtHelper;
 
     // Constructor
     public LoginController(
         ILogger<LoginController> logger,
-        IdentityDbContext context,
+        qlsv.Data.IdentityDbContext context,
         JwtHelper jwtHelper
     ) {
         _logger = logger;
