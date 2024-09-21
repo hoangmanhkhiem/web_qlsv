@@ -96,6 +96,13 @@ public class Program
             .AddEntityFrameworkStores<qlsv.Data.IdentityDbContext>()
             .AddDefaultUI()
             .AddDefaultTokenProviders();
+
+        // Add View db context
+        builder.Services.AddDbContext<ViewDbContext>(options =>
+            options.UseSqlServer(
+                builder.Configuration.GetConnectionString("DefaultConnection")
+            )
+        );
     }
 }
 
