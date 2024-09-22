@@ -98,8 +98,11 @@ public class Program
             });
         });
 
-        // Add service helpper 
+        // Add service helpper jwt
         builder.Services.AddScoped<JwtHelper>();
+
+        // Add service helpper security
+        builder.Services.AddScoped<SecurityHelper>();
     }
 
     // Add Authentication
