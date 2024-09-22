@@ -77,8 +77,8 @@ public class JwtApiController : ControllerBase
     [HttpPost("check")]
     public ActionResult Check(string token)
     {
-        bool result = _jwtHelper.CheckJwtToken(token);
-        return Ok(result);
+        (bool c, string newToken) = _jwtHelper.CheckJwtToken(token);
+        return Ok($"{c}, {newToken}");
     }
 }
 

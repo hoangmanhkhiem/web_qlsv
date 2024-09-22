@@ -87,7 +87,7 @@ public class JwtHelper
     }
 
     // Check JWT token
-    public bool CheckJwtToken(string token)
+    public (bool, string) CheckJwtToken(string token)
     {
         var key = Encoding.ASCII.GetBytes(_key);
 
@@ -107,17 +107,17 @@ public class JwtHelper
                 ClockSkew = TimeSpan.Zero // Loại bỏ độ lệch thời gian mặc định
             }, out SecurityToken validatedToken);
 
-            return true;
+            return (true, "");
         }
         catch (SecurityTokenExpiredException)
         {
             // Token hết hạn
-            return false;
+            return (false, RefreshJwtToken(token));
         }
         catch (Exception)
         {
             // Các lỗi khác
-            return false;
+            return (false, "Token is not valid");
         }
     }
 
