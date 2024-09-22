@@ -1,5 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+
 //
 using qlsv.Models;
 using qlsv.Helpers;
@@ -11,7 +13,8 @@ public class InitDbContext
     // Initialize database for Identity
     public static void Initialize(
         IServiceProvider serviceProvider
-    ) {
+    )
+    {
         using (var context = new IdentityDbContext(
             serviceProvider.GetRequiredService<DbContextOptions<IdentityDbContext>>()))
         {
@@ -20,12 +23,13 @@ public class InitDbContext
             // Create user root account
             if (!context.Users.Any())
             {
-                var user = new UserCustom
+                // User root
+                var root = new UserCustom
                 {
                     UserName = "root",
                     Email = "root@v.com",
                     EmailConfirmed = true,
-                    ProfilePicture = new byte[] { 0 }, 
+                    ProfilePicture = new byte[] { 0 },
                     FirstName = "Ly Tran",
                     LastName = "Vinh",
                     Address = "HN",
@@ -34,9 +38,83 @@ public class InitDbContext
 
                 var password = "123";
                 var passwordHash = "i1CelkDpmAmgU08yFCskzfda4mWOI12kwgW571+2OiY="; // SecurityHelper.Hash(password);
-                user.PasswordHash = passwordHash;
+                root.PasswordHash = passwordHash;
 
-                context.Users.Add(user);
+                // User basic
+                var basic = new UserCustom
+                {
+                    UserName = "basic",
+                    Email = "basic@v.com",
+                    EmailConfirmed = true,
+                    ProfilePicture = new byte[] { 0 },
+                    FirstName = "Basic",
+                    LastName = "User",
+                    Address = "HN",
+                    Phone = "21342331"
+                };
+
+                passwordHash = "i1CelkDpmAmgU08yFCskzfda4mWOI12kwgW571+2OiY="; // SecurityHelper.Hash(password);
+                basic.PasswordHash = passwordHash;
+
+                var admin = new UserCustom
+                {
+                    UserName = "admin",
+                    Email = "admin@v.com",
+                    EmailConfirmed = true,
+                    ProfilePicture = new byte[] { 0 },
+                    FirstName = "Admin",
+                    LastName = "User",
+                    Address = "HN",
+                    Phone = "21342331"
+                };
+
+                // Save changes
+                context.Users.AddRange(root, basic, admin);
+                context.SaveChanges();
+            }
+
+            // Create roles for Identity 
+            if (!context.Roles.Any())
+            {
+                var rootRole = new IdentityRole
+                {
+                    Name = "Root",
+                    NormalizedName = "ROOT"
+                };
+
+                var adminRole = new IdentityRole
+                {
+                    Name = "Admin",
+                    NormalizedName = "ADMIN"
+                };
+
+                var userRole = new IdentityRole
+                {
+                    Name = "User",
+                    NormalizedName = "USER"
+                };
+
+                context.Roles.AddRange(rootRole, adminRole, userRole);
+
+                context.SaveChanges();
+            }
+
+            // Add user to roles
+            if (!context.UserRoles.Any())
+            {
+                var rootUser = context.Users.FirstOrDefault(u => u.UserName == "root");
+                var adminUser = context.Users.FirstOrDefault(u => u.UserName == "admin");
+                var basicUser = context.Users.FirstOrDefault(u => u.UserName == "basic");
+
+                var rootRole = context.Roles.FirstOrDefault(r => r.Name == "Root");
+                var adminRole = context.Roles.FirstOrDefault(r => r.Name == "Admin");
+                var userRole = context.Roles.FirstOrDefault(r => r.Name == "User");
+
+                context.UserRoles.AddRange(
+                    new IdentityUserRole<string> { UserId = rootUser.Id, RoleId = rootRole.Id },
+                    new IdentityUserRole<string> { UserId = adminUser.Id, RoleId = adminRole.Id },
+                    new IdentityUserRole<string> { UserId = basicUser.Id, RoleId = userRole.Id }
+                );
                 context.SaveChanges();
             }
         }
