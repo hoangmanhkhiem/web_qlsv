@@ -32,5 +32,8 @@ public class IdentityDbContext : IdentityDbContext<UserCustom>
                 entityType.SetTableName(tableName.Substring(6));
             }
         }
+        builder.Entity<RefreshToken>()
+            .Property(r => r.Id)
+            .ValueGeneratedOnAdd();
     }
 }
