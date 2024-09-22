@@ -38,7 +38,11 @@ public class IdentityApiController : ControllerBase
         );
         if (user != null)
         {
-            string jwtToken = _jwtHelper.GenerateJwtToken(user.UserName);
+            string jwtToken = _jwtHelper.GenerateJwtToken(
+                user.Id, 
+                user.UserName
+            );
+
             return Ok(jwtToken);
         }
         return Ok("User and password not found");
