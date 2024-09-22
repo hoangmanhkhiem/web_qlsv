@@ -12,8 +12,8 @@ using qlsv.Data;
 namespace web_qlsv.Migrations.IdentityDb
 {
     [DbContext(typeof(IdentityDbContext))]
-    [Migration("20240922134602_AddRefreshTokenTable")]
-    partial class AddRefreshTokenTable
+    [Migration("20240922152657_ChangeIdToStringRefreshToken")]
+    partial class ChangeIdToStringRefreshToken
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -160,11 +160,9 @@ namespace web_qlsv.Migrations.IdentityDb
 
             modelBuilder.Entity("qlsv.Models.RefreshToken", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("ExpiryDate")
                         .HasColumnType("datetime2");
