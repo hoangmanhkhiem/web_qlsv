@@ -8,6 +8,10 @@ namespace qlsv.Data;
 
 public class IdentityDbContext : IdentityDbContext<UserCustom>
 {
+    // Variables
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
+
+    // Constructor
     public IdentityDbContext(
         DbContextOptions<IdentityDbContext> options
     ) : base(options)
