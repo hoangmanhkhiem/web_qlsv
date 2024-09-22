@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using BCrypt.Net;
 //
 using qlsv.Models;
 using qlsv.ViewModels;
@@ -18,16 +17,19 @@ public class LoginController : Controller
     private readonly ILogger<LoginController> _logger;
     private readonly qlsv.Data.IdentityDbContext _context;
     private readonly JwtHelper _jwtHelper;
+    private readonly SecurityHelper _securityHelper;
 
     // Constructor
     public LoginController(
         ILogger<LoginController> logger,
         qlsv.Data.IdentityDbContext context,
-        JwtHelper jwtHelper
+        JwtHelper jwtHelper,
+        SecurityHelper securityHelper
     ) {
         _logger = logger;
         _context = context;
         _jwtHelper = jwtHelper;
+        _securityHelper = securityHelper;
     }
 
     /**
@@ -46,7 +48,7 @@ public class LoginController : Controller
     {
         if (ModelState.IsValid)
         {
-            string passwordHash = BCrypt.Net.BCrypt.HashPassword(model.Password);
+            string passwordHash = _securityHelper.Hash(model.Password);
             var user = _context.Users.FirstOrDefault(
                 u => 
                     (u.UserName.ToUpper() == model.UserNameOrEmail.ToUpper() ||
