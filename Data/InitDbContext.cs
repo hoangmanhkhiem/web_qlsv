@@ -1,13 +1,17 @@
 
 using Microsoft.EntityFrameworkCore;
+//
 using qlsv.Models;
+using qlsv.Helpers;
 
 namespace qlsv.Data;
 
 public class InitDbContext
 {
-    public static void Initialize(IServiceProvider serviceProvider)
-    {
+    // Initialize database for Identity
+    public static void Initialize(
+        IServiceProvider serviceProvider
+    ) {
         using (var context = new IdentityDbContext(
             serviceProvider.GetRequiredService<DbContextOptions<IdentityDbContext>>()))
         {
@@ -29,7 +33,7 @@ public class InitDbContext
                 };
 
                 var password = "123";
-                var passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
+                var passwordHash = "i1CelkDpmAmgU08yFCskzfda4mWOI12kwgW571+2OiY="; // SecurityHelper.Hash(password);
                 user.PasswordHash = passwordHash;
 
                 context.Users.Add(user);
