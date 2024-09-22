@@ -99,10 +99,12 @@ public class JwtHelper
             // Validate token
             tokenHandler.ValidateToken(token, new TokenValidationParameters
             {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidateLifetime = true, // Bật xác thực thời gian sống của token
-                ClockSkew = TimeSpan.Zero // Tùy chọn: thiết lập độ lệch thời gian (thời gian mà token có thể hợp lệ sau khi hết hạn)
+                ValidateIssuerSigningKey = true, // Kiểm tra khóa ký
+                IssuerSigningKey = new SymmetricSecurityKey(key), // Khóa ký đối với token
+                ValidateIssuer = false, // Bạn có thể bật lên nếu cần kiểm tra issuer
+                ValidateAudience = false, // Bạn có thể bật lên nếu cần kiểm tra audience
+                ValidateLifetime = true, // Kiểm tra thời gian hết hạn của token
+                ClockSkew = TimeSpan.Zero // Loại bỏ độ lệch thời gian mặc định
             }, out SecurityToken validatedToken);
 
             return true;
