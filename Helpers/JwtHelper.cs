@@ -109,8 +109,14 @@ public class JwtHelper
 
             return true;
         }
-        catch
+        catch (SecurityTokenExpiredException)
         {
+            // Token hết hạn
+            return false;
+        }
+        catch (Exception)
+        {
+            // Các lỗi khác
             return false;
         }
     }
@@ -118,40 +124,27 @@ public class JwtHelper
     // Refresh JWT token
     public string RefreshJwtToken(string token)
     {
-        // Create token handler
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_key);
+        var jwtToken = tokenHandler.ReadJwtToken(token);
+        var payload = jwtToken.Payload;
 
-        // Read payload
-        var payload = tokenHandler.ReadJwtToken(token).Payload;
-
-        // Validate token
         if (!HelpperCheckTokenRefresh(token, tokenHandler, key))
         {
             return token;
         }
 
-        // Check date refresh token
-        var refreshTokens = _context.RefreshTokens.FirstOrDefault(
-            x => x.UserId == payload["userId"].ToString()
-        );
+        var userId = payload["id"].ToString(); 
+        var refreshTokenEntry = _context.RefreshTokens.FirstOrDefault(x => x.UserId == userId);
 
-        if (refreshTokens == null)
+        if (refreshTokenEntry == null || 
+            !refreshTokenEntry.Token.Equals(payload["refreshToken"].ToString()) || 
+            refreshTokenEntry.ExpiryDate <= DateTime.UtcNow)
         {
             return token;
         }
 
-        if (refreshTokens.Token.Equals(payload["refreshToken"].ToString())
-            && refreshTokens.ExpiryDate > DateTime.UtcNow)
-        {
-            return GenerateJwtToken(
-                payload["userId"].ToString(),
-                payload["username"].ToString(),
-                refreshTokens.Token
-            );
-        }
-
-        return token;
+        return GenerateJwtToken(userId, payload["username"].ToString(), refreshTokenEntry.Token);
     }
 
     // Revoke JWT token
@@ -184,8 +177,11 @@ public class JwtHelper
             // Validate token
             tokenHandler.ValidateToken(token, new TokenValidationParameters
             {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuerSigningKey = true, // Kiểm tra khóa ký
+                IssuerSigningKey = new SymmetricSecurityKey(key), // Khóa ký đối với token
+                ValidateIssuer = false, // Bạn có thể bật lên nếu cần kiểm tra issuer
+                ValidateAudience = false, // Bạn có thể bật lên nếu cần kiểm tra audience
+                ValidateLifetime = false, // Kiểm tra thời gian hết hạn của token
             }, out SecurityToken validatedToken);
 
             return true;
