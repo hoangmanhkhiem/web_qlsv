@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 //
 using qlsv.ViewModels;
 using qlsv.Helpers;
+using qlsv.Models;
 
 namespace qlsv.Controllers;
 
@@ -25,30 +26,22 @@ public class IdentityApiController : ControllerBase
         _sercurityHelper = securityHelper;
     }
     
-    // POST: /api/Login/
-    [HttpPost("login")]
-    public ActionResult Login([FromBody] LoginViewModel model)
-    {
-        string passwordHash = _sercurityHelper.Hash(model.Password);
-        var user = _context.Users.FirstOrDefault(
-            u => 
-                (u.UserName.ToUpper() == model.UserNameOrEmail.ToUpper() ||
-                u.Email.ToUpper() == model.UserNameOrEmail.ToUpper())
-                && u.PasswordHash == passwordHash
-        );
-        if (user != null)
-        {
-            string jwtToken = _jwtHelper.GenerateJwtToken(
-                user.Id, 
-                user.UserName,
-                null
-            );
-
-            return Ok(jwtToken);
-        }
-        return Ok("User and password not found");
-        // Test
-        // return Ok($"User Name: {model.UserNameOrEmail}, PasswordHash: {passwordHash}");
+    // GET: Users
+    [HttpGet("users")]
+    public IActionResult GetUsers() {
+        var listUsers = _context.Users.ToList();
+        var userDtos = listUsers.Select(user => new UserCustom {
+            Id = user.Id,
+            UserName = user.UserName,
+            Email = user.Email,
+            PasswordHash = user.PasswordHash,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Address = user.Address,
+            Phone = user.Phone,
+            ProfilePicture = user.ProfilePicture
+        }).ToList();
+        return Ok(userDtos);
     }
 }
 
