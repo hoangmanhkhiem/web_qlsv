@@ -69,6 +69,18 @@ public class IdentityApiController : ControllerBase
         return Ok(userRoles);
     }
 
+    // GET: RefreshTokens
+    [HttpGet("refreshtokens")]
+    public IActionResult GetRefreshTokens() {
+        var listRefreshToken = _context.RefreshTokens.ToList();
+        var refreshTokens = listRefreshToken.Select(refreshToken => new RefreshToken {
+            Id = refreshToken.Id,
+            UserId = refreshToken.UserId,
+            Token = refreshToken.Token,
+            ExpiryDate = refreshToken.ExpiryDate,
+        }).ToList();
+        return Ok(refreshTokens);
+    }
     
 }
 
