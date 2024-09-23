@@ -57,5 +57,18 @@ public class IdentityApiController : ControllerBase
         }).ToList();
         return Ok(roleDtos);
     }
+
+    // GET: UserRoles
+    [HttpGet("userroles")]
+    public IActionResult GetUserRoles() {
+        var listUserRoles = _context.UserRoles.ToList();
+        var userRoles = listUserRoles.Select(userRole => new IdentityUserRole<string> {
+            UserId = userRole.UserId,
+            RoleId = userRole.RoleId,
+        }).ToList();
+        return Ok(userRoles);
+    }
+
+    
 }
 
