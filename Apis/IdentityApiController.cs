@@ -150,8 +150,8 @@ public class IdentityApiController : ControllerBase
         return Ok(userTokens);
     }
 
-    // POST: UpdateUser
-    [HttpPost("updateuser")]
+    // PUT: UpdateUser
+    [HttpPut("updateuser")]
     public IActionResult UpdateUser(UserCutomInputJson model)
     {
         if (!ModelState.IsValid)
@@ -172,5 +172,52 @@ public class IdentityApiController : ControllerBase
         _context.SaveChanges();
         return Ok();
     }
+
+    // PUT: Upgrade Roles
+    
+    // PUT: Upgrade User Role
+
+    // PUT: Upgrade Refresh Token
+
+    // PUT: Upgrade Role Claims
+
+    // PUT: Upgrade User Claims
+
+    // PUT: Upgrade User Logins
+
+    // PUT: Upgrade User Tokens
+
+    // DELETE: Delete User
+
+    // DELETE: Delete Role
+
+    // DELETE: Delete User Role
+
+    // DELETE: Delete Refresh Token
+
+    // DELETE: Delete Role Claims
+
+    // DELETE: Delete User Claims
+
+    // DELETE: Delete User Logins
+
+    // DELETE: Delete User Tokens
+
+    // POST: Create User
+
+    // POST: Create Role
+
+    // POST: Create User Role
+
+    // POST: Create Refresh Token
+
+    // POST: Create Role Claims
+
+    // POST: Create User Claims
+
+    // POST: Create User Logins
+
+    // POST: Create User Tokens
+
 }
 
