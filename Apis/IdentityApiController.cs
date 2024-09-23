@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 //
 using qlsv.ViewModels;
 using qlsv.Helpers;
@@ -42,6 +43,19 @@ public class IdentityApiController : ControllerBase
             ProfilePicture = user.ProfilePicture
         }).ToList();
         return Ok(userDtos);
+    }
+
+    // GET: Roles
+    [HttpGet("roles")]
+    public IActionResult GetRoles() {
+        var listRole = _context.Roles.ToList();
+        var roleDtos = listRole.Select(role => new IdentityRole {
+            Id = role.Id,
+            Name = role.Name,
+            NormalizedName = role.NormalizedName,
+            ConcurrencyStamp = role.ConcurrencyStamp
+        }).ToList();
+        return Ok(roleDtos);
     }
 }
 
