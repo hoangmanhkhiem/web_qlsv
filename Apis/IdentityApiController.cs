@@ -82,5 +82,55 @@ public class IdentityApiController : ControllerBase
         return Ok(refreshTokens);
     }
     
+    // GET: RoleClaims
+    [HttpGet("roleclaims")]
+    public IActionResult GetRoleClaims() {
+        var listRoleClaims = _context.RoleClaims.ToList();
+        var roleClaims = listRoleClaims.Select(roleClaim => new IdentityRoleClaim<string> {
+            Id = roleClaim.Id,
+            RoleId = roleClaim.RoleId,
+            ClaimType = roleClaim.ClaimType,
+            ClaimValue = roleClaim.ClaimValue,
+        }).ToList();
+        return Ok(roleClaims);
+    }
+
+    // GET: UserClaims
+    [HttpGet("userclaims")]
+    public IActionResult GetUserClaims() {
+        var listUserClaims = _context.UserClaims.ToList();
+        var userClaims = listUserClaims.Select(userClaim => new IdentityUserClaim<string> {
+            Id = userClaim.Id,
+            UserId = userClaim.UserId,
+            ClaimType = userClaim.ClaimType,
+            ClaimValue = userClaim.ClaimValue,
+        }).ToList();
+        return Ok(userClaims);
+    }
+
+    // GET: UserLogins
+    [HttpGet("userlogins")]
+    public IActionResult GetUserLogins() {
+        var listUserLogins = _context.UserLogins.ToList();
+        var userLogins = listUserLogins.Select(userLogin => new IdentityUserLogin<string> {
+            LoginProvider = userLogin.LoginProvider,
+            ProviderKey = userLogin.ProviderKey,
+            UserId = userLogin.UserId,
+        }).ToList();
+        return Ok(userLogins);
+    }
+
+    // GET: UserTokens
+    [HttpGet("usertokens")]
+    public IActionResult GetUserTokens() {
+        var listUserTokens = _context.UserTokens.ToList();
+        var userTokens = listUserTokens.Select(userToken => new IdentityUserToken<string> {
+            UserId = userToken.UserId,
+            LoginProvider = userToken.LoginProvider,
+            Name = userToken.Name,
+            Value = userToken.Value,
+        }).ToList();
+        return Ok(userTokens);
+    }
 }
 
