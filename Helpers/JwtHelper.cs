@@ -42,28 +42,44 @@ public class JwtHelper
         var key = Encoding.ASCII.GetBytes(_key);
         var tokenHandler = new JwtSecurityTokenHandler();
 
-        // Generate a refresh token
+        // Generate a refresh token if not provided
         var refreshToken = _refreshToken ?? GenerateRefreshToken(userId);
+
+        // List Role
+        var roles = (from role in _context.UserRoles
+                     join user in _context.Users on role.UserId equals user.Id
+                     join roleItem in _context.Roles on role.RoleId equals roleItem.Id
+                     where user.Id == userId
+                     select roleItem.Name).ToList();
+
+        var claims = new List<Claim>
+        {
+            new Claim("id", userId),
+            new Claim("username", username),
+            new Claim("refreshToken", refreshToken)
+        };
+
+        // Add roles to claims
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(new[]
-            {
-                new Claim("id", userId),
-                new Claim("username", username),
-                new Claim("refreshToken", refreshToken)
-            }),
+            Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.AddMinutes(int.Parse(_expireMinutes)),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
 
-        // Create JWT Access Token with Refresh Token embedded in payload
+        // Create JWT Access Token
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var accessToken = tokenHandler.WriteToken(token);
 
-        // Return the Access Token (with embedded refresh token in payload)
+        // Return the Access Token
         return accessToken;
     }
+
 
     // Create refresh token
     public string GenerateRefreshToken(string UserId)
@@ -134,11 +150,11 @@ public class JwtHelper
             return token;
         }
 
-        var userId = payload["id"].ToString(); 
+        var userId = payload["id"].ToString();
         var refreshTokenEntry = _context.RefreshTokens.FirstOrDefault(x => x.UserId == userId);
 
-        if (refreshTokenEntry == null || 
-            !refreshTokenEntry.Token.Equals(payload["refreshToken"].ToString()) || 
+        if (refreshTokenEntry == null ||
+            !refreshTokenEntry.Token.Equals(payload["refreshToken"].ToString()) ||
             refreshTokenEntry.ExpiryDate <= DateTime.UtcNow)
         {
             return token;
