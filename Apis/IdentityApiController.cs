@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 //
 using qlsv.ViewModels;
 using qlsv.Helpers;
@@ -7,8 +9,8 @@ using qlsv.Models;
 
 namespace qlsv.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
+[Route("api/[controller]")]
 public class IdentityApiController : ControllerBase
 {
     // Variables
@@ -29,6 +31,7 @@ public class IdentityApiController : ControllerBase
     }
 
     // GET: Users
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Root")]
     [HttpGet("users")]
     public IActionResult GetUsers()
     {
