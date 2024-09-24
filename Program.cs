@@ -10,6 +10,7 @@ using System.Text;
 using qlsv.Data;
 using qlsv.Models;
 using qlsv.Helpers;
+using qlsv.Middlewares;
 
 namespace qlsv;
 
@@ -21,11 +22,17 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
-        AddAuthentication(builder);
+
+        BuilderAddAuth(builder);
         AddServices(builder);
         AddDatabase(builder);
 
         var app = builder.Build();
+
+        app.UseDeveloperExceptionPage(); // TODO del it - Enable when code
+
+        // Add Middleware
+        AppAddMiddleware(app);
 
         // App initialization
         AppInit(app);
@@ -106,8 +113,11 @@ public class Program
     }
 
     // Add Authentication
-    private static void AddAuthentication(WebApplicationBuilder builder)
+    private static void BuilderAddAuth(WebApplicationBuilder builder)
     {
+        builder.Services.AddControllers();
+
+        // Configure JWT authentication
         var jwtSettings = builder.Configuration.GetSection("Jwt");
         var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]);
 
@@ -120,16 +130,28 @@ public class Program
         {
             options.TokenValidationParameters = new TokenValidationParameters
             {
-                ValidateIssuer = true,
-                ValidateAudience = true,
+                ValidateIssuer = false,
+                ValidateAudience = false,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                ValidIssuer = jwtSettings["Issuer"],
-                ValidAudience = jwtSettings["Audience"],
                 IssuerSigningKey = new SymmetricSecurityKey(key)
+            };
+            options.Events = new JwtBearerEvents
+            {
+                OnAuthenticationFailed = context =>
+                {
+                    Console.WriteLine("Authentication failed: " + context.Exception.Message);
+                    return Task.CompletedTask;
+                },
+                OnTokenValidated = context =>
+                {
+                    Console.WriteLine("Token validated for: " + context.Principal.Identity.Name);
+                    return Task.CompletedTask;
+                }
             };
         });
 
+        builder.Services.AddAuthorization();
     }
 
     // Add Database
@@ -173,5 +195,10 @@ public class Program
             InitDbContext.Initialize(services);
         }
     }
-}
 
+    // App Add Middleware
+    private static void AppAddMiddleware(WebApplication app)
+    {
+        app.UseMiddleware<CustomJwtMiddleware>();
+    }
+}
