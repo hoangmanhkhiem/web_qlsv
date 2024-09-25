@@ -36,7 +36,7 @@ public class JwtHelper
     }
 
     // Create JWT token and embed Refresh Token in payload
-    public string GenerateJwtToken(string userId, string username, string? _refreshToken)
+    public string GenerateJwtToken(string userId, string? _refreshToken)
     {
         // Generate Access Token (JWT Token)
         var key = Encoding.ASCII.GetBytes(_key);
@@ -55,7 +55,6 @@ public class JwtHelper
         var claims = new List<Claim>
         {
             new Claim("id", userId),
-            new Claim("username", username),
             new Claim("refreshToken", refreshToken)
         };
 
@@ -160,7 +159,7 @@ public class JwtHelper
             return token;
         }
 
-        return GenerateJwtToken(userId, payload["username"].ToString(), refreshTokenEntry.Token);
+        return GenerateJwtToken(userId, refreshTokenEntry.Token);
     }
 
     // Revoke JWT token

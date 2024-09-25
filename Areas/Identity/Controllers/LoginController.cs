@@ -59,7 +59,6 @@ public class LoginController : Controller
             {
                 string jwtToken = _jwtHelper.GenerateJwtToken(
                     user.Id,
-                    user.UserName,
                     null
                 );
                 Response.Cookies.Append("jwt", jwtToken);

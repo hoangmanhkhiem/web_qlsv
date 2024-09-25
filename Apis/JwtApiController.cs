@@ -40,7 +40,6 @@ public class JwtApiController : ControllerBase
         {
             string jwtToken = _jwtHelper.GenerateJwtToken(
                 user.Id, 
-                user.UserName,
                 null
             );
 

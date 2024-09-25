@@ -11,6 +11,7 @@ namespace qlsv.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class IdentityApiController : ControllerBase
 {
     // Variables
@@ -31,7 +32,7 @@ public class IdentityApiController : ControllerBase
     }
 
     // GET: Users
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Root")]
+    [Authorize(Roles = "Root")]
     [HttpGet("users")]
     public IActionResult GetUsers()
     {
