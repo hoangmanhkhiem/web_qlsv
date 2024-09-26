@@ -1,9 +1,10 @@
 version: '3.8'
 
 services:
+  # Sql Server
   sql_sv:
     image: mcr.microsoft.com/mssql/server
-    container_name: Database
+    container_name: sql_db_server
     environment:
       ACCEPT_EULA: 'Y'
       SA_PASSWORD: 'P@ss12345'
@@ -11,6 +12,6 @@ services:
       - '1435:1433'
     volumes:
       # Use in local {path_local}:/var/opt/mssql/ 
-      - /workspaces/local_daya_base:/var/opt/mssql/ 
+      - /Users/v/code/Web-1-1-24/local_daya_base/sql:/var/opt/mssql/ 
     restart: unless-stopped
-    user: '1000:1000'  # Replace with the appropriate non-root user ID and group ID
+    # user: '1000:1000'  # Uncomment only if required
