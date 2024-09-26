@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 //
 using qlsv.ViewModels;
 using qlsv.Helpers;
+using qlsv.Data;
 
 namespace qlsv.Controllers;
 
@@ -11,18 +12,21 @@ public class JwtApiController : ControllerBase
 {   
     // Variables
     private readonly qlsv.Data.IdentityDbContext _context;
+    private readonly SessionDbContext _session;
     private readonly JwtHelper _jwtHelper;
     private readonly SecurityHelper _sercurityHelper;
 
     // Constructor
     public JwtApiController(
         qlsv.Data.IdentityDbContext context,
+        SessionDbContext session,
         JwtHelper jwtHelper,
         SecurityHelper securityHelper  
     ) {
         _context = context;
         _jwtHelper = jwtHelper;
         _sercurityHelper = securityHelper;
+        _session = session;
     }
     
     // Post: Create jwt
@@ -54,7 +58,7 @@ public class JwtApiController : ControllerBase
     public ActionResult Revoke(string userId)
     {
         _jwtHelper.RevokeToken(userId);
-        var listRefreshToken = _context.RefreshTokens.ToList();
+        var listRefreshToken = _session.RefreshTokens.ToList();
         string res = "";
         foreach (var item in listRefreshToken)
         {
