@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using qlsv.ViewModels;
 using qlsv.Helpers;
 using qlsv.Models;
+using qlsv.Data;
 
 namespace qlsv.Controllers;
 
@@ -16,6 +17,7 @@ public class IdentityApiController : ControllerBase
 {
     // Variables
     private readonly qlsv.Data.IdentityDbContext _context;
+    private readonly SessionDbContext _session;
     private readonly JwtHelper _jwtHelper;
     private readonly SecurityHelper _sercurityHelper;
 
@@ -23,12 +25,14 @@ public class IdentityApiController : ControllerBase
     public IdentityApiController(
         qlsv.Data.IdentityDbContext context,
         JwtHelper jwtHelper,
-        SecurityHelper securityHelper
+        SecurityHelper securityHelper,
+        SessionDbContext session
     )
     {
         _context = context;
         _jwtHelper = jwtHelper;
         _sercurityHelper = securityHelper;
+        _session = session;
     }
 
     // GET: Users
@@ -84,7 +88,7 @@ public class IdentityApiController : ControllerBase
     [HttpGet("refreshtokens")]
     public IActionResult GetRefreshTokens()
     {
-        var listRefreshToken = _context.RefreshTokens.ToList();
+        var listRefreshToken = _session.RefreshTokens.ToList();
         var refreshTokens = listRefreshToken.Select(refreshToken => new RefreshToken
         {
             Id = refreshToken.Id,
@@ -217,7 +221,7 @@ public class IdentityApiController : ControllerBase
     [HttpPut("updaterefreshtoken")]
     public IActionResult UpdateRefreshToken(RefreshToken model)
     {
-        var refreshToken = _context.RefreshTokens.FirstOrDefault(rt => rt.Id == model.Id);
+        var refreshToken = _session.RefreshTokens.FirstOrDefault(rt => rt.Id == model.Id);
         if (refreshToken == null)
         {
             return NotFound("RefreshToken not found");
@@ -340,13 +344,13 @@ public class IdentityApiController : ControllerBase
     [HttpDelete("deleterefreshtoken/{id}")]
     public IActionResult DeleteRefreshToken(string id)
     {
-        var refreshToken = _context.RefreshTokens.FirstOrDefault(rt => rt.Id == id);
+        var refreshToken = _session.RefreshTokens.FirstOrDefault(rt => rt.Id == id);
         if (refreshToken == null)
         {
             return NotFound("RefreshToken not found");
         }
 
-        _context.RefreshTokens.Remove(refreshToken);
+        _session.RefreshTokens.Remove(refreshToken);
         _context.SaveChanges();
         return Ok($"RefreshToken {refreshToken.Token} deleted");
     }
@@ -494,7 +498,7 @@ public class IdentityApiController : ControllerBase
     [HttpPost("createrefreshtoken")]
     public IActionResult CreateRefreshToken(RefreshToken model)
     {
-        if (!_context.RefreshTokens.Any(rt => rt.Token == model.Token))
+        if (!_session.RefreshTokens.Any(rt => rt.Token == model.Token))
         {
             return BadRequest("Duplicated Token");
         }
@@ -505,7 +509,7 @@ public class IdentityApiController : ControllerBase
             UserId = model.UserId
         };
 
-        _context.RefreshTokens.Add(refreshToken);
+        _session.RefreshTokens.Add(refreshToken);
         _context.SaveChanges();
         return Ok($"Refresh token {refreshToken.Token} created");
     }

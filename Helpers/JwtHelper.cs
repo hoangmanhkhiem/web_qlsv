@@ -15,15 +15,21 @@ public class JwtHelper
     // Variables
     private readonly IConfiguration _configuration;
     private readonly IdentityDbContext _context;
+    private readonly SessionDbContext _session;
     private string _key;
     private string _expireMinutes;
     private string _refreshTokenExpireDays;
 
     // Constructor
-    public JwtHelper(IConfiguration configuration, IdentityDbContext context)
+    public JwtHelper(
+        IConfiguration configuration,
+        IdentityDbContext context,
+        SessionDbContext session
+    )
     {
         _configuration = configuration.GetSection("Jwt");
         _context = context;
+        _session = session;
         GetValue();
     }
 
@@ -95,8 +101,8 @@ public class JwtHelper
             UserId = UserId,
             ExpiryDate = expires
         };
-        _context.RefreshTokens.Add(refreshTokenModel);
-        _context.SaveChanges();
+        _session.RefreshTokens.Add(refreshTokenModel);
+        _session.SaveChanges();
 
         return refreshToken;
     }
@@ -150,8 +156,7 @@ public class JwtHelper
         }
 
         var userId = payload["id"].ToString();
-        var refreshTokenEntry = _context.RefreshTokens.FirstOrDefault(x => x.UserId == userId);
-
+        var refreshTokenEntry = _session.RefreshTokens.FirstOrDefault(x => x.UserId == userId);
         if (refreshTokenEntry == null ||
             !refreshTokenEntry.Token.Equals(payload["refreshToken"].ToString()) ||
             refreshTokenEntry.ExpiryDate <= DateTime.UtcNow)
@@ -165,7 +170,7 @@ public class JwtHelper
     // Revoke JWT token
     public bool RevokeToken(string userId)
     {
-        var refreshToken = _context.RefreshTokens.FirstOrDefault(
+        var refreshToken = _session.RefreshTokens.FirstOrDefault(
             x => x.UserId == userId
         );
 
@@ -174,8 +179,8 @@ public class JwtHelper
             return false;
         }
         // Revoke the refresh token
-        _context.RefreshTokens.Remove(refreshToken);
-        _context.SaveChanges();
+        _session.RefreshTokens.Remove(refreshToken);
+        _session.SaveChanges();
 
         return true;
     }
