@@ -6,9 +6,9 @@ namespace qlsv.Data
     public class SessionDbContext : DbContext
     {
         // Variables
-        public DbContext AccessToken;
-        public DbContext RefreshToken;
-        public DbContext UserToken;
+        public DbSet<AccessToken> AccessToken { get; set; }
+        public DbSet<RefreshToken> RefreshToken { get; set; }
+        public DbSet<UserToken> UserToken { get; set; }
 
         // Constructors
         public SessionDbContext(DbContextOptions<SessionDbContext> options)

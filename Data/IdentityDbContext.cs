@@ -9,7 +9,6 @@ namespace qlsv.Data;
 public class IdentityDbContext : IdentityDbContext<UserCustom>
 {
     // Variables
-    public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     // Constructor
     public IdentityDbContext(
@@ -32,8 +31,6 @@ public class IdentityDbContext : IdentityDbContext<UserCustom>
                 entityType.SetTableName(tableName.Substring(6));
             }
         }
-        builder.Entity<RefreshToken>()
-            .Property(r => r.Id)
-            .ValueGeneratedOnAdd();
+      
     }
 }
