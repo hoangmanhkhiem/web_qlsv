@@ -43,12 +43,12 @@ public class InitDbContext
                 // User basic
                 var basic = new UserCustom
                 {
-                    UserName = "basic",
-                    Email = "basic@v.com",
+                    UserName = "st1",
+                    Email = "st1@v.com",
                     EmailConfirmed = true,
                     ProfilePicture = new byte[] { 0 },
-                    FirstName = "Basic",
-                    LastName = "User",
+                    FirstName = "Student",
+                    LastName = "1",
                     Address = "HN",
                     Phone = "21342331"
                 };
@@ -58,12 +58,12 @@ public class InitDbContext
 
                 var admin = new UserCustom
                 {
-                    UserName = "admin",
-                    Email = "admin@v.com",
+                    UserName = "lec",
+                    Email = "lecturer@v.com",
                     EmailConfirmed = true,
                     ProfilePicture = new byte[] { 0 },
-                    FirstName = "Admin",
-                    LastName = "User",
+                    FirstName = "lecturer",
+                    LastName = "1",
                     Address = "HN",
                     Phone = "21342331"
                 };
@@ -103,8 +103,8 @@ public class InitDbContext
             if (!context.UserRoles.Any())
             {
                 var rootUser = context.Users.FirstOrDefault(u => u.UserName == "root");
-                var adminUser = context.Users.FirstOrDefault(u => u.UserName == "admin");
-                var basicUser = context.Users.FirstOrDefault(u => u.UserName == "basic");
+                var adminUser = context.Users.FirstOrDefault(u => u.UserName == "st1");
+                var basicUser = context.Users.FirstOrDefault(u => u.UserName == "lec");
 
                 var rootRole = context.Roles.FirstOrDefault(r => r.Name == "Root");
                 var adminRole = context.Roles.FirstOrDefault(r => r.Name == "Admin");
