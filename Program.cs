@@ -183,6 +183,14 @@ public class Program
                 builder.Configuration.GetConnectionString("DefaultConnection")
             )
         );
+
+        // Add Sessions db context 
+        // TODO: Use redis
+        builder.Services.AddDbContext<SessionDbContext>(options =>
+            options.UseSqlServer(
+                builder.Configuration.GetConnectionString("DefaultConnection")
+            )
+        );
     }
 
     // App initialization
