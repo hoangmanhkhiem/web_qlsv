@@ -96,6 +96,7 @@ public class JwtHelper
             ExpiryDate = DateTime.UtcNow.AddMinutes(int.Parse(_expireMinutes))
         };
         _session.AccessTokens.Add(accessTokenDb);
+        _session.SaveChanges();
 
         // Return the Access Token
         return accessToken;
@@ -127,6 +128,8 @@ public class JwtHelper
             UserId = userId,
             ExpiryDate = DateTime.UtcNow.AddDays(int.Parse(_refreshTokenExpireDays))
         };
+        _session.RefreshTokens.Add(refreshTokenDb);
+        _session.SaveChanges();
 
         return refreshToken;
     }
@@ -176,4 +179,6 @@ public class JwtHelper
             };
         }
     }
+
+
 }
