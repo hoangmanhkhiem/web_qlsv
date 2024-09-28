@@ -18,7 +18,7 @@ public class JwtHelper
     private readonly IdentityDbContext _context;
     private readonly SessionDbContext _session;
     private string _key;
-    private string _expireMinutes;
+    private string _accessTokenExpireDays;
     private string _refreshTokenExpireDays;
     private string _audience;
     private string _issuer;
@@ -40,7 +40,7 @@ public class JwtHelper
     private void GetValue()
     {
         _key = _configuration["Key"];
-        _expireMinutes = _configuration["ExpireMinutes"];
+        _accessTokenExpireDays = _configuration["AccessTokenExpireDays"];
         _refreshTokenExpireDays = _configuration["RefreshTokenExpireDays"];
         _audience = _configuration["Audience"];
         _issuer = _configuration["Issuer"];
@@ -86,7 +86,7 @@ public class JwtHelper
             Audience = _audience,
             Issuer = _issuer,
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddMinutes(int.Parse(_expireMinutes)),
+            Expires = DateTime.UtcNow.AddDays(int.Parse(_accessTokenExpireDays)),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
 
@@ -99,7 +99,7 @@ public class JwtHelper
         {
             Token = accessToken,
             UserId = userId,
-            ExpiryDate = DateTime.UtcNow.AddMinutes(int.Parse(_expireMinutes))
+            ExpiryDate = DateTime.UtcNow.AddDays(int.Parse(_accessTokenExpireDays)),
         };
         _session.AccessTokens.Add(accessTokenDb);
         _session.SaveChanges();
