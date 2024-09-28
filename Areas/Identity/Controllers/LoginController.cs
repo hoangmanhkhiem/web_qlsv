@@ -57,8 +57,9 @@ public class LoginController : Controller
             );
             if (user!=null)
             {
-                string jwtToken = ""; // TODO: 
-                Response.Cookies.Append("jwt", jwtToken);
+                var token = _jwtHelper.GenerateToken(user.Id);
+                Response.Cookies.Append("AccsessToken", token.AccessToken);
+                Response.Cookies.Append("RefreshToken", token.RefreshToken);
                 return RedirectToAction("Index", "Home", new { area = ""});
             }
         }
