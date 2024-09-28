@@ -1,12 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 //
 using qlsv.Data;
 using qlsv.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace qlsv.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles="Root")]
 public class SessionApiController : ControllerBase
 {
     // Variables
