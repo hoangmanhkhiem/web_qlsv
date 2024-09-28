@@ -12,27 +12,18 @@ namespace qlsv.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Root")]
 public class IdentityApiController : ControllerBase
 {
     // Variables
     private readonly qlsv.Data.IdentityDbContext _context;
-    private readonly SessionDbContext _session;
-    private readonly JwtHelper _jwtHelper;
-    private readonly SecurityHelper _sercurityHelper;
 
     // Constructor
     public IdentityApiController(
-        qlsv.Data.IdentityDbContext context,
-        JwtHelper jwtHelper,
-        SecurityHelper securityHelper,
-        SessionDbContext session
+        qlsv.Data.IdentityDbContext context
     )
     {
         _context = context;
-        _jwtHelper = jwtHelper;
-        _sercurityHelper = securityHelper;
-        _session = session;
     }
 
     // GET: Users
@@ -82,21 +73,6 @@ public class IdentityApiController : ControllerBase
             RoleId = userRole.RoleId,
         }).ToList();
         return Ok(userRoles);
-    }
-
-    // GET: RefreshTokens
-    [HttpGet("refreshtokens")]
-    public IActionResult GetRefreshTokens()
-    {
-        var listRefreshToken = _session.RefreshTokens.ToList();
-        var refreshTokens = listRefreshToken.Select(refreshToken => new RefreshToken
-        {
-            Id = refreshToken.Id,
-            UserId = refreshToken.UserId,
-            Token = refreshToken.Token,
-            ExpiryDate = refreshToken.ExpiryDate,
-        }).ToList();
-        return Ok(refreshTokens);
     }
 
     // GET: RoleClaims
@@ -217,22 +193,6 @@ public class IdentityApiController : ControllerBase
         return Ok($"UserRole {userRole.RoleId} updated");
     }
 
-    // PUT: Upgrade Refresh Token
-    [HttpPut("updaterefreshtoken")]
-    public IActionResult UpdateRefreshToken(RefreshToken model)
-    {
-        var refreshToken = _session.RefreshTokens.FirstOrDefault(rt => rt.Id == model.Id);
-        if (refreshToken == null)
-        {
-            return NotFound("RefreshToken not found");
-        }
-
-        refreshToken.Token = model.Token;
-        refreshToken.ExpiryDate = model.ExpiryDate;
-        _context.SaveChanges();
-        return Ok($"Refresh token {refreshToken.Token} updated");
-    }
-
     // PUT: Upgrade Role Claims
     [HttpPut("updateroleclaim")]
     public IActionResult UpdateRoleClaim(IdentityRoleClaim<string> model)
@@ -338,21 +298,6 @@ public class IdentityApiController : ControllerBase
         _context.UserRoles.Remove(userRole);
         _context.SaveChanges();
         return Ok($"UserRole {userRole.RoleId} deleted");
-    }
-
-    // DELETE: Delete Refresh Token
-    [HttpDelete("deleterefreshtoken/{id}")]
-    public IActionResult DeleteRefreshToken(string id)
-    {
-        var refreshToken = _session.RefreshTokens.FirstOrDefault(rt => rt.Id == id);
-        if (refreshToken == null)
-        {
-            return NotFound("RefreshToken not found");
-        }
-
-        _session.RefreshTokens.Remove(refreshToken);
-        _context.SaveChanges();
-        return Ok($"RefreshToken {refreshToken.Token} deleted");
     }
 
     // DELETE: Delete Role Claims
@@ -492,26 +437,6 @@ public class IdentityApiController : ControllerBase
         _context.UserRoles.Add(userRole);
         _context.SaveChanges();
         return Ok($"UserRole {userRole.RoleId} created");
-    }
-
-    // POST: Create Refresh Token
-    [HttpPost("createrefreshtoken")]
-    public IActionResult CreateRefreshToken(RefreshToken model)
-    {
-        if (!_session.RefreshTokens.Any(rt => rt.Token == model.Token))
-        {
-            return BadRequest("Duplicated Token");
-        }
-        var refreshToken = new RefreshToken
-        {
-            Token = model.Token,
-            ExpiryDate = model.ExpiryDate,
-            UserId = model.UserId
-        };
-
-        _session.RefreshTokens.Add(refreshToken);
-        _context.SaveChanges();
-        return Ok($"Refresh token {refreshToken.Token} created");
     }
 
     // POST: Create Role Claims
