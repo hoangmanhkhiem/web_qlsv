@@ -58,19 +58,12 @@ public class JwtApiController : ControllerBase
         return Ok(_jwtHelper.DecodeToken(token));
     }
 
-    // Post: Refresh jwt
+    // POST: Validate token 
     [HttpPost]
-    [Route("refresh")]
-    public ActionResult Refresh(string token)
+    [Route("validate")]
+    public ActionResult ValidateToken(string token)
     {
-        return Ok("TODO add");
-    }
-
-    // Post: Check jwt
-    [HttpPost("check")]
-    public ActionResult Check(string token)
-    {
-        return Ok("TODO add");
+        return Ok(_jwtHelper.ValidateToken(token));
     }
 }
 

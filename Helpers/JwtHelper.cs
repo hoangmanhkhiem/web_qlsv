@@ -136,4 +136,44 @@ public class JwtHelper
     {
        return new JwtSecurityTokenHandler().ReadJwtToken(token);
     }
+
+    // Validate Token
+    public ValidateToken ValidateToken(string token)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.ASCII.GetBytes(_key);
+        try
+        {
+            tokenHandler.ValidateToken(token, new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ClockSkew = TimeSpan.Zero
+            }, out SecurityToken validatedToken);
+
+            return new ValidateToken
+            {
+                Status = "Success",
+                Message = "Token is valid"
+            };
+        }
+        catch (SecurityTokenExpiredException ex)
+        {
+            return new ValidateToken
+            {
+                Status = "Error",
+                Message = "Token is expired " + ex.Message
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ValidateToken
+            {
+                Status = "Error",
+                Message = "Token is invalid " + ex.Message
+            };
+        }
+    }
 }
