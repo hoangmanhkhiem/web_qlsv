@@ -120,6 +120,8 @@ public class Program
         // Configure JWT authentication
         var jwtSettings = builder.Configuration.GetSection("Jwt");
         var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]);
+        var audience = jwtSettings["Audience"];
+        var issuer = jwtSettings["Issuer"];
 
         builder.Services.AddAuthentication(options =>
         {
@@ -130,24 +132,14 @@ public class Program
         {
             options.TokenValidationParameters = new TokenValidationParameters
             {
-                ValidateIssuer = false,
-                ValidateAudience = false,
+                ValidateIssuer = true,
+                ValidIssuer = issuer,
+                ValidateAudience = true,
+                ValidAudience = audience,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(key)
-            };
-            options.Events = new JwtBearerEvents
-            {
-                OnAuthenticationFailed = context =>
-                {
-                    Console.WriteLine("Authentication failed: " + context.Exception.Message);
-                    return Task.CompletedTask;
-                },
-                OnTokenValidated = context =>
-                {
-                    Console.WriteLine("Token validated for: " + context.Principal.Identity.Name);
-                    return Task.CompletedTask;
-                }
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ClockSkew = TimeSpan.Zero
             };
         });
 

@@ -20,6 +20,8 @@ public class JwtHelper
     private string _key;
     private string _expireMinutes;
     private string _refreshTokenExpireDays;
+    private string _audience;
+    private string _issuer;
 
     // Constructor
     public JwtHelper(
@@ -40,6 +42,8 @@ public class JwtHelper
         _key = _configuration["Key"];
         _expireMinutes = _configuration["ExpireMinutes"];
         _refreshTokenExpireDays = _configuration["RefreshTokenExpireDays"];
+        _audience = _configuration["Audience"];
+        _issuer = _configuration["Issuer"];
     }
 
     // Generate Token 
@@ -78,7 +82,9 @@ public class JwtHelper
         }
 
         var tokenDescriptor = new SecurityTokenDescriptor
-        {
+        {   
+            Audience = _audience,
+            Issuer = _issuer,
             Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.AddMinutes(int.Parse(_expireMinutes)),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -104,11 +110,13 @@ public class JwtHelper
 
     // Generate Refresh Token
     private string GenerateRefreshToken(string userId)
-    {
+    {   
         var key = Encoding.ASCII.GetBytes(_key);
         var tokenHandler = new JwtSecurityTokenHandler();
         var tokenDescriptor = new SecurityTokenDescriptor
-        {
+        {   
+            Audience = _audience,
+            Issuer = _issuer,
             Subject = new ClaimsIdentity(new Claim[]
             {
                 new Claim("idUser", userId),
@@ -149,10 +157,13 @@ public class JwtHelper
         {
             tokenHandler.ValidateToken(token, new TokenValidationParameters
             {
+                ValidateIssuer = true,
+                ValidIssuer = _issuer,
+                ValidateAudience = true,
+                ValidAudience = _audience,
+                ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidateIssuer = false,
-                ValidateAudience = false,
                 ClockSkew = TimeSpan.Zero
             }, out SecurityToken validatedToken);
 
