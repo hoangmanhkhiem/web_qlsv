@@ -15,10 +15,15 @@ public class LogoutController : Controller
     {
         _logger = logger;
     }
-    // TODO 
+    
+    [HttpPost]
     public IActionResult Index()
-    {
-        return View();
+    {   
+        // Remove Token
+        HttpContext.Response.Cookies.Delete("AccsessToken");
+        HttpContext.Response.Cookies.Delete("RefreshToken");
+
+        return RedirectToAction("Index", "Login", new {  Area = "Identity" });
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
