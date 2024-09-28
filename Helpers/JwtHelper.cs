@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 //
 using qlsv.Data;
+using qlsv.ViewModels;
 using qlsv.Models;
 
 namespace qlsv.Helpers;
@@ -41,17 +42,24 @@ public class JwtHelper
         _refreshTokenExpireDays = _configuration["RefreshTokenExpireDays"];
     }
 
-    // Create JWT token and embed Refresh Token in payload
-    public string GenerateJwtToken(string userId, string? _refreshToken)
+    // Generate Token 
+    public Token GenerateToken(string userId)
+    {
+        return new Token
+        {
+            AccessToken = GenerateAccessToken(userId),
+            RefreshToken = GenerateRefreshToken(userId)
+        };
+    }
+
+    // Generate Access Token
+    private string GenerateAccessToken(string userId)
     {
         // Generate Access Token (JWT Token)
         var key = Encoding.ASCII.GetBytes(_key);
         var tokenHandler = new JwtSecurityTokenHandler();
 
-        // Generate a refresh token if not provided
-        var refreshToken = _refreshToken ?? GenerateRefreshToken(userId);
-
-        // List Role
+        // Get List Role With UserId
         var roles = (from role in _context.UserRoles
                      join user in _context.Users on role.UserId equals user.Id
                      join roleItem in _context.Roles on role.RoleId equals roleItem.Id
@@ -60,8 +68,7 @@ public class JwtHelper
 
         var claims = new List<Claim>
         {
-            new Claim("id", userId),
-            new Claim("refreshToken", refreshToken)
+            new Claim("idUser", userId),
         };
 
         // Add roles to claims
@@ -81,135 +88,52 @@ public class JwtHelper
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var accessToken = tokenHandler.WriteToken(token);
 
+        // Add Access Token to Session Db
+        var accessTokenDb = new AccessToken
+        {
+            Token = accessToken,
+            UserId = userId,
+            ExpiryDate = DateTime.UtcNow.AddMinutes(int.Parse(_expireMinutes))
+        };
+        _session.AccessTokens.Add(accessTokenDb);
+
         // Return the Access Token
         return accessToken;
     }
 
-
-    // Create refresh token
-    public string GenerateRefreshToken(string UserId)
+    // Generate Refresh Token
+    private string GenerateRefreshToken(string userId)
     {
-        // Auto remove the refresh token from the session
-        this.RevokeToken(UserId);
-        var refreshToken = Guid.NewGuid().ToString();
-        var expires = DateTime.UtcNow.AddDays(int.Parse(_refreshTokenExpireDays));
+        var key = Encoding.ASCII.GetBytes(_key);
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(new Claim[]
+            {
+                new Claim("idUser", userId),
+            }),
+            Expires = DateTime.UtcNow.AddDays(int.Parse(_refreshTokenExpireDays)),
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+        };
 
-        // Add the refresh token to the session
-        var refreshTokenModel = new RefreshToken
+        // Create JWT Refresh Token
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        var refreshToken = tokenHandler.WriteToken(token);
+
+        // Add Token to Session Db
+        var refreshTokenDb = new RefreshToken
         {
             Token = refreshToken,
-            UserId = UserId,
-            ExpiryDate = expires
+            UserId = userId,
+            ExpiryDate = DateTime.UtcNow.AddDays(int.Parse(_refreshTokenExpireDays))
         };
-        _session.RefreshTokens.Add(refreshTokenModel);
-        _session.SaveChanges();
 
         return refreshToken;
     }
 
-    // Check JWT token
-    public (bool, string) CheckJwtToken(string token)
+    // Decode Token
+    public JwtSecurityToken DecodeToken(string token)
     {
-        var key = Encoding.ASCII.GetBytes(_key);
-
-        // Create token handler
-        var tokenHandler = new JwtSecurityTokenHandler();
-
-        try
-        {
-            // Validate token
-            tokenHandler.ValidateToken(token, new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true, // Kiểm tra khóa ký
-                IssuerSigningKey = new SymmetricSecurityKey(key), // Khóa ký đối với token
-                ValidateIssuer = false, // Bạn có thể bật lên nếu cần kiểm tra issuer
-                ValidateAudience = false, // Bạn có thể bật lên nếu cần kiểm tra audience
-                ValidateLifetime = true, // Kiểm tra thời gian hết hạn của token
-                ClockSkew = TimeSpan.Zero // Loại bỏ độ lệch thời gian mặc định
-            }, out SecurityToken validatedToken);
-
-            return (true, "");
-        }
-        catch (SecurityTokenExpiredException)
-        {
-            // Token hết hạn
-            return (false, RefreshJwtToken(token));
-        }
-        catch (Exception)
-        {
-            // Các lỗi khác
-            return (false, "Token is not valid");
-        }
+       return new JwtSecurityTokenHandler().ReadJwtToken(token);
     }
-
-    // Refresh JWT token
-    public string RefreshJwtToken(string token)
-    {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_key);
-        var jwtToken = tokenHandler.ReadJwtToken(token);
-        var payload = jwtToken.Payload;
-
-        if (!HelpperCheckTokenRefresh(token, tokenHandler, key))
-        {
-            return token;
-        }
-
-        var userId = payload["id"].ToString();
-        var refreshTokenEntry = _session.RefreshTokens.FirstOrDefault(x => x.UserId == userId);
-        if (refreshTokenEntry == null ||
-            !refreshTokenEntry.Token.Equals(payload["refreshToken"].ToString()) ||
-            refreshTokenEntry.ExpiryDate <= DateTime.UtcNow)
-        {
-            return token;
-        }
-
-        return GenerateJwtToken(userId, refreshTokenEntry.Token);
-    }
-
-    // Revoke JWT token
-    public bool RevokeToken(string userId)
-    {
-        var refreshToken = _session.RefreshTokens.FirstOrDefault(
-            x => x.UserId == userId
-        );
-
-        if (refreshToken == null)
-        {
-            return false;
-        }
-        // Revoke the refresh token
-        _session.RefreshTokens.Remove(refreshToken);
-        _session.SaveChanges();
-
-        return true;
-    }
-
-    // Helpper Refresh Token
-    private bool HelpperCheckTokenRefresh(
-        string token,
-        JwtSecurityTokenHandler tokenHandler,
-        byte[] key
-    )
-    {
-        try
-        {
-            // Validate token
-            tokenHandler.ValidateToken(token, new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true, // Kiểm tra khóa ký
-                IssuerSigningKey = new SymmetricSecurityKey(key), // Khóa ký đối với token
-                ValidateIssuer = false, // Bạn có thể bật lên nếu cần kiểm tra issuer
-                ValidateAudience = false, // Bạn có thể bật lên nếu cần kiểm tra audience
-                ValidateLifetime = false, // Kiểm tra thời gian hết hạn của token
-            }, out SecurityToken validatedToken);
-
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
-    }
-
 }
