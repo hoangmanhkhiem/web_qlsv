@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 //
 using qlsv.ViewModels;
 using qlsv.Helpers;
@@ -69,6 +71,7 @@ public class JwtApiController : ControllerBase
     // POST: Refresh token
     [HttpPost]
     [Route("refresh")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles="Root")]
     public ActionResult RefreshToken(string accessToken, string refreshToken)
     {
         return Ok(_jwtHelper.RefreshToken(accessToken, refreshToken));
