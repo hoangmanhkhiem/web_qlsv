@@ -65,5 +65,13 @@ public class JwtApiController : ControllerBase
     {
         return Ok(_jwtHelper.ValidateToken(token));
     }
+
+    // POST: Refresh token
+    [HttpPost]
+    [Route("refresh")]
+    public ActionResult RefreshToken(string accessToken, string refreshToken)
+    {
+        return Ok(_jwtHelper.RefreshToken(accessToken, refreshToken));
+    }
 }
 
