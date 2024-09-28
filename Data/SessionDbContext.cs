@@ -12,7 +12,21 @@ namespace qlsv.Data
         public SessionDbContext(DbContextOptions<SessionDbContext> options)
             : base(options)
         {
+
         }
 
+        // 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<AccessToken>().HasKey(m => m.Id);
+            builder.Entity<AccessToken>()
+                .Property(f => f.Id)
+                .ValueGeneratedOnAdd();
+
+            builder.Entity<RefreshToken>().HasKey(m => m.Id);
+            builder.Entity<RefreshToken>()
+                .Property(f => f.Id)
+                .ValueGeneratedOnAdd();
+        }
     }
 }
