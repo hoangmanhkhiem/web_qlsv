@@ -32,6 +32,12 @@ public class HomeController : Controller
         return View();
     }
 
+    // TODO - rm - Test viewcomponent calendar
+    public IActionResult Calendar()
+    {
+        return View();
+    }
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
