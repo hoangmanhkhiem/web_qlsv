@@ -110,6 +110,9 @@ public class Program
 
         // Add service helpper security
         builder.Services.AddScoped<SecurityHelper>();
+
+        // Add service helpper calendar
+        builder.Services.AddScoped<CalendarHelper>();
     }
 
     // Add Authentication
