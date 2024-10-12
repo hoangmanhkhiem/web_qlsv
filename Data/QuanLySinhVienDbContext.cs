@@ -6,18 +6,14 @@ namespace qlsv.Data;
 public class QuanLySinhVienDbContext : DbContext
 {
     // Variables
-    public virtual DbSet<Diem> Diems { get; set; } = null!;
-    public virtual DbSet<DiemDanh> DiemDanhs { get; set; } = null!;
-    public virtual DbSet<GiaoVien> GiaoViens { get; set; } = null!;
-    public virtual DbSet<LopHocPhan> LopHocPhans { get; set; } = null!;
-    public virtual DbSet<SinhVien> SinhViens { get; set; } = null!;
-    public virtual DbSet<ThoiGian> ThoiGians { get; set; } = null!;
+    public DbSet<Diem> Diems { get; set; }
+    public DbSet<DiemDanh> DiemDanhs { get; set; }
+    public DbSet<GiaoVien> GiaoViens { get; set; }
+    public DbSet<LopHocPhan> LopHocPhans { get; set; }
+    public DbSet<SinhVien> SinhViens { get; set; }
+    public DbSet<ThoiGian> ThoiGians { get; set; }
 
     // Constructor
-    public QuanLySinhVienDbContext()
-    {
-    }
-
     public QuanLySinhVienDbContext(DbContextOptions<QuanLySinhVienDbContext> options)
         : base(options)
     {
