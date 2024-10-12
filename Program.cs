@@ -186,6 +186,13 @@ public class Program
                 builder.Configuration.GetConnectionString("DefaultConnection")
             )
         );
+
+        // Add QuanLySinhVien db context
+        builder.Services.AddDbContext<QuanLySinhVienDbContext>(options =>
+            options.UseSqlServer(
+                builder.Configuration.GetConnectionString("DefaultConnection")
+            )
+        );
     }
 
     // App initialization
