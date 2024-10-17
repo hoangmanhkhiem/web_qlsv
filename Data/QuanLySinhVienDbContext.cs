@@ -22,71 +22,66 @@ public class QuanLySinhVienDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Diem>(entity =>
-        {
-            entity.HasKey(e => new { e.IdLopHocPhan, e.IdSinhVien })
-                .HasName("PK__Diem__72255A5ACAFEA388");
+            {
+                entity.HasKey(e => e.IdDiem);
 
-            entity.ToTable("Diem");
+                entity.ToTable("Diem");
 
-            entity.Property(e => e.IdLopHocPhan).HasMaxLength(36);
+                entity.Property(e => e.IdDiem)
+                    .HasMaxLength(36)
+                    .HasDefaultValueSql("(newid())");
 
-            entity.Property(e => e.IdSinhVien).HasMaxLength(36);
+                entity.Property(e => e.DiemKetThuc).HasColumnType("decimal(5, 2)");
 
-            entity.Property(e => e.DiemKetThuc).HasColumnType("decimal(5, 2)");
+                entity.Property(e => e.DiemQuaTrinh).HasColumnType("decimal(5, 2)");
 
-            entity.Property(e => e.DiemQuaTrinh).HasColumnType("decimal(5, 2)");
+                entity.Property(e => e.DiemTongKet).HasColumnType("decimal(5, 2)");
 
-            entity.Property(e => e.DiemTongKet).HasColumnType("decimal(5, 2)");
+                entity.Property(e => e.IdLopHocPhan).HasMaxLength(36);
 
-            entity.HasOne(d => d.IdLopHocPhanNavigation)
-                .WithMany(p => p.Diems)
-                .HasForeignKey(d => d.IdLopHocPhan)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Diem__IdLopHocPh__5EBF139D");
+                entity.Property(e => e.IdSinhVien).HasMaxLength(36);
 
-            entity.HasOne(d => d.IdSinhVienNavigation)
-                .WithMany(p => p.Diems)
-                .HasForeignKey(d => d.IdSinhVien)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Diem__IdSinhVien__5FB337D6");
-        });
+                entity.HasOne(d => d.IdLopHocPhanNavigation)
+                    .WithMany(p => p.Diems)
+                    .HasForeignKey(d => d.IdLopHocPhan);
+
+                entity.HasOne(d => d.IdSinhVienNavigation)
+                    .WithMany(p => p.Diems)
+                    .HasForeignKey(d => d.IdSinhVien);
+            });
 
         modelBuilder.Entity<DiemDanh>(entity =>
         {
-            entity.HasKey(e => new { e.IdSinhVien, e.IdThoiGian, e.IdLopHocPhan })
-                .HasName("PK__DiemDanh__817E0446A874C894");
+            entity.HasKey(e => e.IdDiemDanh);
 
             entity.ToTable("DiemDanh");
+
+            entity.Property(e => e.IdDiemDanh)
+                .HasMaxLength(36)
+                .HasDefaultValueSql("(newid())");
+
+            entity.Property(e => e.IdLopHocPhan).HasMaxLength(36);
 
             entity.Property(e => e.IdSinhVien).HasMaxLength(36);
 
             entity.Property(e => e.IdThoiGian).HasMaxLength(36);
 
-            entity.Property(e => e.IdLopHocPhan).HasMaxLength(36);
-
             entity.HasOne(d => d.IdLopHocPhanNavigation)
                 .WithMany(p => p.DiemDanhs)
-                .HasForeignKey(d => d.IdLopHocPhan)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__DiemDanh__IdLopH__5812160E");
+                .HasForeignKey(d => d.IdLopHocPhan);
 
             entity.HasOne(d => d.IdSinhVienNavigation)
                 .WithMany(p => p.DiemDanhs)
-                .HasForeignKey(d => d.IdSinhVien)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__DiemDanh__IdSinh__5629CD9C");
+                .HasForeignKey(d => d.IdSinhVien);
 
             entity.HasOne(d => d.IdThoiGianNavigation)
                 .WithMany(p => p.DiemDanhs)
-                .HasForeignKey(d => d.IdThoiGian)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__DiemDanh__IdThoi__571DF1D5");
+                .HasForeignKey(d => d.IdThoiGian);
         });
 
         modelBuilder.Entity<GiaoVien>(entity =>
         {
-            entity.HasKey(e => e.IdGiaoVien)
-                .HasName("PK__GiaoVien__F4372AE328C6DBED");
+            entity.HasKey(e => e.IdGiaoVien);
 
             entity.ToTable("GiaoVien");
 
@@ -105,8 +100,7 @@ public class QuanLySinhVienDbContext : DbContext
 
         modelBuilder.Entity<LopHocPhan>(entity =>
         {
-            entity.HasKey(e => e.IdHocPhan)
-                .HasName("PK__LopHocPh__6A35A4EC70344C38");
+            entity.HasKey(e => e.IdHocPhan);
 
             entity.ToTable("LopHocPhan");
 
@@ -120,31 +114,12 @@ public class QuanLySinhVienDbContext : DbContext
 
             entity.HasOne(d => d.IdGiaoVienNavigation)
                 .WithMany(p => p.LopHocPhans)
-                .HasForeignKey(d => d.IdGiaoVien)
-                .HasConstraintName("FK__LopHocPha__IdGia__4D94879B");
-
-            entity.HasMany(d => d.IdThoiGians)
-                .WithMany(p => p.IdLopHocPhans)
-                .UsingEntity<Dictionary<string, object>>(
-                    "ThoiGianLopHocPhan",
-                    l => l.HasOne<ThoiGian>().WithMany().HasForeignKey("IdThoiGian").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__ThoiGian___IdTho__5BE2A6F2"),
-                    r => r.HasOne<LopHocPhan>().WithMany().HasForeignKey("IdLopHocPhan").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__ThoiGian___IdLop__5AEE82B9"),
-                    j =>
-                    {
-                        j.HasKey("IdLopHocPhan", "IdThoiGian").HasName("PK__ThoiGian__15C11AD9B63A9B11");
-
-                        j.ToTable("ThoiGian_LopHocPhan");
-
-                        j.IndexerProperty<string>("IdLopHocPhan").HasMaxLength(36);
-
-                        j.IndexerProperty<string>("IdThoiGian").HasMaxLength(36);
-                    });
+                .HasForeignKey(d => d.IdGiaoVien);
         });
 
         modelBuilder.Entity<SinhVien>(entity =>
         {
-            entity.HasKey(e => e.IdSinhVien)
-                .HasName("PK__SinhVien__93ABE5766A04A8ED");
+            entity.HasKey(e => e.IdSinhVien);
 
             entity.ToTable("SinhVien");
 
@@ -161,29 +136,35 @@ public class QuanLySinhVienDbContext : DbContext
             entity.Property(e => e.Lop).HasMaxLength(50);
 
             entity.Property(e => e.NgaySinh).HasColumnType("date");
+        });
 
-            entity.HasMany(d => d.IdLopHocPhans)
-                .WithMany(p => p.IdSinhViens)
-                .UsingEntity<Dictionary<string, object>>(
-                    "SinhVienLopHocPhan",
-                    l => l.HasOne<LopHocPhan>().WithMany().HasForeignKey("IdLopHocPhan").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__SinhVien___IdLop__6383C8BA"),
-                    r => r.HasOne<SinhVien>().WithMany().HasForeignKey("IdSinhVien").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__SinhVien___IdSin__628FA481"),
-                    j =>
-                    {
-                        j.HasKey("IdSinhVien", "IdLopHocPhan").HasName("PK__SinhVien__531A1B36CDEDAB4C");
+        modelBuilder.Entity<SinhVienLopHocPhan>(entity =>
+        {
+            entity.HasKey(e => e.IdSinhVienLopHocPhan);
 
-                        j.ToTable("SinhVien_LopHocPhan");
+            entity.ToTable("SinhVien_LopHocPhan");
 
-                        j.IndexerProperty<string>("IdSinhVien").HasMaxLength(36);
+            entity.Property(e => e.IdSinhVienLopHocPhan)
+                .HasMaxLength(36)
+                .HasColumnName("IdSinhVien_LopHocPhan")
+                .HasDefaultValueSql("(newid())");
 
-                        j.IndexerProperty<string>("IdLopHocPhan").HasMaxLength(36);
-                    });
+            entity.Property(e => e.IdLopHocPhan).HasMaxLength(36);
+
+            entity.Property(e => e.IdSinhVien).HasMaxLength(36);
+
+            entity.HasOne(d => d.IdLopHocPhanNavigation)
+                .WithMany(p => p.SinhVienLopHocPhans)
+                .HasForeignKey(d => d.IdLopHocPhan);
+
+            entity.HasOne(d => d.IdSinhVienNavigation)
+                .WithMany(p => p.SinhVienLopHocPhans)
+                .HasForeignKey(d => d.IdSinhVien);
         });
 
         modelBuilder.Entity<ThoiGian>(entity =>
         {
-            entity.HasKey(e => e.IdThoiGian)
-                .HasName("PK__ThoiGian__EDEFED40D5785B54");
+            entity.HasKey(e => e.IdThoiGian);
 
             entity.ToTable("ThoiGian");
 
@@ -198,5 +179,28 @@ public class QuanLySinhVienDbContext : DbContext
             entity.Property(e => e.ThoiGianKt).HasColumnName("ThoiGianKT");
         });
 
+        modelBuilder.Entity<ThoiGianLopHocPhan>(entity =>
+        {
+            entity.HasKey(e => e.IdThoiGianLopHocPhan);
+
+            entity.ToTable("ThoiGian_LopHocPhan");
+
+            entity.Property(e => e.IdThoiGianLopHocPhan)
+                .HasMaxLength(36)
+                .HasColumnName("IdThoiGian_LopHocPhan")
+                .HasDefaultValueSql("(newid())");
+
+            entity.Property(e => e.IdLopHocPhan).HasMaxLength(36);
+
+            entity.Property(e => e.IdThoiGian).HasMaxLength(36);
+
+            entity.HasOne(d => d.IdLopHocPhanNavigation)
+                .WithMany(p => p.ThoiGianLopHocPhans)
+                .HasForeignKey(d => d.IdLopHocPhan);
+
+            entity.HasOne(d => d.IdThoiGianNavigation)
+                .WithMany(p => p.ThoiGianLopHocPhans)
+                .HasForeignKey(d => d.IdThoiGian);
+        });
     }
 }
