@@ -27,63 +27,63 @@ public class QuanLySinhVienApiController : ControllerBase
      */
 
     // GET: Get all data table diem
-    [HttpGet("diem")]
+    [HttpGet("listDiem")]
     public IActionResult GetDiem()
     {
         return Ok(_dbContext.Diems.ToList());
     }
 
     // GET: Get all data table giao vien
-    [HttpGet("giaovien")]
+    [HttpGet("listGiaovien")]
     public IActionResult GetGiaoVien()
     {
         return Ok(_dbContext.GiaoViens.ToList());
     }
 
     // GET: Get all data table sinh vien
-    [HttpGet("sinhvien")]
+    [HttpGet("listSinhvien")]
     public IActionResult GetSinhVien()
     {
         return Ok(_dbContext.SinhViens.ToList());
     }
 
     // GET: Get all data table thoi gian
-    [HttpGet("thoigian")]
+    [HttpGet("listThoigian")]
     public IActionResult GetThoiGian()
     {
         return Ok(_dbContext.ThoiGians.ToList());
     }
 
     // GET: Get all data table lop hoc phan
-    [HttpGet("lophocphan")]
+    [HttpGet("listLophocphan")]
     public IActionResult GetLopHocPhan()
     {
         return Ok(_dbContext.LopHocPhans.ToList());
     }
 
-    // Get: Get all data table diem danh
-    [HttpDelete("diemDanh")]
+    // GET: Get all data table diem danh
+    [HttpGet("listDiemDanh")]
     public IActionResult GetDiemDanh()
     {
         return Ok(_dbContext.DiemDanhs.ToList());
     }
 
     // GET: Get all data table sinh vien lop hoc phan
-    [HttpGet("sinhVienLopHocPhan")]
+    [HttpGet("listSinhVienLopHocPhan")]
     public IActionResult GetSinhVienLopHocPhan()
     {
         return Ok(_dbContext.SinhVienLopHocPhans.ToList());
     }
 
     // GET: Get all data table thoi gian lop hoc phan
-    [HttpGet("thoiGianLopHocPhan")]
+    [HttpGet("listThoiGianLopHocPhan")]
     public IActionResult GetThoiGianLopHocPhan()
     {
         return Ok(_dbContext.ThoiGianLopHocPhans.ToList());
     }
 
     // POST: Add new data to table diem
-    [HttpPost("diem")]
+    [HttpPost("createDiem")]
     public IActionResult PostDiem(Diem diem)
     {
         if (ModelState.IsValid)
@@ -110,7 +110,7 @@ public class QuanLySinhVienApiController : ControllerBase
     // POST: POST new data to table thoi gian lop hoc phan
 
     // PUT: Update data in table diem
-    [HttpPut("diem")]
+    [HttpPut("upgrateDiem")]
     public IActionResult PutDiem(Diem diem)
     {
         if (ModelState.IsValid)
