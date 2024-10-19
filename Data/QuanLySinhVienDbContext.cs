@@ -12,6 +12,8 @@ public class QuanLySinhVienDbContext : DbContext
     public DbSet<LopHocPhan> LopHocPhans { get; set; }
     public DbSet<SinhVien> SinhViens { get; set; }
     public DbSet<ThoiGian> ThoiGians { get; set; }
+    public DbSet<SinhVienLopHocPhan> SinhVienLopHocPhans { get; set; }
+    public DbSet<ThoiGianLopHocPhan> ThoiGianLopHocPhans { get; set; }
 
     // Constructor
     public QuanLySinhVienDbContext(DbContextOptions<QuanLySinhVienDbContext> options)
