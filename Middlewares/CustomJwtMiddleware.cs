@@ -36,4 +36,10 @@ public class CustomJwtMiddleware
 
         await _next(context);
     }
+
+    // TODO: Handle refresh token
+    private async Task HandleRefreshToken(HttpContext context)
+    {
+        await _next(context);
+    }
 }
