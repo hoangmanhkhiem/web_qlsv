@@ -1,31 +1,42 @@
-name: Build and Deploy to GitHub Pages
+name: Build and Deploy Static Site to GitHub Pages
 
 on:
   push:
     branches:
-      - main  # Kích hoạt triển khai khi có đẩy mã lên nhánh main
+      - main  # Replace with your default branch
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '8.x' # Sử dụng phiên bản .NET mà dự án yêu cầu
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '8.x'  # Replace with your .NET version
 
-    - name: Restore dependencies
-      run: dotnet restore
+      - name: Restore dependencies
+        run: dotnet restore
 
-    - name: Build the project
-      run: dotnet publish -c Release -o output
+      - name: Build the project
+        run: dotnet build --configuration Release
 
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./output/wwwroot # Thư mục chứa các file đã build
+      - name: Publish the project
+        run: dotnet publish --configuration Release --output ./publish
+
+      - name: Generate static content
+        run: |
+          # Assuming you generate static files into the docs folder
+          # You might need a custom script to generate HTML from your Razor views.
+          # Here, we copy the content from publish to the docs folder as an example.
+          mkdir -p ./docs
+          cp -r ./publish/* ./docs/
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs  # Directory where the static files are generated
