@@ -32,7 +32,55 @@ public class QuanLySinhVienApiController : ControllerBase
     {
         return Ok(_dbContext.Diems.ToList());
     }
-    // TODO: More GET with other tables
+
+    // GET: Get all data table giao vien
+    [HttpGet("giaovien")]
+    public IActionResult GetGiaoVien()
+    {
+        return Ok(_dbContext.GiaoViens.ToList());
+    }
+
+    // GET: Get all data table sinh vien
+    [HttpGet("sinhvien")]
+    public IActionResult GetSinhVien()
+    {
+        return Ok(_dbContext.SinhViens.ToList());
+    }
+
+    // GET: Get all data table thoi gian
+    [HttpGet("thoigian")]
+    public IActionResult GetThoiGian()
+    {
+        return Ok(_dbContext.ThoiGians.ToList());
+    }
+
+    // GET: Get all data table lop hoc phan
+    [HttpGet("lophocphan")]
+    public IActionResult GetLopHocPhan()
+    {
+        return Ok(_dbContext.LopHocPhans.ToList());
+    }
+
+    // Get: Get all data table diem danh
+    [HttpDelete("diemDanh")]
+    public IActionResult GetDiemDanh()
+    {
+        return Ok(_dbContext.DiemDanhs.ToList());
+    }
+
+    // GET: Get all data table sinh vien lop hoc phan
+    [HttpGet("sinhVienLopHocPhan")]
+    public IActionResult GetSinhVienLopHocPhan()
+    {
+        return Ok(_dbContext.SinhVienLopHocPhans.ToList());
+    }
+
+    // GET: Get all data table thoi gian lop hoc phan
+    [HttpGet("thoiGianLopHocPhan")]
+    public IActionResult GetThoiGianLopHocPhan()
+    {
+        return Ok(_dbContext.ThoiGianLopHocPhans.ToList());
+    }
 
     // POST: Add new data to table diem
     [HttpPost("diem")]
@@ -46,7 +94,20 @@ public class QuanLySinhVienApiController : ControllerBase
         }
         return BadRequest();
     }
-    // TODO: More POST with other tables
+
+    // POST: POST new data to table giao vien
+
+    // POST: POST new data to table sinh vien
+
+    // POST: POST new data to table thoi gian
+
+    // POST: POST new data to table lop hoc phan
+
+    // POST: POST new data to table diem danh
+
+    // POST: POST new data to table sinh vien lop hoc phan
+
+    // POST: POST new data to table thoi gian lop hoc phan
 
     // PUT: Update data in table diem
     [HttpPut("diem")]
@@ -60,14 +121,37 @@ public class QuanLySinhVienApiController : ControllerBase
         }
         return BadRequest();
     }
-    // TODO: More PUT with other tables
+
+    // PUT: Upgrade data to table giao vien
+    // PUT: Upgrade data to table sinh vien
+    // PUT: Upgrade data to table thoi gian
+    // PUT: Upgrade data to table lop hoc phan
+    // PUT: Upgrade data to table diem danh
+    // PUT: Upgrade data to table sinh vien lop hoc phan
+    // PUT: Upgrade data to table thoi gian lop hoc phan
 
     // DELETE: Delete data in table diem
-    [HttpDelete("diem")]
+    [HttpDelete("deleteDiem/{id}")]
     public IActionResult DeleteDiem(string id)
-    {
-        return Ok();
+    {   
+        var diem = _dbContext.Diems.FirstOrDefault(u => u.IdDiem == id);
+        if (diem == null)
+        {
+            return NotFound("Diem not found");
+        }
+
+        _dbContext.Diems.Remove(diem);
+        _dbContext.SaveChanges();
+        return Ok($"Diem {diem.IdDiem} deleted");
     }
+
+    // DELETE: DELETE data to from table with id 
+    // DELETE: DELETE data to from table with id 
+    // DELETE: DELETE data to from table with id 
+    // DELETE: DELETE data to from table with id 
+    // DELETE: DELETE data to from table with id 
+    // DELETE: DELETE data to from table with id  
+    // DELETE: DELETE data to from table with id
 
     /**
      * List Api Adv
