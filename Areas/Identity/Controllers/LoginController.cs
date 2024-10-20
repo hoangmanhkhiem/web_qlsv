@@ -51,17 +51,24 @@ public class LoginController : Controller
             string passwordHash = _securityHelper.Hash(model.Password);
             var user = _context.Users.FirstOrDefault(
                 u => 
-                    (u.UserName.ToUpper() == model.UserNameOrEmail.ToUpper() ||
-                        u.Email.ToUpper() == model.UserNameOrEmail.ToUpper())
-                    && u.PasswordHash == passwordHash
+                    u.UserName.ToUpper() == model.UserNameOrEmail.ToUpper() ||
+                        u.Email.ToUpper() == model.UserNameOrEmail.ToUpper()
             );
-            if (user!=null)
+            if (user==null)
             {
-                var token = _jwtHelper.GenerateToken(user.Id);
-                Response.Cookies.Append("AccsessToken", token.AccessToken);
-                Response.Cookies.Append("RefreshToken", token.RefreshToken);
-                return RedirectToAction("Index", "Home", new { area = ""});
+                ModelState.AddModelError("UserNameOrEmail", "Tài khoản không tồn tại");
+                return View();
             }
+            if (user.PasswordHash != passwordHash)
+            {
+                ModelState.AddModelError("Password", "Mật khẩu không đúng");
+                return View();
+            }
+
+            var token = _jwtHelper.GenerateToken(user.Id);
+            Response.Cookies.Append("AccsessToken", token.AccessToken);
+            Response.Cookies.Append("RefreshToken", token.RefreshToken);
+            return RedirectToAction("Index", "Home", new { area = ""}); 
         }
         return View();
     }
