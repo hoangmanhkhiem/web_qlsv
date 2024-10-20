@@ -153,6 +153,7 @@ public class IdentityApiController : ControllerBase
         user.LastName = model.LastName;
         user.Address = model.Address;
         user.Phone = model.Phone;
+        user.PasswordHash = model.PasswordHash;
         _context.SaveChanges();
         return Ok();
     }
