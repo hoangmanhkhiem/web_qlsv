@@ -16,9 +16,10 @@ public class HomeController : Controller
     public IActionResult Index()
     {
         // Retrieve the cookie named 'jwtToken'
-        var jwtToken = Request.Cookies["jwtToken"];
+        var jwtAccsessToken = Request.Cookies["AccsessToken"];
+        var jwtRefreshToken = Request.Cookies["RefreshToken"];
 
-        if (string.IsNullOrEmpty(jwtToken))
+        if (string.IsNullOrEmpty(jwtAccsessToken))
         {
            return RedirectToAction("Index", "Login", new { area = "Identity"});
         }
