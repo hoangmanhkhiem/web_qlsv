@@ -27,7 +27,7 @@ public class SecurityApiController : ControllerBase
      * POST: Encrypt data
      */
     [HttpPost("encrypt")]
-    public IActionResult Encrypt([FromBody] string data)
+    public IActionResult Encrypt(string data)
     {
         return Ok(_securityHelper.Encrypt(data));
     }
@@ -36,7 +36,7 @@ public class SecurityApiController : ControllerBase
      * POST: Decrypt data
      */
     [HttpPost("decrypt")]
-    public IActionResult Decrypt([FromBody] string data)
+    public IActionResult Decrypt(string data)
     {
         return Ok(_securityHelper.Decrypt(data));
     }
@@ -45,7 +45,7 @@ public class SecurityApiController : ControllerBase
      * POST: Hash data
      */
     [HttpPost("hash")]
-    public IActionResult Hash([FromBody] string data)
+    public IActionResult Hash(string data)
     {
         return Ok(_securityHelper.Hash(data));
     }
@@ -54,7 +54,7 @@ public class SecurityApiController : ControllerBase
      * POST: Verify hash
      */
     [HttpPost("verifyHash")]
-    public IActionResult Verify([FromBody] string data, [FromBody] string hash)
+    public IActionResult Verify(string data, string hash)
     {
         return Ok(_securityHelper.ValidateHash(data, hash));
     }
