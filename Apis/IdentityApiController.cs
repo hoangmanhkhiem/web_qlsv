@@ -17,13 +17,15 @@ public class IdentityApiController : ControllerBase
 {
     // Variables
     private readonly qlsv.Data.IdentityDbContext _context;
+    private readonly SecurityHelper _securityHelper;
 
     // Constructor
     public IdentityApiController(
-        qlsv.Data.IdentityDbContext context
-    )
+        qlsv.Data.IdentityDbContext context,
+        SecurityHelper securityHelper)
     {
         _context = context;
+        _securityHelper = securityHelper;
     }
 
     // GET: Users
@@ -254,6 +256,27 @@ public class IdentityApiController : ControllerBase
         userToken.Value = model.Value;
         _context.SaveChanges();
         return Ok($"UserToken {userToken.Value}");
+    }
+
+    // PUT: Upgrade password user
+    // TODO: Handle Update password when {token, new password} is valid
+    [HttpPut("updatepassword/{id}")]
+    public IActionResult UpdatePassword(string id, string newPassword)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var user = _context.Users.FirstOrDefault(u => u.Id == id);
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+
+        user.PasswordHash = _securityHelper.Hash(newPassword);
+        _context.SaveChanges();
+        return Ok($"User {user.UserName} updated");
     }
 
     // DELETE: Delete User
