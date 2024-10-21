@@ -6,7 +6,8 @@ namespace qlsv.ViewModels;
 
 public class RegisterViewModel {
     [Required]
-    [RegularExpression(@"^[A-Za-z][A-Za-z0-9_]{7,29}$")]
+    [RegularExpression(@"^[a-zA-Z0-9._]{3,16}$",
+        ErrorMessage = "Username must be 3-16 characters and contain only letters, numbers, periods, and underscores.")]
     public string UserName { get; set; }
 
     [Required]
