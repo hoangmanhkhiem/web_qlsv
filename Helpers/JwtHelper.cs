@@ -82,7 +82,7 @@ public class JwtHelper
         }
 
         var tokenDescriptor = new SecurityTokenDescriptor
-        {   
+        {
             Audience = _audience,
             Issuer = _issuer,
             Subject = new ClaimsIdentity(claims),
@@ -110,11 +110,11 @@ public class JwtHelper
 
     // Generate Refresh Token
     private string GenerateRefreshToken(string userId)
-    {   
+    {
         var key = Encoding.ASCII.GetBytes(_key);
         var tokenHandler = new JwtSecurityTokenHandler();
         var tokenDescriptor = new SecurityTokenDescriptor
-        {   
+        {
             Audience = _audience,
             Issuer = _issuer,
             Subject = new ClaimsIdentity(new Claim[]
@@ -169,24 +169,27 @@ public class JwtHelper
 
             return new ValidateToken
             {
-                Status = "Success",
-                Message = "Token is valid"
+                IsValid = true,
+                Message = "Token is valid.",
+                Status = 200
             };
         }
         catch (SecurityTokenExpiredException ex)
         {
             return new ValidateToken
             {
-                Status = "Error",
-                Message = "Token is expired"
+                IsValid = false,
+                Message = "Token has expired.",
+                Status = 401
             };
         }
         catch (Exception ex)
         {
             return new ValidateToken
             {
-                Status = "Error",
-                Message = "Token is invalid " + ex.Message
+                IsValid = false,
+                Message = "Invalid token.",
+                Status = 403
             };
         }
     }
@@ -198,7 +201,8 @@ public class JwtHelper
         var validateAccessToken = ValidateToken(accessToken);
         var validateRefreshToken = ValidateToken(refreshToken);
         // If either token validation fails, return immediately
-        if (!validateAccessToken.Message.Contains("Token is expired") || validateRefreshToken.Status == "Error")
+        if (validateAccessToken.Status == 403 || 
+            !validateRefreshToken.IsValid)
         {
             return new Token
             {
@@ -213,9 +217,9 @@ public class JwtHelper
 
         var accessUserId = decodedAccessToken.Claims.FirstOrDefault(x => x.Type == "idUser")?.Value;
         var refreshUserId = decodedRefreshToken.Claims.FirstOrDefault(x => x.Type == "idUser")?.Value;
-        
+
         // Check user IDs after decoding tokens
-        if (string.IsNullOrEmpty(accessUserId) 
+        if (string.IsNullOrEmpty(accessUserId)
             || string.IsNullOrEmpty(refreshUserId)
             || accessUserId != refreshUserId)
         {
@@ -242,11 +246,13 @@ public class JwtHelper
             };
         }
         // Check User ID in the database
-        if (refreshTokenDb.UserId != refreshUserId) {
+        if (refreshTokenDb.UserId != refreshUserId)
+        {
             checkedHackToken(refreshUserId);
             checkedHackToken(refreshTokenDb.UserId);
             // TODO: Send notification/email to the user about compromised account
-            return new Token {
+            return new Token
+            {
                 AccessToken = "",
                 RefreshToken = ""
             };
@@ -275,7 +281,7 @@ public class JwtHelper
             .ToList();
         _session.RefreshTokens.RemoveRange(refreshTokens);
 
-        _session.SaveChanges();        
+        _session.SaveChanges();
     }
 
 }
