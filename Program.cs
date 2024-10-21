@@ -155,14 +155,14 @@ public class Program
         // Add services to the container.
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(
-                builder.Configuration.GetConnectionString("DefaultConnection")
+                builder.Configuration.GetConnectionString("ApplicationDbConnection")
             )
         );
 
         // Add Identity db context 
         builder.Services.AddDbContext<qlsv.Data.IdentityDbContext>(options =>
             options.UseSqlServer(
-                builder.Configuration.GetConnectionString("DefaultConnection")
+                builder.Configuration.GetConnectionString("IdentityDbConnection")
             )
         );
 
@@ -175,7 +175,7 @@ public class Program
         // Add View db context
         builder.Services.AddDbContext<ViewDbContext>(options =>
             options.UseSqlServer(
-                builder.Configuration.GetConnectionString("DefaultConnection")
+                builder.Configuration.GetConnectionString("ViewsDbConnection")
             )
         );
 
@@ -183,14 +183,14 @@ public class Program
         // TODO: Use redis
         builder.Services.AddDbContext<SessionDbContext>(options =>
             options.UseSqlServer(
-                builder.Configuration.GetConnectionString("DefaultConnection")
+                builder.Configuration.GetConnectionString("SessionDbConnection")
             )
         );
 
         // Add QuanLySinhVien db context
         builder.Services.AddDbContext<QuanLySinhVienDbContext>(options =>
             options.UseSqlServer(
-                builder.Configuration.GetConnectionString("DefaultConnection")
+                builder.Configuration.GetConnectionString("QuanLySinhVienDbConnection")
             )
         );
     }
