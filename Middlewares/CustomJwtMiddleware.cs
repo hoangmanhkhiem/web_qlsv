@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Primitives;
-//
-using qlsv.Helpers;
 
 namespace qlsv.Middlewares;
 
@@ -12,21 +10,13 @@ namespace qlsv.Middlewares;
  */
 public class CustomJwtMiddleware
 {
-    // Variable
     private readonly RequestDelegate _next;
-    private readonly IServiceScopeFactory _serviceScopeFactory;
 
-
-    // Constructor
-    public CustomJwtMiddleware(
-        RequestDelegate next,
-        IServiceScopeFactory serviceScopeFactory)
+    public CustomJwtMiddleware(RequestDelegate next)
     {
         _next = next;
-        _serviceScopeFactory = serviceScopeFactory;
     }
 
-    // Handle the request
     public async Task Invoke(HttpContext context)
     {
         // Lấy token từ header Authorization
@@ -47,30 +37,9 @@ public class CustomJwtMiddleware
         await _next(context);
     }
 
-    // Handle refresh token logic
-    // TODO
+    // TODO: Handle refresh token
     private async Task HandleRefreshToken(HttpContext context)
     {
-        // Example: Logic for handling token refresh (you can customize this)
-        var token = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-
-        if (!string.IsNullOrEmpty(token))
-        {
-            using (var scope = _serviceScopeFactory.CreateScope())
-            {
-                var jwtHelper = scope.ServiceProvider.GetRequiredService<JwtHelper>();
-
-                // Check if the token is valid or needs to be refreshed
-                var isValidToken = jwtHelper.ValidateToken(token);
-
-                if (isValidToken.Status == 401)
-                {
-                    // var Token =  jwtHelper.RefreshToken(token);
-                    // context.Response.Headers.Add("Authorization", $"Bearer {newToken}");
-                }
-            }
-        }
-
-        await Task.CompletedTask;
+        await _next(context);
     }
 }
