@@ -23,8 +23,8 @@ public class Program
         // Add services to the container.
         builder.Services.AddControllersWithViews();
 
-        BuilderAddAuth(builder);
         AddServices(builder);
+        BuilderAddAuth(builder);
         AddDatabase(builder);
 
         var app = builder.Build();
@@ -105,14 +105,6 @@ public class Program
             });
         });
 
-        // Add service helpper jwt
-        builder.Services.AddScoped<JwtHelper>();
-
-        // Add service helpper security
-        builder.Services.AddScoped<SecurityHelper>();
-
-        // Add service helpper calendar
-        builder.Services.AddScoped<CalendarHelper>();
     }
 
     // Add Authentication
