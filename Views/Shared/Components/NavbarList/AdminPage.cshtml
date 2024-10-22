@@ -1,0 +1,11 @@
+@model IEnumerable<ViewNavItem>
+
+@foreach (var navbar in Model)
+{
+    <li class="nav-item">
+        <a class="nav-link" asp-area="@navbar.Area">
+            <i class="@navbar.IconClass"></i>
+            <span>@navbar.Content</span></a>
+    </li>
+}
+
