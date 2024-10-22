@@ -1,9 +1,7 @@
 
-using Microsoft.AspNetCore.Identity;
-
 namespace qlsv.Models;
 
-public class ViewNavItem: IdentityUser {
+public class ViewNavItem {
     public string? Id { get; set; }
     public string? Area { get; set; }
     public string? Controller { get; set; }

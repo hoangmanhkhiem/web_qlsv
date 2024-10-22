@@ -124,12 +124,12 @@ public class InitDbContext
             serviceProvider.GetRequiredService<DbContextOptions<ViewDbContext>>()))
         {
             // Add navbar admin page
-            if (!context.navBarAdminPage.Any())
+            if (!context.NavBarPages.Any())
             {
-                context.navBarAdminPage.AddRange(
+                context.NavBarPages.AddRange(
                     new ViewNavItem
                     {
-                        Area = "Admin",
+                        Area = "ADMIN",
                         Controller = "QuanLyGiaoVien",
                         Action = "Index",
                         Content = "Quản lý giáo viên",
@@ -137,7 +137,7 @@ public class InitDbContext
                     },
                     new ViewNavItem
                     {
-                        Area = "Admin",
+                        Area = "ADMIN",
                         Controller = "QuanLySinhVien",
                         Action = "Index",
                         Content = "Quản lý sinh viên",
@@ -145,7 +145,7 @@ public class InitDbContext
                     },
                     new ViewNavItem
                     {
-                        Area = "Admin",
+                        Area = "ADMIN",
                         Controller = "QuanLyLopHocPhan",
                         Action = "Index",
                         Content = "Quản lý lớp học phần",
@@ -153,7 +153,7 @@ public class InitDbContext
                     },
                     new ViewNavItem
                     {
-                        Area = "Admin",
+                        Area = "ADMIN",
                         Controller = "QuanLyMonHoc",
                         Action = "Index",
                         Content = "Quản lý môn học",
@@ -161,7 +161,7 @@ public class InitDbContext
                     },
                     new ViewNavItem
                     {
-                        Area = "Admin",
+                        Area = "ADMIN",
                         Controller = "QuanLyKhoa",
                         Action = "Index",
                         Content = "Quản lý khoa",
@@ -169,7 +169,7 @@ public class InitDbContext
                     },
                     new ViewNavItem
                     {
-                        Area = "Admin",
+                        Area = "ADMIN",
                         Controller = "QuanLyNganh",
                         Action = "Index",
                         Content = "Quản lý nghành",
@@ -177,7 +177,7 @@ public class InitDbContext
                     },
                     new ViewNavItem
                     {
-                        Area = "Admin",
+                        Area = "ADMIN",
                         Controller = "QuanLyNguyenVong",
                         Action = "HocNangDiem",
                         Content = "Quản lý nguyện vọng học nâng điểm",
@@ -185,7 +185,7 @@ public class InitDbContext
                     },
                     new ViewNavItem
                     {
-                        Area = "Admin",
+                        Area = "ADMIN",
                         Controller = "QuanLyNguyenVong",
                         Action = "HocNangLai",
                         Content = "Quản lý nguyện vọng học lại",
