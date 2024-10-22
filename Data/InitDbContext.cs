@@ -118,5 +118,83 @@ public class InitDbContext
                 context.SaveChanges();
             }
         }
+
+        // handle view db context
+        using (var context = new ViewDbContext(
+            serviceProvider.GetRequiredService<DbContextOptions<ViewDbContext>>()))
+        {
+            // Add navbar admin page
+            if (!context.navBarAdminPage.Any())
+            {
+                context.navBarAdminPage.AddRange(
+                    new ViewNavItem
+                    {
+                        Area = "Admin",
+                        Controller = "QuanLyGiaoVien",
+                        Action = "Index",
+                        Content = "Quản lý giáo viên",
+                        IconClass = "fas fa-chalkboard-teacher"
+                    },
+                    new ViewNavItem
+                    {
+                        Area = "Admin",
+                        Controller = "QuanLySinhVien",
+                        Action = "Index",
+                        Content = "Quản lý sinh viên",
+                        IconClass = "fas fa-user-graduate"
+                    },
+                    new ViewNavItem
+                    {
+                        Area = "Admin",
+                        Controller = "QuanLyLopHocPhan",
+                        Action = "Index",
+                        Content = "Quản lý lớp học phần",
+                        IconClass = "fas fa-book"
+                    },
+                    new ViewNavItem
+                    {
+                        Area = "Admin",
+                        Controller = "QuanLyMonHoc",
+                        Action = "Index",
+                        Content = "Quản lý môn học",
+                        IconClass = "fas fa-book-open"
+                    },
+                    new ViewNavItem
+                    {
+                        Area = "Admin",
+                        Controller = "QuanLyKhoa",
+                        Action = "Index",
+                        Content = "Quản lý khoa",
+                        IconClass = "fas fa-university"
+                    },
+                    new ViewNavItem
+                    {
+                        Area = "Admin",
+                        Controller = "QuanLyNganh",
+                        Action = "Index",
+                        Content = "Quản lý nghành",
+                        IconClass = "fas fa-graduation-cap"
+                    },
+                    new ViewNavItem
+                    {
+                        Area = "Admin",
+                        Controller = "QuanLyNguyenVong",
+                        Action = "HocNangDiem",
+                        Content = "Quản lý nguyện vọng học nâng điểm",
+                        IconClass = "fas fa-graduation-cap"
+                    },
+                    new ViewNavItem
+                    {
+                        Area = "Admin",
+                        Controller = "QuanLyNguyenVong",
+                        Action = "HocNangLai",
+                        Content = "Quản lý nguyện vọng học lại",
+                        IconClass = "fas fa-graduation-cap"
+                    }
+                );
+
+            }
+            context.SaveChanges();
+        }
     }
 }
