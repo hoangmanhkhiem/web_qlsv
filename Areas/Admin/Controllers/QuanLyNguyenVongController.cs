@@ -32,7 +32,7 @@ public class QuanLyNguyenVongController : Controller
     /**
      * GET: /Admin/QuanLyNguyenVongHocLai
      */
-    public IActionResult NguyenVongHocLai()
+    public IActionResult QuanLyNguyenVongHocLai()
     {
         return View();
     }
@@ -40,7 +40,7 @@ public class QuanLyNguyenVongController : Controller
     /**
      * GET: /Admin/QuanLyNguyenVongHocNangDiem
      */
-    public IActionResult NguyenVongHocNangDiem()
+    public IActionResult QuanLyNguyenVongHocNangDiem()
     {
         return View();
     }
