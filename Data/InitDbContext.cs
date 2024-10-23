@@ -129,6 +129,7 @@ public class InitDbContext
                 context.NavBarPages.AddRange(
                     new ViewNavItem
                     {
+                        LocationNavItem = "ADMIN",
                         Area = "ADMIN",
                         Controller = "QuanLyGiaoVien",
                         Action = "Index",
@@ -137,6 +138,7 @@ public class InitDbContext
                     },
                     new ViewNavItem
                     {
+                        LocationNavItem = "ADMIN",
                         Area = "ADMIN",
                         Controller = "QuanLySinhVien",
                         Action = "Index",
@@ -145,6 +147,7 @@ public class InitDbContext
                     },
                     new ViewNavItem
                     {
+                        LocationNavItem = "ADMIN",
                         Area = "ADMIN",
                         Controller = "QuanLyLopHocPhan",
                         Action = "Index",
@@ -153,6 +156,7 @@ public class InitDbContext
                     },
                     new ViewNavItem
                     {
+                        LocationNavItem = "ADMIN",
                         Area = "ADMIN",
                         Controller = "QuanLyMonHoc",
                         Action = "Index",
@@ -161,6 +165,7 @@ public class InitDbContext
                     },
                     new ViewNavItem
                     {
+                        LocationNavItem = "ADMIN",
                         Area = "ADMIN",
                         Controller = "QuanLyKhoa",
                         Action = "Index",
@@ -169,6 +174,7 @@ public class InitDbContext
                     },
                     new ViewNavItem
                     {
+                        LocationNavItem = "ADMIN",
                         Area = "ADMIN",
                         Controller = "QuanLyNganh",
                         Action = "Index",
@@ -177,6 +183,7 @@ public class InitDbContext
                     },
                     new ViewNavItem
                     {
+                        LocationNavItem = "ADMIN",
                         Area = "ADMIN",
                         Controller = "QuanLyNguyenVong",
                         Action = "HocNangDiem",
@@ -185,6 +192,7 @@ public class InitDbContext
                     },
                     new ViewNavItem
                     {
+                        LocationNavItem = "ADMIN",
                         Area = "ADMIN",
                         Controller = "QuanLyNguyenVong",
                         Action = "HocNangLai",

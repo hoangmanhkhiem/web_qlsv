@@ -3,6 +3,7 @@ namespace qlsv.Models;
 
 public class ViewNavItem {
     public string? Id { get; set; }
+    public string? LocationNavItem { get; set; }
     public string? Area { get; set; }
     public string? Controller { get; set; }
     public string? Action { get; set; }

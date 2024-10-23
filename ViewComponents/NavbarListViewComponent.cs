@@ -25,17 +25,23 @@ public class NavbarListViewComponent : ViewComponent
         if (page.ToUpper() == "ADMIN")
         {
             var listNavbar = await _dbContext.NavBarPages
-                .Where(p => p.Area == "ADMIN")
+                .Where(p => p.LocationNavItem.ToUpper() == "ADMIN")
                 .ToListAsync();
             return View("AdminPage", listNavbar);
         }
         if (page.ToUpper() == "STUDENT")
         {
-            return View("StudentPage");
+            var listNavbar = await _dbContext.NavBarPages
+                .Where(p => p.LocationNavItem.ToUpper() == "STUDENT")
+                .ToListAsync();
+            return View("StudentPage", listNavbar);
         }
         if (page.ToUpper() == "TEACHER")
         {
-            return View("TeacherPage");
+            var listNavbar = await _dbContext.NavBarPages
+                .Where(p => p.LocationNavItem.ToUpper() == "TEACHER")
+                .ToListAsync();
+            return View("TeacherPage", listNavbar);
         }
         return View("Default");
     }
