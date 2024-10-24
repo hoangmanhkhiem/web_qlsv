@@ -31,7 +31,7 @@ public class DataTablesViewComponent : ViewComponent
             case "LOPHOCPHAN":
                 return View("LopHocPhan");
             case "CHUONGTRINHHOC":
-                return View("ChuongTrinhHoc");
+                return View("ChuongTrinhHoc", await _context.ChuongTrinhHocs.ToListAsync());
             case "KHOA":
                 return View("Khoa");
             case "MonHoc":
