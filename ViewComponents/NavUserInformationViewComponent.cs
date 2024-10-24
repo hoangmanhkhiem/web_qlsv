@@ -9,7 +9,7 @@ using qlsv.Data;
 using qlsv.Models;
 using qlsv.Helpers;
 
-namespace qlsvm.Components;
+namespace qlsv.Components;
 
 public class NavUserInformationViewComponent : ViewComponent
 {

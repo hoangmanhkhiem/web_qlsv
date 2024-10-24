@@ -8,7 +8,7 @@ using qlsv.Data;
 using qlsv.Services;
 
 
-namespace qlsv.Identity.Controllers;
+namespace qlsv.Admin.Controllers;
 
 [Area("Admin")]
 public class UserController : Controller

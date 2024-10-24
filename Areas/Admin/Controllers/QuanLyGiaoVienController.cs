@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 //
 using qlsv.Models;
 
-namespace qlsv.Identity.Controllers;
+namespace qlsv.Admin.Controllers;
 
 [Area("Admin")]
 public class QuanLyGiaoVienController : Controller
