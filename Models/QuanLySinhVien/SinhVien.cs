@@ -17,6 +17,7 @@ namespace qlsv.Models
         public virtual ChuongTrinhHoc? ChuongTrinhHocs { get; set; }
         public virtual ICollection<Diem> Diems { get; set; }
         public virtual ICollection<SinhVienLopHocPhan> SinhVienLopHocPhans { get; set; }
+        public virtual ICollection<DangKyNguyenVong> DangKyNguyenVongs { get; set; }
 
         // Constructor
         public SinhVien()

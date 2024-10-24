@@ -17,6 +17,7 @@ public class QuanLySinhVienDbContext : DbContext
     public DbSet<SinhVienLopHocPhan> SinhVienLopHocPhans { get; set; } = null!;
     public DbSet<ThoiGian> ThoiGians { get; set; } = null!;
     public DbSet<ThoiGianLopHocPhan> ThoiGianLopHocPhans { get; set; } = null!;
+    public DbSet<DangKyNguyenVong> DangKyNguyenVongs { get; set; } = null!;
 
     // Constructor
     public QuanLySinhVienDbContext(DbContextOptions<QuanLySinhVienDbContext> options)
@@ -258,6 +259,28 @@ public class QuanLySinhVienDbContext : DbContext
             entity.HasOne(d => d.ThoiGians)
                 .WithMany(p => p.ThoiGianLopHocPhans)
                 .HasForeignKey(d => d.IdThoiGian);
+        });
+
+        modelBuilder.Entity<DangKyNguyenVong>(entity => {
+            entity.HasKey(e => e.IdDangKyNguyenVong);
+
+            entity.ToTable("DangKyNguyenVong");
+
+            entity.Property(e => e.IdDangKyNguyenVong)
+                .HasMaxLength(100)
+                .HasDefaultValueSql("(newid())");
+
+            entity.Property(e => e.IdMonHoc).HasMaxLength(100);
+
+            entity.Property(e => e.IdSinhVien).HasMaxLength(100);
+
+            entity.HasOne(d => d.SinhViens)
+                .WithMany(p => p.DangKyNguyenVongs)
+                .HasForeignKey(d => d.IdSinhVien);
+
+            entity.HasOne(d => d.MonHocs)
+                .WithMany(p => p.DangKyNguyenVongs)
+                .HasForeignKey(d => d.IdMonHoc);
         });
     }
 }
