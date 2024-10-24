@@ -11,7 +11,7 @@ namespace qlsv.Models
         public string? IdThoiGian { get; set; }
 
         // Variables linked to another table
-        public virtual LopHocPhan? IdLopHocPhanNavigation { get; set; }
-        public virtual ThoiGian? IdThoiGianNavigation { get; set; }
+        public virtual LopHocPhan? LopHocPhans { get; set; }
+        public virtual ThoiGian? ThoiGians { get; set; }
     }
 }

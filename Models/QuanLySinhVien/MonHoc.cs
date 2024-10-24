@@ -13,7 +13,7 @@ namespace qlsv.Models
         public string? IdKhoa { get; set; }
 
         // Variables left to another table
-        public virtual Khoa? IdKhoaNavigation { get; set; }
+        public virtual Khoa? Khoas { get; set; }
         public virtual ICollection<ChuongTrinhHocMonHoc> ChuongTrinhHocMonHocs { get; set; }
 
         // Constructor

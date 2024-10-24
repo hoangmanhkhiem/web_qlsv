@@ -14,7 +14,7 @@ namespace qlsv.Models
         public string? IdChuongTrinhHoc { get; set; }
 
         // Variables linked to another table    
-        public virtual ChuongTrinhHoc? IdChuongTrinhHocNavigation { get; set; }
+        public virtual ChuongTrinhHoc? ChuongTrinhHocs { get; set; }
         public virtual ICollection<Diem> Diems { get; set; }
         public virtual ICollection<SinhVienLopHocPhan> SinhVienLopHocPhans { get; set; }
 

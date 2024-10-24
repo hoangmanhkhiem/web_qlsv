@@ -54,11 +54,11 @@ public class QuanLySinhVienDbContext : DbContext
 
             entity.Property(e => e.IdMonHoc).HasMaxLength(100);
 
-            entity.HasOne(d => d.IdChuongTrinhHocNavigation)
+            entity.HasOne(d => d.ChuongTrinhHocs)
                 .WithMany(p => p.ChuongTrinhHocMonHocs)
                 .HasForeignKey(d => d.IdChuongTrinhHoc);
 
-            entity.HasOne(d => d.IdMonHocNavigation)
+            entity.HasOne(d => d.MonHocs)
                 .WithMany(p => p.ChuongTrinhHocMonHocs)
                 .HasForeignKey(d => d.IdMonHoc);
         });
@@ -83,11 +83,11 @@ public class QuanLySinhVienDbContext : DbContext
 
             entity.Property(e => e.IdSinhVien).HasMaxLength(100);
 
-            entity.HasOne(d => d.IdLopHocPhanNavigation)
+            entity.HasOne(d => d.LopHocPhans)
                 .WithMany(p => p.Diems)
                 .HasForeignKey(d => d.IdLopHocPhan);
 
-            entity.HasOne(d => d.IdSinhVienNavigation)
+            entity.HasOne(d => d.SinhViens)
                 .WithMany(p => p.Diems)
                 .HasForeignKey(d => d.IdSinhVien);
         });
@@ -110,7 +110,7 @@ public class QuanLySinhVienDbContext : DbContext
 
             entity.Property(e => e.TenGiaoVien).HasMaxLength(100);
 
-            entity.HasOne(d => d.IdKhoaNavigation)
+            entity.HasOne(d => d.Khoas)
                 .WithMany(p => p.GiaoViens)
                 .HasForeignKey(d => d.IdKhoa);
         });
@@ -144,7 +144,7 @@ public class QuanLySinhVienDbContext : DbContext
 
             entity.Property(e => e.TenHocPhan).HasMaxLength(100);
 
-            entity.HasOne(d => d.IdGiaoVienNavigation)
+            entity.HasOne(d => d.GiaoViens)
                 .WithMany(p => p.LopHocPhans)
                 .HasForeignKey(d => d.IdGiaoVien);
         });
@@ -163,7 +163,7 @@ public class QuanLySinhVienDbContext : DbContext
 
             entity.Property(e => e.TenMonHoc).HasMaxLength(100);
 
-            entity.HasOne(d => d.IdKhoaNavigation)
+            entity.HasOne(d => d.Khoas)
                 .WithMany(p => p.MonHocs)
                 .HasForeignKey(d => d.IdKhoa);
         });
@@ -188,7 +188,7 @@ public class QuanLySinhVienDbContext : DbContext
 
             entity.Property(e => e.NgaySinh).HasColumnType("date");
 
-            entity.HasOne(d => d.IdChuongTrinhHocNavigation)
+            entity.HasOne(d => d.ChuongTrinhHocs)
                 .WithMany(p => p.SinhViens)
                 .HasForeignKey(d => d.IdChuongTrinhHoc);
         });
@@ -208,11 +208,11 @@ public class QuanLySinhVienDbContext : DbContext
 
             entity.Property(e => e.IdSinhVien).HasMaxLength(100);
 
-            entity.HasOne(d => d.IdLopHocPhanNavigation)
+            entity.HasOne(d => d.LopHocPhans)
                 .WithMany(p => p.SinhVienLopHocPhans)
                 .HasForeignKey(d => d.IdLopHocPhan);
 
-            entity.HasOne(d => d.IdSinhVienNavigation)
+            entity.HasOne(d => d.SinhViens)
                 .WithMany(p => p.SinhVienLopHocPhans)
                 .HasForeignKey(d => d.IdSinhVien);
         });
@@ -247,11 +247,11 @@ public class QuanLySinhVienDbContext : DbContext
 
             entity.Property(e => e.IdThoiGian).HasMaxLength(100);
 
-            entity.HasOne(d => d.IdLopHocPhanNavigation)
+            entity.HasOne(d => d.LopHocPhans)
                 .WithMany(p => p.ThoiGianLopHocPhans)
                 .HasForeignKey(d => d.IdLopHocPhan);
 
-            entity.HasOne(d => d.IdThoiGianNavigation)
+            entity.HasOne(d => d.ThoiGians)
                 .WithMany(p => p.ThoiGianLopHocPhans)
                 .HasForeignKey(d => d.IdThoiGian);
         });
