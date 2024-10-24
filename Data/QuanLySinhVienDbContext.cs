@@ -196,6 +196,10 @@ public class QuanLySinhVienDbContext : DbContext
             entity.HasOne(d => d.ChuongTrinhHocs)
                 .WithMany(p => p.SinhViens)
                 .HasForeignKey(d => d.IdChuongTrinhHoc);
+
+            entity.HasOne(d => d.Khoas)
+                .WithMany(p => p.SinhViens)
+                .HasForeignKey(d => d.IdKhoa);
         });
 
         modelBuilder.Entity<SinhVienLopHocPhan>(entity =>
