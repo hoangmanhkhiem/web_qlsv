@@ -7,7 +7,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'listWeek',
+            initialView: 'dayGridMonth', // 'dayGridWeek', 'timeGridDay', 'listWeek'
             events: [
                 {
                     title: "H\u1EC7 qu\u1EA3n tr\u1ECB c\u01A1 s\u1EDF d\u1EEF li\u1EC7u Oracle-1-1-24(QT01)",
