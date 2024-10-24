@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace lab1.taghelpers;
+namespace qlsv.TagHelpers;
 
 [HtmlTargetElement("img", Attributes = "image-bytes")]
 public class ImageTagHelper : TagHelper
