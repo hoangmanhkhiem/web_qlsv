@@ -9,9 +9,6 @@ services:
       ACCEPT_EULA: 'Y'
       SA_PASSWORD: 'P@ss12345'
     ports:
-      - '1435:1433'
-    volumes:
-      # Use in local {path_local}:/var/opt/mssql/ 
-      - /Users/v/code/Web-1-1-24/local_daya_base/web_qlsv/sql:/var/opt/mssql/ 
+      - '1435:1433' 
     restart: unless-stopped
     # user: '1000:1000'  # Uncomment only if required
