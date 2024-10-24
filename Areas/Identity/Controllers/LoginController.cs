@@ -85,12 +85,16 @@ public class LoginController : Controller
      */
     private IActionResult RedirectToHomeWithRole(string IdUser)
     {
+        var user = _context.Users.FirstOrDefault(u => u.Id == IdUser);
+        ViewBag.UserInformation = user;
+
         string roleId = _context.UserRoles
                         .FirstOrDefault(ur => ur.UserId == IdUser)
                         .RoleId;
         string roleName = _context.Roles
                         .FirstOrDefault(r => r.Id == roleId)
                         .Name;
+
         if (roleName.ToUpper() == "SINHVIEN")
         {
             return RedirectToAction("Index", "Home", new { area = "SINHVIEN"});

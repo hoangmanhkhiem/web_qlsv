@@ -16,7 +16,6 @@ public class LogoutController : Controller
         _logger = logger;
     }
     
-    [HttpPost]
     public IActionResult Index()
     {   
         // Remove Token
