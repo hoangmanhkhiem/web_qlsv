@@ -29,23 +29,6 @@ public class QuanLyNguyenVongController : Controller
         return View();
     }
 
-    /**
-     * GET: /Admin/QuanLyNguyenVongHocLai
-     */
-    public IActionResult QuanLyNguyenVongHocLai()
-    {
-        return View();
-    }
-
-    /**
-     * GET: /Admin/QuanLyNguyenVongHocNangDiem
-     */
-    public IActionResult QuanLyNguyenVongHocNangDiem()
-    {
-        return View();
-    }
-
-
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

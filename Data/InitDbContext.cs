@@ -188,17 +188,8 @@ public class InitDbContext
                         LocationNavItem = "ADMIN",
                         Area = "ADMIN",
                         Controller = "QuanLyNguyenVong",
-                        Action = "QuanLyNguyenVongHocNangDiem",
-                        Content = "Quản lý nguyện vọng học nâng điểm",
-                        IconClass = "fas fa-graduation-cap"
-                    },
-                    new ViewNavItem
-                    {
-                        LocationNavItem = "ADMIN",
-                        Area = "ADMIN",
-                        Controller = "QuanLyNguyenVong",
-                        Action = "QuanLyNguyenVongHocLai",
-                        Content = "Quản lý nguyện vọng học lại",
+                        Action = "Index",
+                        Content = "Quản lý nguyện vọng",
                         IconClass = "fas fa-graduation-cap"
                     }
                 );

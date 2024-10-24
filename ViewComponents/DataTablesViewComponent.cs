@@ -51,6 +51,12 @@ public class DataTablesViewComponent : ViewComponent
                     await _context.MonHocs
                         .Include(mh => mh.Khoas)
                         .ToListAsync());
+            case "NGUYENVONG":
+                return View("NguyenVong", 
+                    await _context.DangKyNguyenVongs
+                        .Include(mh => mh.SinhViens)
+                        .Include(mh => mh.MonHocs) 
+                        .ToListAsync());
             default:
                 return View();
         }
