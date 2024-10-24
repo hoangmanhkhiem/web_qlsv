@@ -27,7 +27,7 @@ public class DataTablesViewComponent : ViewComponent
             case "SINHVIEN":
                 return View("SinhVien", await _context.SinhViens.ToListAsync());
             case "GIAOVIEN":
-                return View("GiaoVien", await _context.GiaoViens.ToListAsync());
+                return View("GIAOVIEN");
             case "LOPHOCPHAN":
                 return View("LopHocPhan");
             case "CHUONGTRINHHOC":
