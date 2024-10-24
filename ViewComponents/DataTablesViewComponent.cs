@@ -28,6 +28,7 @@ public class DataTablesViewComponent : ViewComponent
                 return View("SinhVien", 
                     await _context.SinhViens
                         .Include(sv => sv.ChuongTrinhHocs)
+                        .Include(sv => sv.Khoas)
                         .ToListAsync());
             case "GIAOVIEN":
                 return View("GIAOVIEN", 
