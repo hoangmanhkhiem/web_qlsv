@@ -117,8 +117,8 @@
                         <div class="topbar-divider d-none d-sm-block"></div>
 
                         <!-- Nav Item - User Information -->
-                        @await Html.PartialAsync("/Areas/Admin/Views/Shared/_NavItemUserInformation.cshtml")
-
+                        @* @await Html.PartialAsync("/Areas/Admin/Views/Shared/_NavItemUserInformation.cshtml") *@
+                        @await Component.InvokeAsync("NavUserInformation")
                     </ul>
 
                 </nav>
