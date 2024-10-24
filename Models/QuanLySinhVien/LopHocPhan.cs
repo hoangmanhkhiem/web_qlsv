@@ -13,6 +13,7 @@ namespace qlsv.Models
 
         // Variables linked to another table
         public virtual GiaoVien? GiaoViens { get; set; }
+        public virtual MonHoc? MonHocs { get; set; }
         public virtual ICollection<Diem> Diems { get; set; }
         public virtual ICollection<SinhVienLopHocPhan> SinhVienLopHocPhans { get; set; }
         public virtual ICollection<ThoiGianLopHocPhan> ThoiGianLopHocPhans { get; set; }

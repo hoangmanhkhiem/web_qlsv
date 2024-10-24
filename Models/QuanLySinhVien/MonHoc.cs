@@ -15,6 +15,7 @@ namespace qlsv.Models
         // Variables left to another table
         public virtual Khoa? Khoas { get; set; }
         public virtual ICollection<ChuongTrinhHocMonHoc> ChuongTrinhHocMonHocs { get; set; }
+        public virtual ICollection<LopHocPhan> LopHocPhans { get; set; }
 
         // Constructor
         public MonHoc()
