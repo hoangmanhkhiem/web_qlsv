@@ -6,6 +6,7 @@ using qlsv.Models;
 using qlsv.ViewModels;
 using qlsv.Helpers;
 using qlsv.Data;
+using Microsoft.VisualBasic;
 
 
 namespace qlsv.Identity.Controllers;
@@ -68,7 +69,7 @@ public class LoginController : Controller
             var token = _jwtHelper.GenerateToken(user.Id);
             Response.Cookies.Append("AccsessToken", token.AccessToken);
             Response.Cookies.Append("RefreshToken", token.RefreshToken);
-            return RedirectToAction("Index", "Home", new { area = ""}); 
+            return RedirectToHomeWithRole(user.Id);
         }
         return View();
     }
@@ -77,5 +78,32 @@ public class LoginController : Controller
     public IActionResult Error()
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
+
+    /**
+     * Help Redriect to home with role user
+     */
+    private IActionResult RedirectToHomeWithRole(string IdUser)
+    {
+        string roleId = _context.UserRoles
+                        .FirstOrDefault(ur => ur.UserId == IdUser)
+                        .RoleId;
+        string roleName = _context.Roles
+                        .FirstOrDefault(r => r.Id == roleId)
+                        .Name;
+        if (roleName.ToUpper() == "SINHVIEN")
+        {
+            return RedirectToAction("Index", "Home", new { area = "SINHVIEN"});
+        }
+        if (roleName.ToUpper() == "GIAOVIEN")
+        {
+            return RedirectToAction("Index", "Home", new { area = "GIAOVIEN"});
+        }
+        if (roleName.ToUpper() == "ADMIN")
+        {
+            return RedirectToAction("Index", "Home", new { area = "Admin"});
+        }
+
+        return RedirectToAction("Index", "Home", new { area = ""});
     }
 }
