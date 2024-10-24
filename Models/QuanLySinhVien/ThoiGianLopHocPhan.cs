@@ -5,10 +5,12 @@ namespace qlsv.Models
 {
     public class ThoiGianLopHocPhan
     {
-        public string IdThoiGianLopHocPhan { get; set; } = null!;
+        // Variables
+        public string IdThoigianLopHp { get; set; } = null!;
         public string? IdLopHocPhan { get; set; }
         public string? IdThoiGian { get; set; }
 
+        // Variables linked to another table
         public virtual LopHocPhan? IdLopHocPhanNavigation { get; set; }
         public virtual ThoiGian? IdThoiGianNavigation { get; set; }
     }

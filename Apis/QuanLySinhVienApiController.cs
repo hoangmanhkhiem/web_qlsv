@@ -61,13 +61,6 @@ public class QuanLySinhVienApiController : ControllerBase
         return Ok(_dbContext.LopHocPhans.ToList());
     }
 
-    // GET: Get all data table diem danh
-    [HttpGet("listDiemDanh")]
-    public IActionResult GetDiemDanh()
-    {
-        return Ok(_dbContext.DiemDanhs.ToList());
-    }
-
     // GET: Get all data table sinh vien lop hoc phan
     [HttpGet("listSinhVienLopHocPhan")]
     public IActionResult GetSinhVienLopHocPhan()
@@ -143,19 +136,6 @@ public class QuanLySinhVienApiController : ControllerBase
             _dbContext.LopHocPhans.Add(lopHocPhan);
             _dbContext.SaveChanges();
             return Ok(lopHocPhan);
-        }
-        return BadRequest();
-    }
-
-    // POST: POST new data to table diem danh
-    [HttpPost("createDiemDanh")]
-    public IActionResult PostDiemDanh(DiemDanh diemDanh)
-    {
-        if (ModelState.IsValid)
-        {
-            _dbContext.DiemDanhs.Add(diemDanh);
-            _dbContext.SaveChanges();
-            return Ok(diemDanh);
         }
         return BadRequest();
     }
@@ -251,19 +231,6 @@ public class QuanLySinhVienApiController : ControllerBase
         return BadRequest();
     }
 
-    // PUT: Upgrade data to table diem danh
-    [HttpPut("upgrateDiemDanh")]
-    public IActionResult PutDiemDanh(DiemDanh diemDanh)
-    {
-        if (ModelState.IsValid)
-        {
-            _dbContext.DiemDanhs.Update(diemDanh);
-            _dbContext.SaveChanges();
-            return Ok(diemDanh);
-        }
-        return BadRequest();
-    }
-
     // PUT: Upgrade data to table sinh vien lop hoc phan
     [HttpPut("upgrateSinhVienLopHocPhan")]
     public IActionResult PutSinhVienLopHocPhan(SinhVienLopHocPhan sinhVienLopHocPhan)
@@ -348,65 +315,6 @@ public class QuanLySinhVienApiController : ControllerBase
         _dbContext.ThoiGians.Remove(thoiGian);
         _dbContext.SaveChanges();
         return Ok($"ThoiGian {thoiGian.IdThoiGian} deleted");
-    }
-
-    // DELETE: DELETE data to from table with id 
-    [HttpDelete("deleteLopHocPhan/{id}")]
-    public IActionResult DeleteLopHocPhan(string id)
-    {
-        var lopHocPhan = _dbContext.LopHocPhans.FirstOrDefault(u => u.IdHocPhan == id);
-        if (lopHocPhan == null)
-        {
-            return NotFound("LopHocPhan not found");
-        }
-
-        _dbContext.LopHocPhans.Remove(lopHocPhan);
-        _dbContext.SaveChanges();
-        return Ok($"LopHocPhan {lopHocPhan.IdHocPhan} deleted");
-    }
-    // DELETE: DELETE data to from table with id 
-    [HttpDelete("deleteDiemDanh/{id}")]
-    public IActionResult DeleteDiemDanh(string id)
-    {
-        var diemDanh = _dbContext.DiemDanhs.FirstOrDefault(u => u.IdDiemDanh == id);
-        if (diemDanh == null)
-        {
-            return NotFound("DiemDanh not found");
-        }
-
-        _dbContext.DiemDanhs.Remove(diemDanh);
-        _dbContext.SaveChanges();
-        return Ok($"DiemDanh {diemDanh.IdDiemDanh} deleted");
-    }
-
-    // DELETE: DELETE data to from table with id  
-    [HttpDelete("deleteSinhVienLopHocPhan/{id}")]
-    public IActionResult DeleteSinhVienLopHocPhan(string id)
-    {
-        var sinhVienLopHocPhan = _dbContext.SinhVienLopHocPhans.FirstOrDefault(u => u.IdSinhVienLopHocPhan == id);
-        if (sinhVienLopHocPhan == null)
-        {
-            return NotFound("SinhVienLopHocPhan not found");
-        }
-
-        _dbContext.SinhVienLopHocPhans.Remove(sinhVienLopHocPhan);
-        _dbContext.SaveChanges();
-        return Ok($"SinhVienLopHocPhan {sinhVienLopHocPhan.IdSinhVienLopHocPhan} deleted");
-    }
-
-    // DELETE: DELETE data to from table with id
-    [HttpDelete("deleteThoiGianLopHocPhan/{id}")]
-    public IActionResult DeleteThoiGianLopHocPhan(string id)
-    {
-        var thoiGianLopHocPhan = _dbContext.ThoiGianLopHocPhans.FirstOrDefault(u => u.IdThoiGianLopHocPhan == id);
-        if (thoiGianLopHocPhan == null)
-        {
-            return NotFound("ThoiGianLopHocPhan not found");
-        }
-
-        _dbContext.ThoiGianLopHocPhans.Remove(thoiGianLopHocPhan);
-        _dbContext.SaveChanges();
-        return Ok($"ThoiGianLopHocPhan {thoiGianLopHocPhan.IdThoiGianLopHocPhan} deleted");
     }
 
     /**

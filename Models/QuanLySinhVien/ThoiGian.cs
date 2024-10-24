@@ -5,18 +5,18 @@ namespace qlsv.Models
 {
     public class ThoiGian
     {
+        // Variables
+        public string IdThoiGian { get; set; } = null!;
+        public DateTime NgayBatDau { get; set; }
+        public DateTime NgayKetThuc { get; set; }
+
+        // Variables linked to another table
+        public virtual ICollection<ThoiGianLopHocPhan> ThoiGianLopHocPhans { get; set; }
+    
+        // Constructor
         public ThoiGian()
         {
-            DiemDanhs = new HashSet<DiemDanh>();
             ThoiGianLopHocPhans = new HashSet<ThoiGianLopHocPhan>();
         }
-
-        public string IdThoiGian { get; set; } = null!;
-        public DateTime Ngay { get; set; }
-        public TimeSpan ThoiGianBd { get; set; }
-        public TimeSpan ThoiGianKt { get; set; }
-
-        public virtual ICollection<DiemDanh> DiemDanhs { get; set; }
-        public virtual ICollection<ThoiGianLopHocPhan> ThoiGianLopHocPhans { get; set; }
     }
 }

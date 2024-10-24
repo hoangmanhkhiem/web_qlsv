@@ -6,14 +6,17 @@ namespace qlsv.Data;
 public class QuanLySinhVienDbContext : DbContext
 {
     // Variables
-    public DbSet<Diem> Diems { get; set; }
-    public DbSet<DiemDanh> DiemDanhs { get; set; }
-    public DbSet<GiaoVien> GiaoViens { get; set; }
-    public DbSet<LopHocPhan> LopHocPhans { get; set; }
-    public DbSet<SinhVien> SinhViens { get; set; }
-    public DbSet<ThoiGian> ThoiGians { get; set; }
-    public DbSet<SinhVienLopHocPhan> SinhVienLopHocPhans { get; set; }
-    public DbSet<ThoiGianLopHocPhan> ThoiGianLopHocPhans { get; set; }
+    public DbSet<ChuongTrinhHoc> ChuongTrinhHocs { get; set; } = null!;
+    public DbSet<ChuongTrinhHocMonHoc> ChuongTrinhHocMonHocs { get; set; } = null!;
+    public DbSet<Diem> Diems { get; set; } = null!;
+    public DbSet<GiaoVien> GiaoViens { get; set; } = null!;
+    public DbSet<Khoa> Khoas { get; set; } = null!;
+    public DbSet<LopHocPhan> LopHocPhans { get; set; } = null!;
+    public DbSet<MonHoc> MonHocs { get; set; } = null!;
+    public DbSet<SinhVien> SinhViens { get; set; } = null!;
+    public DbSet<SinhVienLopHocPhan> SinhVienLopHocPhans { get; set; } = null!;
+    public DbSet<ThoiGian> ThoiGians { get; set; } = null!;
+    public DbSet<ThoiGianLopHocPhan> ThoiGianLopHocPhans { get; set; } = null!;
 
     // Constructor
     public QuanLySinhVienDbContext(DbContextOptions<QuanLySinhVienDbContext> options)
@@ -23,62 +26,70 @@ public class QuanLySinhVienDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Diem>(entity =>
+        modelBuilder.Entity<ChuongTrinhHoc>(entity =>
             {
-                entity.HasKey(e => e.IdDiem);
+                entity.HasKey(e => e.IdChuongTrinhHoc);
 
-                entity.ToTable("Diem");
+                entity.ToTable("ChuongTrinhHoc");
 
-                entity.Property(e => e.IdDiem)
-                    .HasMaxLength(36)
+                entity.Property(e => e.IdChuongTrinhHoc)
+                    .HasMaxLength(100)
                     .HasDefaultValueSql("(newid())");
 
-                entity.Property(e => e.DiemKetThuc).HasColumnType("decimal(5, 2)");
-
-                entity.Property(e => e.DiemQuaTrinh).HasColumnType("decimal(5, 2)");
-
-                entity.Property(e => e.DiemTongKet).HasColumnType("decimal(5, 2)");
-
-                entity.Property(e => e.IdLopHocPhan).HasMaxLength(36);
-
-                entity.Property(e => e.IdSinhVien).HasMaxLength(36);
-
-                entity.HasOne(d => d.IdLopHocPhanNavigation)
-                    .WithMany(p => p.Diems)
-                    .HasForeignKey(d => d.IdLopHocPhan);
-
-                entity.HasOne(d => d.IdSinhVienNavigation)
-                    .WithMany(p => p.Diems)
-                    .HasForeignKey(d => d.IdSinhVien);
+                entity.Property(e => e.TenChuongTrinhHoc).HasMaxLength(100);
             });
 
-        modelBuilder.Entity<DiemDanh>(entity =>
+        modelBuilder.Entity<ChuongTrinhHocMonHoc>(entity =>
         {
-            entity.HasKey(e => e.IdDiemDanh);
+            entity.HasKey(e => e.IdCthmonHoc);
 
-            entity.ToTable("DiemDanh");
+            entity.ToTable("ChuongTrinhHoc_MonHoc");
 
-            entity.Property(e => e.IdDiemDanh)
-                .HasMaxLength(36)
+            entity.Property(e => e.IdCthmonHoc)
+                .HasMaxLength(100)
+                .HasColumnName("IdCTHMonHoc")
                 .HasDefaultValueSql("(newid())");
 
-            entity.Property(e => e.IdLopHocPhan).HasMaxLength(36);
+            entity.Property(e => e.IdChuongTrinhHoc).HasMaxLength(100);
 
-            entity.Property(e => e.IdSinhVien).HasMaxLength(36);
+            entity.Property(e => e.IdMonHoc).HasMaxLength(100);
 
-            entity.Property(e => e.IdThoiGian).HasMaxLength(36);
+            entity.HasOne(d => d.IdChuongTrinhHocNavigation)
+                .WithMany(p => p.ChuongTrinhHocMonHocs)
+                .HasForeignKey(d => d.IdChuongTrinhHoc);
+
+            entity.HasOne(d => d.IdMonHocNavigation)
+                .WithMany(p => p.ChuongTrinhHocMonHocs)
+                .HasForeignKey(d => d.IdMonHoc);
+        });
+
+        modelBuilder.Entity<Diem>(entity =>
+        {
+            entity.HasKey(e => e.IdDiem);
+
+            entity.ToTable("Diem");
+
+            entity.Property(e => e.IdDiem)
+                .HasMaxLength(100)
+                .HasDefaultValueSql("(newid())");
+
+            entity.Property(e => e.DiemKetThuc).HasColumnType("decimal(5, 2)");
+
+            entity.Property(e => e.DiemQuaTrinh).HasColumnType("decimal(5, 2)");
+
+            entity.Property(e => e.DiemTongKet).HasColumnType("decimal(5, 2)");
+
+            entity.Property(e => e.IdLopHocPhan).HasMaxLength(100);
+
+            entity.Property(e => e.IdSinhVien).HasMaxLength(100);
 
             entity.HasOne(d => d.IdLopHocPhanNavigation)
-                .WithMany(p => p.DiemDanhs)
+                .WithMany(p => p.Diems)
                 .HasForeignKey(d => d.IdLopHocPhan);
 
             entity.HasOne(d => d.IdSinhVienNavigation)
-                .WithMany(p => p.DiemDanhs)
+                .WithMany(p => p.Diems)
                 .HasForeignKey(d => d.IdSinhVien);
-
-            entity.HasOne(d => d.IdThoiGianNavigation)
-                .WithMany(p => p.DiemDanhs)
-                .HasForeignKey(d => d.IdThoiGian);
         });
 
         modelBuilder.Entity<GiaoVien>(entity =>
@@ -88,35 +99,73 @@ public class QuanLySinhVienDbContext : DbContext
             entity.ToTable("GiaoVien");
 
             entity.Property(e => e.IdGiaoVien)
-                .HasMaxLength(36)
+                .HasMaxLength(100)
                 .HasDefaultValueSql("(newid())");
 
-            entity.Property(e => e.ChuyenMon).HasMaxLength(100);
-
             entity.Property(e => e.Email).HasMaxLength(100);
+
+            entity.Property(e => e.IdKhoa).HasMaxLength(100);
 
             entity.Property(e => e.SoDienThoai).HasMaxLength(15);
 
             entity.Property(e => e.TenGiaoVien).HasMaxLength(100);
+
+            entity.HasOne(d => d.IdKhoaNavigation)
+                .WithMany(p => p.GiaoViens)
+                .HasForeignKey(d => d.IdKhoa);
+        });
+
+        modelBuilder.Entity<Khoa>(entity =>
+        {
+            entity.HasKey(e => e.IdKhoa);
+
+            entity.ToTable("Khoa");
+
+            entity.Property(e => e.IdKhoa)
+                .HasMaxLength(100)
+                .HasDefaultValueSql("(newid())");
+
+            entity.Property(e => e.TenKhoa).HasMaxLength(100);
         });
 
         modelBuilder.Entity<LopHocPhan>(entity =>
         {
-            entity.HasKey(e => e.IdHocPhan);
+            entity.HasKey(e => e.IdLopHocPhan);
 
             entity.ToTable("LopHocPhan");
 
-            entity.Property(e => e.IdHocPhan)
-                .HasMaxLength(36)
+            entity.Property(e => e.IdLopHocPhan)
+                .HasMaxLength(100)
                 .HasDefaultValueSql("(newid())");
 
-            entity.Property(e => e.IdGiaoVien).HasMaxLength(36);
+            entity.Property(e => e.IdGiaoVien).HasMaxLength(100);
+
+            entity.Property(e => e.IdMonHoc).HasMaxLength(100);
 
             entity.Property(e => e.TenHocPhan).HasMaxLength(100);
 
             entity.HasOne(d => d.IdGiaoVienNavigation)
                 .WithMany(p => p.LopHocPhans)
                 .HasForeignKey(d => d.IdGiaoVien);
+        });
+
+        modelBuilder.Entity<MonHoc>(entity =>
+        {
+            entity.HasKey(e => e.IdMonHoc);
+
+            entity.ToTable("MonHoc");
+
+            entity.Property(e => e.IdMonHoc)
+                .HasMaxLength(100)
+                .HasDefaultValueSql("(newid())");
+
+            entity.Property(e => e.IdKhoa).HasMaxLength(100);
+
+            entity.Property(e => e.TenMonHoc).HasMaxLength(100);
+
+            entity.HasOne(d => d.IdKhoaNavigation)
+                .WithMany(p => p.MonHocs)
+                .HasForeignKey(d => d.IdKhoa);
         });
 
         modelBuilder.Entity<SinhVien>(entity =>
@@ -126,34 +175,38 @@ public class QuanLySinhVienDbContext : DbContext
             entity.ToTable("SinhVien");
 
             entity.Property(e => e.IdSinhVien)
-                .HasMaxLength(36)
+                .HasMaxLength(100)
                 .HasDefaultValueSql("(newid())");
-
-            entity.Property(e => e.ChuyenNganh).HasMaxLength(100);
 
             entity.Property(e => e.DiaChi).HasMaxLength(255);
 
             entity.Property(e => e.HoTen).HasMaxLength(100);
 
+            entity.Property(e => e.IdChuongTrinhHoc).HasMaxLength(100);
+
             entity.Property(e => e.Lop).HasMaxLength(50);
 
             entity.Property(e => e.NgaySinh).HasColumnType("date");
+
+            entity.HasOne(d => d.IdChuongTrinhHocNavigation)
+                .WithMany(p => p.SinhViens)
+                .HasForeignKey(d => d.IdChuongTrinhHoc);
         });
 
         modelBuilder.Entity<SinhVienLopHocPhan>(entity =>
         {
-            entity.HasKey(e => e.IdSinhVienLopHocPhan);
+            entity.HasKey(e => e.IdSinhVienLopHp);
 
             entity.ToTable("SinhVien_LopHocPhan");
 
-            entity.Property(e => e.IdSinhVienLopHocPhan)
-                .HasMaxLength(36)
-                .HasColumnName("IdSinhVien_LopHocPhan")
+            entity.Property(e => e.IdSinhVienLopHp)
+                .HasMaxLength(100)
+                .HasColumnName("IdSinhVienLopHP")
                 .HasDefaultValueSql("(newid())");
 
-            entity.Property(e => e.IdLopHocPhan).HasMaxLength(36);
+            entity.Property(e => e.IdLopHocPhan).HasMaxLength(100);
 
-            entity.Property(e => e.IdSinhVien).HasMaxLength(36);
+            entity.Property(e => e.IdSinhVien).HasMaxLength(100);
 
             entity.HasOne(d => d.IdLopHocPhanNavigation)
                 .WithMany(p => p.SinhVienLopHocPhans)
@@ -171,30 +224,28 @@ public class QuanLySinhVienDbContext : DbContext
             entity.ToTable("ThoiGian");
 
             entity.Property(e => e.IdThoiGian)
-                .HasMaxLength(36)
+                .HasMaxLength(100)
                 .HasDefaultValueSql("(newid())");
 
-            entity.Property(e => e.Ngay).HasColumnType("date");
+            entity.Property(e => e.NgayBatDau).HasColumnType("date");
 
-            entity.Property(e => e.ThoiGianBd).HasColumnName("ThoiGianBD");
-
-            entity.Property(e => e.ThoiGianKt).HasColumnName("ThoiGianKT");
+            entity.Property(e => e.NgayKetThuc).HasColumnType("date");
         });
 
         modelBuilder.Entity<ThoiGianLopHocPhan>(entity =>
         {
-            entity.HasKey(e => e.IdThoiGianLopHocPhan);
+            entity.HasKey(e => e.IdThoigianLopHp);
 
             entity.ToTable("ThoiGian_LopHocPhan");
 
-            entity.Property(e => e.IdThoiGianLopHocPhan)
-                .HasMaxLength(36)
-                .HasColumnName("IdThoiGian_LopHocPhan")
+            entity.Property(e => e.IdThoigianLopHp)
+                .HasMaxLength(100)
+                .HasColumnName("IdThoigianLopHP")
                 .HasDefaultValueSql("(newid())");
 
-            entity.Property(e => e.IdLopHocPhan).HasMaxLength(36);
+            entity.Property(e => e.IdLopHocPhan).HasMaxLength(100);
 
-            entity.Property(e => e.IdThoiGian).HasMaxLength(36);
+            entity.Property(e => e.IdThoiGian).HasMaxLength(100);
 
             entity.HasOne(d => d.IdLopHocPhanNavigation)
                 .WithMany(p => p.ThoiGianLopHocPhans)
