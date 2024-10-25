@@ -56,6 +56,9 @@ public class NavUserInformationViewComponent : ViewComponent
         // Extract idUser from the token claims
         string idUser = jwtToken.Claims.FirstOrDefault(c => c.Type == "idUser")?.Value;
 
+        // Extract role name from the token claims
+        string roleName = jwtToken.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
+
         // Check if idUser is null or empty
         if (string.IsNullOrEmpty(idUser))
         {
@@ -71,7 +74,23 @@ public class NavUserInformationViewComponent : ViewComponent
             throw new NullReferenceException("The user is not found in the database.");
         }
 
-        return View(user);
+        return ViewHelp(user, roleName);
+    }
+
+    // Helpers return view
+    private IViewComponentResult ViewHelp(UserCustom user, string roleName)
+    {
+        switch (roleName.ToUpper())
+        {
+            case "ADMIN":
+                return View("Admin", user);
+            case "SINHVIEN":
+                return View("Student", user);
+            case "GIAOVIEN":
+                return View("Teacher", user);
+            default:
+                return View("Default", user);
+        }
     }
 
 }
