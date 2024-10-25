@@ -2,6 +2,9 @@
 - **Mail**: *lytranvinh.work@gmail.com*
 - **Mail**: *khiemhm04@gmail.com*
 
+# TODO:
+- Api Full table in QuanLySinhVienDbContext
+
 # How to run:
 - Run database in docker:
     + **Note**: changle path volume.

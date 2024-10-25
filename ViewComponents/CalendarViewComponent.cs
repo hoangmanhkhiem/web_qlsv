@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 //
 using qlsv.Helpers;
 
-namespace qlsvm.Components;
+namespace qlsv.Components;
 
 public class CalendarViewComponent : ViewComponent
 {

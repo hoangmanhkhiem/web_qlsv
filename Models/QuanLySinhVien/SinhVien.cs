@@ -12,9 +12,11 @@ namespace qlsv.Models
         public DateTime? NgaySinh { get; set; }
         public string? DiaChi { get; set; }
         public string? IdChuongTrinhHoc { get; set; }
+        public string? IdKhoa { get; set; }
 
         // Variables linked to another table    
         public virtual ChuongTrinhHoc? ChuongTrinhHocs { get; set; }
+        public virtual Khoa? Khoas { get; set; }
         public virtual ICollection<Diem> Diems { get; set; }
         public virtual ICollection<SinhVienLopHocPhan> SinhVienLopHocPhans { get; set; }
         public virtual ICollection<DangKyNguyenVong> DangKyNguyenVongs { get; set; }

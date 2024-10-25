@@ -1,23 +1,23 @@
-@model qlsv.Models.UserCustom
+@model UserCustom
 <li class="nav-item dropdown no-arrow">
     <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
-        @{
-            var userInformation = ViewBag.UserInformation;
-            if (userInformation == null)
+        @{  
+            <span class="mr-2 d-none d-lg-inline text-gray-600 small">@Model.FirstName @Model.LastName</span>
+
+            if (@Model.ProfilePicture == null)
             {
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Name User</span>
                 <img class="img-profile rounded-circle" src="~/sb-admin/img/undraw_profile.svg">
             } else {
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">@userInformation.FirstName</span>
-                <img class="img-profile rounded-circle" image-bytes="@userInformation.ProfilePicture"/>
+                <img class="img-profile rounded-circle" image-bytes="@Model.ProfilePicture"/>
             }
         }
         
     </a>
     <!-- Dropdown - User Information -->
     <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-        <a class="dropdown-item" href="#">
+        <a class="dropdown-item" 
+            asp-area="Admin" asp-controller="User" asp-action="UserDetails" asp-route-id="@Model.Id">
             <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
             Profile
         </a>

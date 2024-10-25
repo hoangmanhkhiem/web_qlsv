@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 //
 using qlsv.Data;
 
-namespace qlsvm.Components;
+namespace qlsv.Components;
 
 public class NavbarListViewComponent : ViewComponent
 {
