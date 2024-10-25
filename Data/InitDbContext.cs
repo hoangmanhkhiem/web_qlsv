@@ -125,9 +125,9 @@ public class InitDbContext
         using (var context = new ViewDbContext(
             serviceProvider.GetRequiredService<DbContextOptions<ViewDbContext>>()))
         {
-            // Add navbar admin page
             if (!context.NavBarPages.Any())
             {
+                // Add navbar admin page
                 context.NavBarPages.AddRange(
                     new ViewNavItem
                     {
@@ -194,11 +194,7 @@ public class InitDbContext
                     }
                 );
 
-            }
-            
-            // Add navbar giao vien page
-            if (!context.NavBarPages.Any())
-            {
+                // Add navbar giao vien page
                 context.NavBarPages.AddRange(
                     new ViewNavItem
                     {
@@ -226,15 +222,46 @@ public class InitDbContext
                         Action = "Index",
                         Content = "Danh Sách Sinh Viên",
                         IconClass = "fa-solid fa-user-graduate"
+                    }
+                );
+            
+                // Add navbar sinh vien page
+                context.NavBarPages.AddRange(
+                    new ViewNavItem
+                    {
+                        LocationNavItem = "STUDENT",
+                        Area = "STUDENT",
+                        Controller = "Home",
+                        Action = "Index",
+                        Content = "Lịch học",
+                        IconClass = "fa-solid fa-calendar"
                     },
                     new ViewNavItem
                     {
-                        LocationNavItem = "TEACHER",
-                        Area = "TEACHER",
-                        Controller = "ThayDoiLich",
+                        LocationNavItem = "STUDENT",
+                        Area = "STUDENT",
+                        Controller = "QuanLyDiem",
                         Action = "Index",
-                        Content = "Thay Đổi Lịch Giảng Dạy",
-                        IconClass = "fa-solid fa-calendar"
+                        Content = "Quản lý điểm",
+                        IconClass = "fa-solid fa-graduation-cap"
+                    },
+                    new ViewNavItem
+                    {
+                        LocationNavItem = "STUDENT",
+                        Area = "STUDENT",
+                        Controller = "QuanLyLopHocPhan",
+                        Action = "Index",
+                        Content = "Danh sách lớp học phần",
+                        IconClass = "fa-solid fa-book"
+                    },
+                    new ViewNavItem
+                    {
+                        LocationNavItem = "STUDENT",
+                        Area = "STUDENT",
+                        Controller = "QuanLyNguyenVong",
+                        Action = "Index",
+                        Content = "Đăng ký học nguyện vọng",
+                        IconClass = "fa-solid fa-graduation-cap"
                     }
                 );
             }

@@ -97,7 +97,7 @@ public class LoginController : Controller
 
         if (roleName.ToUpper() == "SINHVIEN")
         {
-            return RedirectToAction("Index", "Home", new { area = "SINHVIEN"});
+            return RedirectToAction("Index", "Home", new { area = "STUDENT"});
         }
         if (roleName.ToUpper() == "GIAOVIEN")
         {

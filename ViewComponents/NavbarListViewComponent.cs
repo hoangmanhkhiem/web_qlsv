@@ -32,7 +32,7 @@ public class NavbarListViewComponent : ViewComponent
         if (page.ToUpper() == "STUDENT")
         {
             var listNavbar = await _dbContext.NavBarPages
-                .Where(p => p.LocationNavItem.ToUpper() == "SINHVIEN")
+                .Where(p => p.LocationNavItem.ToUpper() == "STUDENT")
                 .ToListAsync();
             return View("StudentPage", listNavbar);
         }
