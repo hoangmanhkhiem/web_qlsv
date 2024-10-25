@@ -16,6 +16,11 @@ namespace qlsv.Areas.SinhVien.Controllers
         {
             _context = context;
         }
+        public IActionResult Index()
+        {
+            return RedirectToAction("LichHoc");
+        }
+
 
         // Phương thức lấy danh sách các lớp học phần và hiển thị
         public IActionResult DanhSachLopHocPhan()

@@ -44,5 +44,12 @@ public class Router
             pattern: "{controller=Login}/{action=Index}/{id?}",
             defaults: new { area = "Identity", controller = "Login", action = "Index" }
         );
+
+
+        app.MapAreaControllerRoute(
+            name: "SinhVien",
+            areaName: "SinhVien",
+            pattern: "SinhVien/{controller=Home}/{action=DanhSachLopHocPhan}/{id?}"
+        );
     }
 }
