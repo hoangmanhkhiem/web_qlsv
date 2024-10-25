@@ -11,11 +11,13 @@ public class UpdateUser {
     public string Id { get; set; }    
     
     [Required(ErrorMessage = "Không được để trống")]
-    [RegularExpression(@"^[a-zA-Z\s]*$", ErrorMessage = "Tên không hợp lệ")]
+    [RegularExpression(@"^[a-zA-ZàáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬÈÉẺẼẸÊỀẾỂỄỆÌÍỈĨỊÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢÙÚỦŨỤƯỪỨỬỮỰỲÝỶỸỴĐ\s]*$"
+        , ErrorMessage = "Tên không hợp lệ")]
     public string? FirstName { get; set; }
 
     [Required(ErrorMessage = "Không được để trống")]
-    [RegularExpression(@"^[a-zA-Z\s]*$", ErrorMessage = "Tên không hợp lệ")]
+    [RegularExpression(@"^[a-zA-ZàáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬÈÉẺẼẸÊỀẾỂỄỆÌÍỈĨỊÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢÙÚỦŨỤƯỪỨỬỮỰỲÝỶỸỴĐ\s]*$"
+        , ErrorMessage = "Tên không hợp lệ")]
     public string? LastName { get; set; }
     
     [Required(ErrorMessage = "Email không được để trống")]
