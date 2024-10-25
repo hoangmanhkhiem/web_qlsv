@@ -9,92 +9,75 @@ using System.IO;
 using System.Linq;
 //
 using qlsv.Models;
+using qlsv.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace qlsv.Helpers;
 
 public class CalendarHelper
 {
     // Variables
+    private readonly QuanLySinhVienDbContext _context;
 
     // Constructors
-
-    // Convert ICS to Model
-    public List<qlsv.Models.CalendarEvent> ConvertIcsToCalendarEvents(string icsFilePath)
+    public CalendarHelper(
+        QuanLySinhVienDbContext context)
     {
-        // Đọc tệp ICS
-        var calendar = Calendar.Load(File.ReadAllText(icsFilePath));
-
-        // Lấy tất cả các sự kiện trong tệp ICS
-        var events = calendar.Events;
-
-        // Tạo danh sách các sự kiện cho FullCalendar
-        var calendarEvents = new List<qlsv.Models.CalendarEvent>();
-
-        foreach (var icalEvent in events)
-        {
-            var calendarEvent = new qlsv.Models.CalendarEvent
-            {
-                Id = icalEvent.Uid,  // Uid trong ICS sẽ làm Id cho event
-                Title = icalEvent.Summary,  // Summary trong ICS tương ứng với Title
-                Start = icalEvent.Start.AsSystemLocal,  // Thời gian bắt đầu sự kiện
-                End = icalEvent.End?.AsSystemLocal,  // Thời gian kết thúc (nếu có)
-                AllDay = icalEvent.IsAllDay,  // Kiểm tra sự kiện có cả ngày hay không
-                Description = icalEvent.Description,  // Mô tả sự kiện
-                Location = icalEvent.Location,  // Địa điểm
-                RecurrenceRule = icalEvent.RecurrenceRules?.FirstOrDefault()?.ToString() // Quy tắc lặp lại (nếu có)
-            };
-
-            // TODO - Thêm các thuộc tính khác như BackgroundColor, BorderColor, TextColor, Url nếu cần.
-
-            calendarEvents.Add(calendarEvent);
-        }
-
-        return calendarEvents;
+        _context = context;
     }
 
-    public async Task<List<qlsv.Models.CalendarEvent>> ConvertIcsToCalendarEventsFromLink(string icsUrl)
+    // Return list event for student
+    public async Task<List<CalendarEventObject>> GetListEventStudent(string IdUser)
     {
-        // Khởi tạo HttpClient để tải nội dung từ URL
-        using (HttpClient client = new HttpClient())
-        {
-            // Tải nội dung từ URL
-            var icsContent = await client.GetStringAsync(icsUrl);
+        // Variables
+        List<CalendarEventObject> listEvent = new List<CalendarEventObject>();
 
-            // Đọc nội dung ICS
-            var calendar = Calendar.Load(icsContent);
+        // Query database to get events for the student
+        var events = await (from svlhp in _context.SinhVienLopHocPhans
+                            join lhp in _context.LopHocPhans on svlhp.IdLopHocPhan equals lhp.IdLopHocPhan
+                            join tglhp in _context.ThoiGianLopHocPhans on lhp.IdLopHocPhan equals tglhp.IdLopHocPhan
+                            join tg in _context.ThoiGians on tglhp.IdThoiGian equals tg.IdThoiGian
+                            where svlhp.IdSinhVien == IdUser
+                            select new CalendarEventObject
+                            {
+                                Id = tg.IdThoiGian,
+                                GroupId = lhp.IdLopHocPhan,
+                                Title = lhp.TenHocPhan,
+                                Description = $"Lớp: {lhp.TenHocPhan}",
+                                Start = tg.NgayBatDau,
+                                End = tg.NgayKetThuc
+                            }).ToListAsync();
 
-            // Lấy tất cả các sự kiện trong tệp ICS
-            var events = calendar.Events;
+        // Add results to listEvent
+        listEvent.AddRange(events);
 
-            // Tạo danh sách các sự kiện cho FullCalendar
-            var calendarEvents = new List<qlsv.Models.CalendarEvent>();
-
-            foreach (var icalEvent in events)
-            {
-                var calendarEvent = new qlsv.Models.CalendarEvent
-                {
-                    Id = icalEvent.Uid,  // Uid trong ICS sẽ làm Id cho event
-                    Title = icalEvent.Summary,  // Summary trong ICS tương ứng với Title
-                    Start = icalEvent.Start.AsSystemLocal,  // Thời gian bắt đầu sự kiện
-                    End = icalEvent.End?.AsSystemLocal,  // Thời gian kết thúc (nếu có)
-                    AllDay = icalEvent.IsAllDay,  // Kiểm tra sự kiện có cả ngày hay không
-                    Description = icalEvent.Description,  // Mô tả sự kiện
-                    Location = icalEvent.Location,  // Địa điểm
-                    RecurrenceRule = icalEvent.RecurrenceRules?.FirstOrDefault()?.ToString() // Quy tắc lặp lại (nếu có)
-                };
-
-                // TODO - Thêm các thuộc tính khác như BackgroundColor, BorderColor, TextColor, Url nếu cần.
-
-                calendarEvents.Add(calendarEvent);
-            }
-
-            return calendarEvents;
-        }
+        return listEvent;
     }
-    
-    // Model to Object JSON serialization
-    public string SerializeCalendarEvents(List<qlsv.Models.CalendarEvent> calendarEvents)
+
+
+    // Return list event for teacher
+    public async Task<List<CalendarEventObject>> GetListEventTeacher(string IdUser)
     {
-        return System.Text.Json.JsonSerializer.Serialize(calendarEvents);
+        // Variables
+        List<CalendarEventObject> listEvent = new List<CalendarEventObject>();
+
+        // Query database to get events for the teacher
+        var events = await (from lhp in _context.LopHocPhans
+                            join tglhp in _context.ThoiGianLopHocPhans on lhp.IdLopHocPhan equals tglhp.IdLopHocPhan
+                            join tg in _context.ThoiGians on tglhp.IdThoiGian equals tg.IdThoiGian
+                            where lhp.IdGiaoVien == IdUser
+                            select new CalendarEventObject
+                            {
+                                Id = tg.IdThoiGian,
+                                GroupId = lhp.IdLopHocPhan,
+                                Title = lhp.TenHocPhan,
+                                Description = $"Giáo viên: {lhp.TenHocPhan}",
+                                Start = tg.NgayBatDau,
+                                End = tg.NgayKetThuc
+                            }).ToListAsync();
+
+        // Add results to listEvent
+        listEvent.AddRange(events);
+        return listEvent;
     }
 }

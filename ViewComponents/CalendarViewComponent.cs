@@ -19,13 +19,17 @@ public class CalendarViewComponent : ViewComponent
     }
 
     // Hanlders async
-    public async Task<IViewComponentResult> InvokeAsync()
+    public async Task<IViewComponentResult> InvokeAsync(string IdUser, string Type) 
     {
-        var listEvents = _calendarHelper.ConvertIcsToCalendarEvents("wwwroot/resources/data_cadenlar.ics");
-
-        // System.Console.Write(_calendarHelper.SerializeCalendarEvents(listEvents));
-
-        return View();
+        switch (Type.ToUpper()) {
+            case "SINHVIEN":
+                var listEvent = await _calendarHelper.GetListEventStudent(IdUser);
+                return View("SinhVien", listEvent);
+            case "GIAOVIEN":
+                var listEventTeacher = await _calendarHelper.GetListEventTeacher(IdUser);
+                return View("GiaoVien", listEventTeacher);
+            default:
+                return View();
+        }
     }
-
 }
