@@ -33,6 +33,12 @@ public class Router
             pattern: "Admin/{controller=Home}/{action=Index}/{id?}"
         );
 
+        app.MapAreaControllerRoute(
+            name: "Teacher",
+            areaName: "Teacher",
+            pattern: "Teacher/{controller=Home}/{action=Index}/{id?}"
+        );
+
         // Route for basic
         app.MapControllerRoute(
             name: "default",

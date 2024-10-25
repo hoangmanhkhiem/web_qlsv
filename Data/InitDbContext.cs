@@ -195,6 +195,49 @@ public class InitDbContext
                 );
 
             }
+            
+            // Add navbar giao vien page
+            if (!context.NavBarPages.Any())
+            {
+                context.NavBarPages.AddRange(
+                    new ViewNavItem
+                    {
+                        LocationNavItem = "TEACHER",
+                        Area = "TEACHER",
+                        Controller = "Home",
+                        Action = "Index",
+                        Content = "Lịch giảng dạy",
+                        IconClass = "fa-solid fa-calendar"
+                    },
+                    new ViewNavItem
+                    {
+                        LocationNavItem = "TEACHER",
+                        Area = "TEACHER",
+                        Controller = "QuanLyLopHocPhan",
+                        Action = "Index",
+                        Content = "Danh Sách Lớp Học Phần",
+                        IconClass = "fa-solid fa-book"
+                    },
+                    new ViewNavItem
+                    {
+                        LocationNavItem = "TEACHER",
+                        Area = "TEACHER",
+                        Controller = "QuanLySinhVien",
+                        Action = "Index",
+                        Content = "Danh Sách Sinh Viên",
+                        IconClass = "fa-solid fa-user-graduate"
+                    },
+                    new ViewNavItem
+                    {
+                        LocationNavItem = "TEACHER",
+                        Area = "TEACHER",
+                        Controller = "ThayDoiLich",
+                        Action = "Index",
+                        Content = "Thay Đổi Lịch Giảng Dạy",
+                        IconClass = "fa-solid fa-calendar"
+                    }
+                );
+            }
             context.SaveChanges();
         }
     }
