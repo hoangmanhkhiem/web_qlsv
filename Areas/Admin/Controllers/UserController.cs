@@ -49,10 +49,13 @@ public class UserController : Controller
 
     // POST: Identity/UpdateUser
     [HttpPost]
-    public ActionResult UpdateUser(UpdateUser updateUser)
+    public ActionResult UpdateUser(UpdateUser updateUser, string? base64_Avatar)
     {
         if (!ModelState.IsValid)
-        {
+        {   
+            if (base64_Avatar != null) {
+                ViewBag.Base64_Avatar = base64_Avatar;
+            }
             return View("UserDetails", updateUser);
         }
 

@@ -4,7 +4,6 @@
 
 # TODO:
 - Api Full table in QuanLySinhVienDbContext
-- Fix chia update user thành các component, đang lỗi clinet không nhận bytep[] để lưu lại dữ liệu ảnh ?
 
 # How to run:
 - Run database in docker:
