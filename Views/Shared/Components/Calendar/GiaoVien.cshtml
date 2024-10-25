@@ -1,0 +1,32 @@
+@model IEnumerable<CalendarEventObject>
+@using System.Text.Json;
+
+<script src='~/lib/fullcalendar-6.1.15/dist/index.global.min.js'></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var listEvents = @Html.Raw(JsonSerializer.Serialize(Model.Select(item => new {
+            id = item.Id,
+            groupId = item.GroupId,
+            title = item.Title,
+            start = item.Start?.ToString("yyyy-MM-ddTHH:mm:ss"),
+            end = item.End?.ToString("yyyy-MM-ddTHH:mm:ss"),
+            description = item.Description
+        })));
+
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            displayEventTime: false,
+            initialView: 'dayGridMonth', // 'dayGridWeek', 'timeGridDay', 'listWeek'
+            events: listEvents
+        });
+        calendar.render();
+        // Make calendar accessible for button controls
+        window.calendar = calendar;
+    });
+</script>
+
+<button onclick="calendar.changeView('dayGridMonth')">Month View</button>
+<button onclick="calendar.changeView('timeGridWeek')">Week View</button>
+<button onclick="calendar.changeView('timeGridDay')">Day View</button>
+<button onclick="calendar.changeView('listWeek')">List Week</button>
+<div id='calendar'></div>
