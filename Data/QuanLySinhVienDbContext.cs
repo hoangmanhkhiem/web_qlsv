@@ -278,6 +278,9 @@ public class QuanLySinhVienDbContext : DbContext
 
             entity.Property(e => e.IdSinhVien).HasMaxLength(100);
 
+            // Mặc định khởi tạo trạng thái là null. true Là đc chấp nhận, false là từ chối
+            entity.Property(e => e.TrangThai).HasDefaultValue(null);
+
             entity.HasOne(d => d.SinhViens)
                 .WithMany(p => p.DangKyNguyenVongs)
                 .HasForeignKey(d => d.IdSinhVien);
