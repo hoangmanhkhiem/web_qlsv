@@ -75,7 +75,7 @@ public class JwtHelper
         var claims = new List<Claim>
         {
             new Claim("idUser", userId),
-            new Claim("idClaim", idClaim)
+            new Claim("idClaim", idClaim == null ? "null" : idClaim)
         };
 
         // Add roles to claims
