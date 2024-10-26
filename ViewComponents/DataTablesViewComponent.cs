@@ -40,15 +40,15 @@ public class DataTablesViewComponent : ViewComponent
                         .Include(sv => sv.Khoas)
                         .ToListAsync());
             case "GIAOVIEN":
-                if (_context.GiaoViens != null)
+                if (idUser != null)
                 {
-                    return View("GiaoViens",
+                    return View("GiaoVien",
                         await _context.GiaoViens
                             .Include(gv => gv.Khoas)
                             .Where(gv => gv.IdGiaoVien == idUser)
                             .ToListAsync());
                 }
-                return View("GIAOVIEN",
+                return View("GiaoVien",
                     await _context.GiaoViens
                         .Include(gv => gv.Khoas)
                         .ToListAsync());
