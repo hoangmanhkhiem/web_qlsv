@@ -45,7 +45,11 @@
                         @foreach (var item in Model)
                         {
                             <tr>
-                                <td>@item.TenHocPhan</td>
+                                <td>
+                                    <a href="@Url.Action("Details", "QuanLyLopHocPhan", new { idLhp = item.IdLopHocPhan })">
+                                        @item.TenHocPhan
+                                    </a>
+                                </td>
                                 <td>@item.GiaoViens.TenGiaoVien</td>
                                 <td>@item.MonHocs.TenMonHoc</td>
                             </tr>

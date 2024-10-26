@@ -10,6 +10,7 @@ using System.Linq;
 //
 using qlsv.Models;
 using qlsv.Data;
+using qlsv.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace qlsv.Helpers;

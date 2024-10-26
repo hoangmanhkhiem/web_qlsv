@@ -1,4 +1,6 @@
 
+namespace qlsv.ViewModels;
+
 public class CalendarEventObject {
     // Variables
     public string? Id { get; set; }
