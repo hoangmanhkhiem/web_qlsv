@@ -36,7 +36,7 @@ public class QuanLyLopHocPhanController : Controller
     {
         var accessToken = HttpContext.Request.Cookies["AccsessToken"];
         var jwtToken = _jwtHelper.DecodeToken(accessToken);
-        string idUser = jwtToken.Claims.FirstOrDefault(c => c.Type == "idUser")?.Value;
+        string idUser = jwtToken.Claims.FirstOrDefault(c => c.Type == "idClaim")?.Value;
 
         List<LopHocPhan> lopHocPhans = _context.LopHocPhans
             .Include(lhp => lhp.MonHocs)

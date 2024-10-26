@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity;
 namespace qlsv.Models;
 
 public class UserCustom: IdentityUser {
+
+    public string? IdClaim { get; set; }
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
     public string? Address { get; set; }

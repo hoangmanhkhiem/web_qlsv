@@ -79,6 +79,6 @@ public class QuanLyDiemController : Controller
         // Get iduser info from token
         var jwtToken = _jwtHelper.DecodeToken(accessToken);
 
-        return jwtToken.Claims.FirstOrDefault(c => c.Type == "idUser")?.Value;
+        return jwtToken.Claims.FirstOrDefault(c => c.Type == "idClaim")?.Value;
     }
 }

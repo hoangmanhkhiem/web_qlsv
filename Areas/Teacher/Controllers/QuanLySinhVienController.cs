@@ -36,15 +36,22 @@ public class QuanLySinhVienController : Controller
     {
         var accessToken = HttpContext.Request.Cookies["AccsessToken"];
         var jwtToken = _jwtHelper.DecodeToken(accessToken);
-        string idUser = jwtToken.Claims.FirstOrDefault(c => c.Type == "idUser")?.Value;
+        string idUser = jwtToken.Claims.FirstOrDefault(c => c.Type == "idClaim")?.Value;
 
         List<SinhVien> sinhViens = (from gv in _context.GiaoViens
                                     join lhp in _context.LopHocPhans on gv.IdGiaoVien equals lhp.IdGiaoVien
                                     join sv_lhp in _context.SinhVienLopHocPhans on lhp.IdLopHocPhan equals sv_lhp.IdLopHocPhan
                                     join sv in _context.SinhViens on sv_lhp.IdSinhVien equals sv.IdSinhVien
                                     where gv.IdGiaoVien == idUser
-                                    select sv
-                                    ).ToList();
+                                    select new SinhVien{
+                                        IdSinhVien = sv.IdSinhVien,
+                                        HoTen = sv.HoTen,
+                                        Lop = sv.Lop,
+                                        NgaySinh = sv.NgaySinh,
+                                        DiaChi = sv.DiaChi,
+                                        ChuongTrinhHocs = sv.ChuongTrinhHocs, 
+                                        Khoas = sv.Khoas
+                                    }).ToList();
 
         return View(sinhViens);
     }

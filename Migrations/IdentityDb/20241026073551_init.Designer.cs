@@ -12,8 +12,8 @@ using qlsv.Data;
 namespace web_qlsv.Migrations.IdentityDb
 {
     [DbContext(typeof(IdentityDbContext))]
-    [Migration("20240926192335_Init")]
-    partial class Init
+    [Migration("20241026073551_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -181,6 +181,9 @@ namespace web_qlsv.Migrations.IdentityDb
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdClaim")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
