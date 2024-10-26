@@ -45,7 +45,11 @@ public class QuanLyLopHocPhanController : Controller
             where sv.IdSinhVien == idUser
             join sv_lhp in _context.SinhVienLopHocPhans on sv.IdSinhVien equals sv_lhp.IdSinhVien
             join lhp in _context.LopHocPhans on sv_lhp.IdLopHocPhan equals lhp.IdLopHocPhan
-            select lhp
+            select new LopHocPhan{
+                TenHocPhan = lhp.TenHocPhan,
+                GiaoViens = lhp.GiaoViens,
+                MonHocs = lhp.MonHocs
+            }
         ).ToList();
         return View(listLopHocPhan);
     }
