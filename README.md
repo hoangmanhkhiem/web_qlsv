@@ -4,6 +4,7 @@
 
 # TODO:
 - Api Full table in QuanLySinhVienDbContext
+- Auth ...  
 
 # How to run:
 - Run database in docker:
