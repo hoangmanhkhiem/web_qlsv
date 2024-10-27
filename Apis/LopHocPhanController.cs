@@ -34,11 +34,15 @@ public class LopHocPhanController : ControllerBase
         var query = await (
             from lhp in _context.LopHocPhans
             join gv in _context.GiaoViens on lhp.IdGiaoVien equals gv.IdGiaoVien
+            join mh in _context.MonHocs on lhp.IdMonHoc equals mh.IdMonHoc
             select new
             {
                 TenLopHocPhan = lhp.TenHocPhan,
                 TenGiaoVien = gv.TenGiaoVien,
-                IdLopHocPhan = lhp.IdLopHocPhan
+                TenMonHoc = mh.TenMonHoc,
+                IdLopHocPhan = lhp.IdLopHocPhan,
+                IdGiaoVien = gv.IdGiaoVien,
+                IdMonHoc = mh.IdMonHoc
             }
         ).ToListAsync();
 
@@ -63,12 +67,16 @@ public class LopHocPhanController : ControllerBase
             from svlhp in _context.SinhVienLopHocPhans
             join lhp in _context.LopHocPhans on svlhp.IdLopHocPhan equals lhp.IdLopHocPhan
             join gv in _context.GiaoViens on lhp.IdGiaoVien equals gv.IdGiaoVien
+            join mon in _context.MonHocs on lhp.IdMonHoc equals mon.IdMonHoc
             where svlhp.IdSinhVien == id
             select new
             {
                 TenLopHocPhan = lhp.TenHocPhan,
                 TenGiaoVien = gv.TenGiaoVien,
-                IdLopHocPhan = lhp.IdLopHocPhan
+                TenMonHoc = mon.TenMonHoc,
+                IdLopHocPhan = lhp.IdLopHocPhan,
+                IdGiaoVien = gv.IdGiaoVien,
+                IdMonHoc = mon.IdMonHoc
             }
         ).ToListAsync();
 
@@ -92,12 +100,16 @@ public class LopHocPhanController : ControllerBase
         var query = await (
             from lhp in _context.LopHocPhans
             join gv in _context.GiaoViens on lhp.IdGiaoVien equals gv.IdGiaoVien
+            join mon in _context.MonHocs on lhp.IdMonHoc equals mon.IdMonHoc
             where gv.IdGiaoVien == id
             select new
             {
                 TenLopHocPhan = lhp.TenHocPhan,
                 TenGiaoVien = gv.TenGiaoVien,
-                IdLopHocPhan = lhp.IdLopHocPhan
+                TenMonHoc = mon.TenMonHoc,
+                IdLopHocPhan = lhp.IdLopHocPhan,
+                IdGiaoVien = gv.IdGiaoVien,
+                IdMonHoc = mon.IdMonHoc
             }
         ).ToListAsync();
 
