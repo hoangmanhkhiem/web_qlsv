@@ -203,7 +203,7 @@ public class InitDbContext
                         Controller = "Home",
                         Action = "Index",
                         Content = "Lịch giảng dạy",
-                        IconClass = "fa-solid fa-calendar"
+                        IconClass = "fas fa-calendar"
                     },
                     new ViewNavItem
                     {
@@ -212,7 +212,7 @@ public class InitDbContext
                         Controller = "QuanLyLopHocPhan",
                         Action = "Index",
                         Content = "Danh Sách Lớp Học Phần",
-                        IconClass = "fa-solid fa-book"
+                        IconClass = "fas fa-book"
                     },
                     new ViewNavItem
                     {
@@ -221,7 +221,7 @@ public class InitDbContext
                         Controller = "QuanLySinhVien",
                         Action = "Index",
                         Content = "Danh Sách Sinh Viên",
-                        IconClass = "fa-solid fa-user-graduate"
+                        IconClass = "fas fa-user-graduate"
                     }
                 );
             
@@ -234,7 +234,7 @@ public class InitDbContext
                         Controller = "Home",
                         Action = "Index",
                         Content = "Lịch học",
-                        IconClass = "fa-solid fa-calendar"
+                        IconClass = "fas fa-calendar"
                     },
                     new ViewNavItem
                     {
@@ -243,7 +243,7 @@ public class InitDbContext
                         Controller = "QuanLyDiem",
                         Action = "Index",
                         Content = "Quản lý điểm",
-                        IconClass = "fa-solid fa-graduation-cap"
+                        IconClass = "fas fa-graduation-cap"
                     },
                     new ViewNavItem
                     {
@@ -252,16 +252,16 @@ public class InitDbContext
                         Controller = "QuanLyLopHocPhan",
                         Action = "Index",
                         Content = "Danh sách lớp học phần",
-                        IconClass = "fa-solid fa-book"
+                        IconClass = "fas fa-book"
                     },
                     new ViewNavItem
                     {
                         LocationNavItem = "STUDENT",
                         Area = "STUDENT",
-                        Controller = "QuanLyNguyenVong",
+                        Controller = "DangKyNguyenVong",
                         Action = "Index",
                         Content = "Đăng ký học nguyện vọng",
-                        IconClass = "fa-solid fa-graduation-cap"
+                        IconClass = "fas fa-graduation-cap"
                     }
                 );
             }
