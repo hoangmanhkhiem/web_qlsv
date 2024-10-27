@@ -132,7 +132,5 @@ public class SinhVienController : ControllerBase
         await _context.SaveChangesAsync();
         return Ok("Xóa sinh viên thành công");
     }
-
-    // TODO
 }
 
