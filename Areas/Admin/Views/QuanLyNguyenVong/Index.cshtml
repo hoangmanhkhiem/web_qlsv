@@ -1,4 +1,3 @@
-
 @section Styles {
     <link href="~/sb-admin/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 }
@@ -9,7 +8,129 @@
     <script src="~/sb-admin/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
     <!-- Page level custom scripts -->
-    <script src="~/sb-admin/js/demo/datatables-demo.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#dataTable').DataTable({
+                ajax: {
+                    url: '/api/nguyenvong/',
+                    type: 'GET',
+                    dataSrc: '',
+                },
+                language: {
+                    url: '/sb-admin/json/data_tables_vi.json',
+                },
+                columns: [
+                    {
+                        data: 'idSinhVien',
+                    },
+                    {
+                        data: 'tenSinhVien',
+                        render: function (data, type, row) {
+                            return '<a href="/Admin/QuanLySinhVien/Details?IdSinhVien=' + row.idSinhVien + '">' + data + '</a>';
+                        }
+                    },
+                    {
+                        data: 'tenMonHoc',
+                        render: function (data, type, row) {
+                            return '<a href="/Admin/QuanLyMonHoc/Details?IdMonHoc=' + row.MonHocs.idMonHoc + '">' + data + '</a>';
+                        }
+                    },
+                    {
+                        data: 'trangThai',
+                        render: function (data, type, row) {
+                            if (data == null) {
+                                return '<span class="badge badge-warning">Chưa xác nhận</span>';
+                            }
+                            else if (data == true) {
+                                return '<span class="badge badge-success">Đã xác nhận</span>';
+                            }
+                            else {
+                                return '<span class="badge badge-danger">Không xác nhận</span>';
+                            }
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function (data, type, row) {
+                            if (row.trangThai == null) {
+                                return `
+                                    <button class="btn btn-success btn-sm accept-btn" data-id="${row.idDangKyNguyenVong}">Chấp nhận</button>
+                                    <button class="btn btn-danger btn-sm reject-btn" data-id="${row.idDangKyNguyenVong}">Từ chối</button>
+                                `;
+                            } else if (row.trangThai == true) {
+                                return `
+                                    <button class="btn btn-danger btn-sm reject-btn" data-id="${row.idDangKyNguyenVong}">Từ chối</button>
+                                `;
+                            } else {
+                                return `
+                                    <button class="btn btn-warning btn-sm accept-btn" data-id="${row.idDangKyNguyenVong}">Chấp nhận</button>
+                                `;
+                            }
+                        },
+                        orderable: false,
+                        searchable: false
+                    }
+                ]
+            });
+
+            // Handle button clicks
+            $('#dataTable').on('click', '.accept-btn', function () {
+                const idNguyenVong = $(this).data('id');
+                // AJAX call to update status to 'accepted'
+                $.ajax({
+                    url: '/api/nguyenvong/' + idSinhVien + '/accept',
+                    type: 'POST',
+                    success: function () {
+                        $('#dataTable').DataTable().ajax.reload();
+                    }
+                });
+            });
+
+            $('#dataTable').on('click', '.reject-btn', function () {
+                const idNguyenVong = $(this).data('id');
+                // AJAX call to update status to 'rejected'
+                $.ajax({
+                    url: '/api/nguyenvong/' + idSinhVien + '/reject',
+                    type: 'POST',
+                    success: function () {
+                        $('#dataTable').DataTable().ajax.reload();
+                    }
+                });
+            });
+        });
+    </script>
 }
 
-@await Component.InvokeAsync("DataTables", new { table = "NguyenVong" })
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Nguyện Vọng Đăng Kí</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Mã Sinh Viên</th>
+                            <th>Tên Sinh Viên</th>
+                            <th>Môn Học</th>
+                            <th>Trạng Thái</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Mã Sinh Viên</th>
+                            <th>Tên Sinh Viên</th>
+                            <th>Môn Học</th>
+                            <th>Trạng Thái</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
