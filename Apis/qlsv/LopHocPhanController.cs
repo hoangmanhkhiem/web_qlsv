@@ -122,4 +122,3 @@ public class LopHocPhanController : ControllerBase
         return Ok(query);
     }
 }
-
