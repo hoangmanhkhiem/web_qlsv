@@ -27,6 +27,29 @@ public class MonHocController : ControllerBase
         _quanLySinhVienDbContext = quanLySinhVienDbContext;
     }
 
+    /**
+     * GET: api/monhoc
+     * Get all mon hoc
+     */
+    [HttpGet]
+    public async Task<IActionResult> GetMonHocs()
+    {
+        var monhocs = (
+            from mh in _quanLySinhVienDbContext.MonHocs
+            join khoa in _quanLySinhVienDbContext.Khoas on mh.IdKhoa equals khoa.IdKhoa
+            select new {
+                IdMonHoc = mh.IdMonHoc,
+                TenMonHoc = mh.TenMonHoc.ToString(),
+                SoTinChi = mh.SoTinChi,
+                SoTiet = mh.SoTietHoc,
+                TenKhoa = khoa.TenKhoa,
+                IdKhoa = khoa.IdKhoa
+            }
+        ).ToList();
+
+        return Ok(monhocs);
+    }
+
     // GET: Get data mon hoc for giao vien with id giao vien
     [HttpGet("giaovien/{IdGiaoVien}")]
     public async Task<IActionResult> GetMonHoc(string IdGiaoVien)
