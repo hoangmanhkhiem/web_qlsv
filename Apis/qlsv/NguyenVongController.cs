@@ -42,6 +42,7 @@ public class NguyenVongController : ControllerBase
                 IdMonHoc = mh.IdMonHoc,
                 TenSinhVien = sv.HoTen,
                 TenMonHoc = mh.TenMonHoc,
+                TrangThai = nv.TrangThai,
             }
         ).ToList();
 
@@ -67,6 +68,7 @@ public class NguyenVongController : ControllerBase
                 IdMonHoc = mh.IdMonHoc,
                 TenSinhVien = sv.HoTen,
                 TenMonHoc = mh.TenMonHoc,
+                TrangThai = nv.TrangThai,
             }
         ).ToList();
 
@@ -92,10 +94,104 @@ public class NguyenVongController : ControllerBase
                 IdMonHoc = mh.IdMonHoc,
                 TenSinhVien = sv.HoTen,
                 TenMonHoc = mh.TenMonHoc,
+                TrangThai = nv.TrangThai,
             }
         ).ToList();
 
         return Ok(nguyenVongs);
+    }
+
+    /**
+     * POST: api/nguyenvong/
+     * create new nguyen vong
+     */
+    [HttpPost]
+    public async Task<IActionResult> CreateNguyenVong(DangKyNguyenVong nguyenVong)
+    {
+        _context.DangKyNguyenVongs.Add(nguyenVong);
+        await _context.SaveChangesAsync();
+
+        return Ok(nguyenVong);
+    }
+
+    /**
+     * PUT: api/nguyenvong/{id}
+     * update nguyen vong by id
+     */
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateNguyenVong(string id, DangKyNguyenVong nguyenVong)
+    {
+        var existingNguyenVong = await _context.DangKyNguyenVongs.FindAsync(id);
+        if (existingNguyenVong == null)
+        {
+            return NotFound("Không tìm thấy nguyện vọng");
+        }
+
+        // Update the existing nguyen vong
+        existingNguyenVong.IdSinhVien = nguyenVong.IdSinhVien;
+        existingNguyenVong.IdMonHoc = nguyenVong.IdMonHoc;
+        existingNguyenVong.TrangThai = nguyenVong.TrangThai;
+
+        await _context.SaveChangesAsync();
+
+        return Ok(existingNguyenVong);
+    }
+
+    /**
+     * DELETE: api/nguyenvong/{id}
+     * delete nguyen vong by id
+     */
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteNguyenVong(string id)
+    {
+        var nguyenVong = await _context.DangKyNguyenVongs.FindAsync(id);
+        if (nguyenVong == null)
+        {
+            return NotFound("Không tìm thấy nguyện vọng");
+        }
+
+        _context.DangKyNguyenVongs.Remove(nguyenVong);
+        await _context.SaveChangesAsync();
+
+        return Ok("Nguyện vọng đã xóa");
+    }
+
+    /**
+     * PUT: /api/nguyenvong/{id}/approve
+     * PUT: Chap nhan
+     */
+    [HttpPut("{id}/approve")]
+    public async Task<IActionResult> ApproveNguyenVong(string id)
+    {
+        var nguyenVong = await _context.DangKyNguyenVongs.FindAsync(id);
+        if (nguyenVong == null)
+        {
+            return NotFound("Không tìm thấy nguyện vọng");
+        }
+
+        nguyenVong.TrangThai = true;
+        await _context.SaveChangesAsync();
+
+        return Ok(nguyenVong);
+    }
+
+    /**
+     * PUT: /api/nguyenvong/{id}/reject
+     * PUT: Tu choi
+     */
+    [HttpPut("{id}/reject")]
+    public async Task<IActionResult> RejectNguyenVong(string id)
+    {
+        var nguyenVong = await _context.DangKyNguyenVongs.FindAsync(id);
+        if (nguyenVong == null)
+        {
+            return NotFound("Không tìm thấy nguyện vọng");
+        }
+
+        nguyenVong.TrangThai = false;
+        await _context.SaveChangesAsync();
+
+        return Ok(nguyenVong);
     }
 }
 
