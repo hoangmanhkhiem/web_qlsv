@@ -1,6 +1,7 @@
 @model IEnumerable<CalendarEventObject>
 @using System.Text.Json;
 
+<link rel='stylesheet' href='~/lib/fullcalendar-6.1.15/css/v_calendar.css' />
 <script src='~/lib/fullcalendar-6.1.15/dist/index.global.min.js'></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -23,7 +24,17 @@
                 left: 'prev,next today',
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
-            }
+            },
+            buttonText: {
+                today: 'Hôm nay',
+                month: 'Tháng',
+                week: 'Tuần',
+                day: 'Ngày',
+                list: 'Danh sách',
+            },
+            locale: 'vi',
+            timeZone: 'Asia/Ho_Chi_Minh',
+            titleFormat: {},
         });
         calendar.render();
         // Make calendar accessible for button controls
