@@ -35,15 +35,17 @@ public class QuanLyGiaoVienController : Controller
     }
 
     // GET: /Admin/QuanLyGiaoVien/{id}
-    public IActionResult Details(string id)
+    public IActionResult Details(string IdGiaoVien)
     {
         var gv = _context.GiaoViens
                         .Include(x => x.Khoas)
-                        .FirstOrDefault(g => g.IdGiaoVien == id);
+                        .FirstOrDefault(g => g.IdGiaoVien == IdGiaoVien);
 
         return View(gv);
     }
 
+    // GET: /Admin/QuanLyGiaoVien/Edit/{id}
+    
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

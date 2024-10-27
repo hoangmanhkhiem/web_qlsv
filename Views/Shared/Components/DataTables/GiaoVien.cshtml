@@ -29,7 +29,16 @@
                         @foreach (var item in Model)
                         {
                             <tr>
-                                <td>@item.TenGiaoVien</td>
+                                <td>
+                                    <a
+                                        asp-area="Admin"
+                                        asp-controller="QuanLyGiaoVien"
+                                        asp-action="Details"
+                                        asp-route-IdGiaoVien="@item.IdGiaoVien"
+                                    >
+                                        @item.TenGiaoVien
+                                    </a>
+                                </td>
                                 <td>@item.Email</td>
                                 <td>@item.SoDienThoai</td>
                                 <td>@item.Khoas.TenKhoa</td>
