@@ -48,7 +48,45 @@ public class QuanLyChuongTrinhHocController : Controller
             }
         ).ToList();
 
+        ViewBag.IdChuongTrinhHoc = IdChuongTrinhHoc;
+        ViewBag.Title = _context.ChuongTrinhHocs.Find(IdChuongTrinhHoc).TenChuongTrinhHoc;
+
         return View(list);
+    }
+
+    /**
+     * GET: /Admin/QuanLyChuongTrinhHoc/DeleteMonFromChuongTrinh
+     */
+    public IActionResult DeleteMonFromChuongTrinh(string IdMonHoc, string IdChuongTrinhHoc)
+    {
+        var qr_cch_mh = (
+            from cch_mh in _context.ChuongTrinhHocMonHocs
+            where cch_mh.IdMonHoc == IdMonHoc && cch_mh.IdChuongTrinhHoc == IdChuongTrinhHoc
+            select cch_mh
+        ).FirstOrDefault();
+
+        if (qr_cch_mh == null || qr_cch_mh.IdMonHoc == null || qr_cch_mh.IdChuongTrinhHoc == null)
+        {
+            return NotFound();
+        }
+        
+        _context.ChuongTrinhHocMonHocs.Remove(qr_cch_mh);
+
+        return RedirectToAction("Details", new { IdChuongTrinhHoc });
+    }
+
+    // GET: /Admin/QuanLyChuongTrinhHoc/AddMonHocToChuongTrinh
+    public IActionResult AddMonHocToChuongTrinh(string IdChuongTrinhHoc)
+    {
+        ViewBag.IdChuongTrinhHoc = IdChuongTrinhHoc;
+        return View();
+    }
+
+    // POST: /Admin/QuanLyChuongTrinhHoc/AddMonHocToChuongTrinh
+    [HttpPost]
+    public IActionResult AddMonHocToChuongTrinh(string IdChuongTrinhHoc, List<string> IdMonHoc)
+    {
+        return View();
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

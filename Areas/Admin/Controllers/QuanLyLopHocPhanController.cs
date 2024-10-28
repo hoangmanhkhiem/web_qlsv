@@ -29,6 +29,13 @@ public class QuanLyLopHocPhanController : Controller
         return View();
     }
 
+    // GET: /Admin/QuanLyLopHocPhan/Details?IdGiaoVien={id}
+    public IActionResult Details(string IdGiaoVien)
+    {  
+        
+        return View();
+    }
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
