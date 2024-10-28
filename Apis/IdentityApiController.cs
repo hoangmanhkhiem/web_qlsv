@@ -401,8 +401,7 @@ public class IdentityApiController : ControllerBase
         {
             UserName = model.UserName,
             Email = model.Email,
-            FirstName = model.FirstName,
-            LastName = model.LastName,
+            FullName = model.FullName,
             Address = model.Address,
             Phone = model.Phone,
         };

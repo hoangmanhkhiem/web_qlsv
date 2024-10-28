@@ -12,6 +12,7 @@ public class UserCustom: IdentityUser {
     public string? Address { get; set; }
     public string? Phone { get; set; }
     public string? Email { get; set; }
+    public string? ProfilePictureBase64 { get; set; }
     public byte[]? ProfilePicture { get; set; }
 
     // TODO: Add more properties
