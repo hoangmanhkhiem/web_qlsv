@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using qlsv.Data;
 using qlsv.Models;
 using qlsv.ViewModels.dto;
+using qlsv.Helpers;
 
 namespace qlsv.Controllers;
 
@@ -17,11 +18,18 @@ public class GiaoVienController : ControllerBase
 {
     // Variables
     private readonly QuanLySinhVienDbContext _context;
+    private readonly SecurityHelper _securityHelper;
+    private readonly IdentityDbContext _identityContext;
+
     // Constructor
     public GiaoVienController(
-        QuanLySinhVienDbContext context)
+        QuanLySinhVienDbContext context,
+        SecurityHelper securityHelper,
+        IdentityDbContext identityContext)
     {
         _context = context;
+        _securityHelper = securityHelper;
+        _identityContext = identityContext;
     }
 
     /** 
@@ -121,7 +129,7 @@ public class GiaoVienController : ControllerBase
 
     // PUT /api/giaovien/{id}
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateGiaoVien(string id, [FromBody] GiaoVien giaoVien)
+    public async Task<IActionResult> UpdateGiaoVien(string id, [FromBody] GiaoVienDto giaoVien)
     {
         // Find the existing giao vien
         var existingGiaoVien = await _context.GiaoViens.FindAsync(id);
@@ -141,6 +149,51 @@ public class GiaoVienController : ControllerBase
 
         // Return the updated giao vien
         return Ok(existingGiaoVien);
+    }
+
+    [HttpPost]
+    [Route("api/giaovien/updatepassword")]
+    public IActionResult UpdatePassword([FromBody] UpdatePasswordDto updatePasswordDto)
+    {
+        if (string.IsNullOrWhiteSpace(updatePasswordDto.NewPassword) ||
+        string.IsNullOrWhiteSpace(updatePasswordDto.OldPassword) ||
+        updatePasswordDto.NewPassword != updatePasswordDto.ConfirmPassword ||
+        updatePasswordDto.IdUser == null)
+        {
+            return BadRequest("Invalid data.");
+        }
+
+        try
+        {
+            // Find the user in the Identity system by teacher ID
+            var user = _identityContext.Users.FirstOrDefault(u => u.IdClaim == updatePasswordDto.IdUser);
+            if (user == null)
+            {
+                return NotFound("Giáo viên không tồn tại.");
+            }
+
+            // Verify the old password
+            var passwordHasher = user.PasswordHash;
+            bool verificationResult = _securityHelper.ValidateHash(updatePasswordDto.OldPassword, passwordHasher);
+
+            if (verificationResult == false)
+            {
+                return Unauthorized("Mật khẩu cũ không chính xác.");
+            }
+
+            // Hash the new password and update the user's PasswordHash field
+            user.PasswordHash = _securityHelper.Hash(updatePasswordDto.NewPassword);
+
+            // Save changes to the Identity database
+            _identityContext.Users.Update(user);
+            _identityContext.SaveChanges();
+
+            return Ok("Password updated successfully.");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "Internal server error: " + ex.Message);
+        }
     }
 }
 
