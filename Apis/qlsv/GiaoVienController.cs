@@ -2,11 +2,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 
 //
 using qlsv.Data;
 using qlsv.Models;
-using Microsoft.EntityFrameworkCore;
+using qlsv.ViewModels.dto;
 
 namespace qlsv.Controllers;
 
@@ -34,7 +35,8 @@ public class GiaoVienController : ControllerBase
         var query = await (
             from gv in _context.GiaoViens
             join k in _context.Khoas on gv.IdKhoa equals k.IdKhoa
-            select new {
+            select new
+            {
                 IdGiaoVien = gv.IdGiaoVien,
                 TenGiaoVien = gv.TenGiaoVien,
                 Email = gv.Email,
@@ -65,7 +67,8 @@ public class GiaoVienController : ControllerBase
             from gv in _context.GiaoViens
             where gv.IdGiaoVien == id
             join k in _context.Khoas on gv.IdKhoa equals k.IdKhoa
-            select new {
+            select new
+            {
                 IdGiaoVien = gv.IdGiaoVien,
                 TenGiaoVien = gv.TenGiaoVien,
                 Email = gv.Email,
@@ -86,14 +89,34 @@ public class GiaoVienController : ControllerBase
 
     // POST: api/giaovien/
     [HttpPost]
-    public async Task<IActionResult> CreateGiaoVien([FromBody] GiaoVien giaoVien)
+    public IActionResult CreateGiaoVien([FromBody] GiaoVienDto newGiaoVien)
     {
-        // Add to database
-        _context.GiaoViens.Add(giaoVien);
-        await _context.SaveChangesAsync();
+        if (newGiaoVien == null)
+        {
+            return BadRequest("Invalid data.");
+        }
 
-        // Return the result
-        return Ok(giaoVien);
+        try
+        {
+            // Convert the DTO to the entity model, assuming your entity model is GiaoVien
+            var giaoVien = new GiaoVien
+            {
+                TenGiaoVien = newGiaoVien.TenGiaoVien,
+                Email = newGiaoVien.Email,
+                SoDienThoai = newGiaoVien.SoDienThoai,
+                IdKhoa = newGiaoVien.IdKhoa
+            };
+
+            // Add to database
+            _context.GiaoViens.Add(giaoVien);
+            _context.SaveChanges();
+
+            return Ok(giaoVien); // Return success with the newly added teacher's data
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "Internal server error: " + ex.Message);
+        }
     }
 
     // PUT /api/giaovien/{id}

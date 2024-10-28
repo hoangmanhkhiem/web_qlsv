@@ -10,6 +10,51 @@
     <!-- Page level custom scripts -->
     <script>
         $(document).ready(function () {
+            // handle create giao vien
+            // Populate Khoa dropdown when opening the modal
+            $('#dialogThemGiaoVien').on('show.bs.modal', function () {
+                $.ajax({
+                    url: '/api/khoa', // Endpoint to get list of departments
+                    type: 'GET',
+                    success: function (data) {
+                        let khoaSelect = $('#idKhoa');
+                        khoaSelect.empty();
+                        khoaSelect.append('<option value="">Chọn Khoa</option>');
+                        data.forEach(function (khoa) {
+                            khoaSelect.append('<option value="' + khoa.idKhoa + '">' + khoa.tenKhoa + '</option>');
+                        });
+                    },
+                    error: function () {
+                        alert('Không thể tải danh sách Khoa.');
+                    }
+                });
+            });
+
+            // Handle form submission for adding new teacher
+            $('#formThemGiaoVien').on('submit', function (e) {
+                e.preventDefault();
+                
+                $.ajax({
+                    url: '/api/giaovien/', // Endpoint to create new teacher
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        tenGiaoVien: $('#tenGiaoVien').val(),
+                        email: $('#email').val(),
+                        soDienThoai: $('#soDienThoai').val(),
+                        idKhoa: $('#idKhoa').val()
+                    }),
+                    success: function () {
+                        $('#dialogThemGiaoVien').modal('hide');
+                        $('#dataTable').DataTable().ajax.reload(); // Reload the table
+                    },
+                    error: function () {
+                        alert('Không thể thêm giáo viên.');
+                    }
+                });
+            });
+
+            // handle table data
             $('#dataTable').DataTable({
                 ajax: {
                     url: '/api/giaovien/',
@@ -78,3 +123,47 @@
 
 </div>
 <!-- /.container-fluid -->
+
+<!-- Dialog Them giao vien -->
+<div class="modal fade" id="dialogThemGiaoVien" tabindex="-1" role="dialog" aria-labelledby="dialogThemGiaoVienLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="dialogThemGiaoVienLabel">Thêm Giáo Viên</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formThemGiaoVien">
+                    <div class="form-group">
+                        <label for="tenGiaoVien">Tên Giáo Viên</label>
+                        <input type="text" class="form-control" id="tenGiaoVien" name="tenGiaoVien" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="soDienThoai">Số Điện Thoại</label>
+                        <input type="text" class="form-control" id="soDienThoai" name="soDienThoai" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="idKhoa">Khoa</label>
+                        <select class="form-control" id="idKhoa" name="idKhoa" required>
+                            <option value="">Chọn Khoa</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Thêm</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Button Them -->
+<div class="container-fluid">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dialogThemGiaoVien">
+        Thêm Giáo Viên
+    </button>
+</div>
