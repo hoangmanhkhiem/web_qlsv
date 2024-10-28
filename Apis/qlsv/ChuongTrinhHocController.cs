@@ -89,8 +89,9 @@ public class ChuongTrinhHocController : ControllerBase
             from cch_mh in _context.ChuongTrinhHocMonHocs
             where cch_mh.IdChuongTrinhHoc == idChuongtrinhHoc
             join mh in _context.MonHocs on cch_mh.IdMonHoc equals mh.IdMonHoc
-            select new { 
-                IdMonHoc = mh.IdMonHoc, 
+            select new
+            {
+                IdMonHoc = mh.IdMonHoc,
                 TenMonHoc = mh.TenMonHoc,
                 SoTinChi = mh.SoTinChi,
                 SoTietHoc = mh.SoTietHoc
@@ -105,8 +106,9 @@ public class ChuongTrinhHocController : ControllerBase
                 where cch_mh.IdChuongTrinhHoc == idChuongtrinhHoc
                 select cch_mh.IdMonHoc
             ).Contains(mh.IdMonHoc)
-            select new { 
-                IdMonHoc = mh.IdMonHoc, 
+            select new
+            {
+                IdMonHoc = mh.IdMonHoc,
                 TenMonHoc = mh.TenMonHoc,
                 SoTinChi = mh.SoTinChi,
                 SoTietHoc = mh.SoTietHoc
@@ -114,7 +116,8 @@ public class ChuongTrinhHocController : ControllerBase
         ).ToListAsync();
 
         return Ok(
-            new {
+            new
+            {
                 monHocInChuongTrinhHoc,
                 monHocKhongCo
             }
@@ -140,6 +143,7 @@ public class ChuongTrinhHocController : ControllerBase
         }
 
         _context.ChuongTrinhHocMonHocs.Remove(mh_cch);
+        _context.SaveChanges();
 
         return Ok();
     }
@@ -169,13 +173,117 @@ public class ChuongTrinhHocController : ControllerBase
                 IdChuongTrinhHoc = idChuongTrinhHoc
             }
         );
+        _context.SaveChanges();
 
         return Ok(
-            new {
+            new
+            {
                 message = "Thêm môn học thành công"
             }
         );
     }
 
+    /**
+     * POST: /api/chuongtrinhhoc/create
+     * Tao chuong trinh hoc moi
+     */
+    [HttpPost("create")]
+    public async Task<IActionResult> CreateChuongTrinhHoc(string TenChuongTrinhHoc)
+    {
+        var cth = await (
+            from chh in _context.ChuongTrinhHocs
+            where chh.TenChuongTrinhHoc == TenChuongTrinhHoc
+            select chh
+        ).FirstOrDefaultAsync();
+
+        if (cth != null) // Chuong trinh hoc nay da ton tai
+        {
+            return BadRequest("Chương trình học đã tồn tại");
+        }
+
+        _context.ChuongTrinhHocs.Add(
+            new ChuongTrinhHoc
+            {
+                TenChuongTrinhHoc = TenChuongTrinhHoc
+            }
+        );
+        _context.SaveChanges();
+
+        return Ok(
+            new
+            {
+                message = "Tạo chương trình học thành công"
+            }
+        );
+    }
+
+    /**
+     * DELETE: /api/chuongtrinhhoc/delete/{idChuongTrinhHoc}
+     * Xoa chuong trinh hoc
+     */
+    [HttpDelete("delete/{idChuongTrinhHoc}")]
+    public async Task<IActionResult> DeleteChuongTrinhHoc(string idChuongTrinhHoc)
+    {
+        // Xoa mon hoc thuoc chuong trinh hoc
+        var monHocInChuongTrinhHoc = await (
+            from cch_mh in _context.ChuongTrinhHocMonHocs
+            where cch_mh.IdChuongTrinhHoc == idChuongTrinhHoc
+            select cch_mh
+        ).ToListAsync();
+
+        _context.ChuongTrinhHocMonHocs.RemoveRange(monHocInChuongTrinhHoc);
+        // Xoa chuong trinh hoc
+        var cth = await (
+            from chh in _context.ChuongTrinhHocs
+            where chh.IdChuongTrinhHoc == idChuongTrinhHoc
+            select chh
+        ).FirstOrDefaultAsync();
+
+        if (cth == null) // Chuong trinh hoc nay khong ton tai
+        {
+            return NotFound("Không tìm thấy chương trình học");
+        }
+
+        _context.ChuongTrinhHocs.Remove(cth);
+
+        _context.SaveChanges();
+
+        return Ok(
+            new
+            {
+                message = "Xóa chương trình học " + idChuongTrinhHoc + " thành công"
+            }
+        );
+    }
+
+    /**
+     * PUT: /api/chuongtrinhhoc/update/{idChuongTrinhHoc}
+     * Cap nhat ten chuong trinh hoc
+     */
+    [HttpPut("update/{idChuongTrinhHoc}")]
+    public async Task<IActionResult> UpdateChuongTrinhHoc(string idChuongTrinhHoc, string TenChuongTrinhHoc)
+    {
+        var cth = await (
+            from chh in _context.ChuongTrinhHocs
+            where chh.IdChuongTrinhHoc == idChuongTrinhHoc
+            select chh
+        ).FirstOrDefaultAsync();
+
+        if (cth == null) // Chuong trinh hoc nay khong ton tai
+        {
+            return NotFound("Không tìm thấy chương trình học");
+        }
+
+        cth.TenChuongTrinhHoc = TenChuongTrinhHoc;
+
+        _context.SaveChanges();
+
+        return Ok(
+            new
+            {
+                message = "Cập nhật chương trình học thành công"
+            }
+        );
+    }
 }
 

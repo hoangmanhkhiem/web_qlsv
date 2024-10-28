@@ -8,7 +8,27 @@
     <script src="~/sb-admin/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
     <!-- Page level custom scripts -->
+    <script>
+        const baseUrl = `/api/chuongtrinhhoc`;
+        const idChuongTrinhHoc = '@(ViewBag.IdChuongTrinhhoc)';  // Ensuring it's a string
+        // Handle deleting a course from curriculum
+        function deleteMonHocInChuongTrinhHoc(idMonHoc) {
+            console.log(`Deleting ${idMonHoc} from ${idChuongTrinhHoc}`);
+            $.ajax({
+                url: `${baseUrl}/delete/${idMonHoc}/from/${idChuongTrinhHoc}/`,
+                type: 'DELETE',
+                success: function () {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error(`Delete failed: ${status} - ${error}`);
+                    alert('Xóa thất bại!');
+                }
+            });
+        }
+    </script>
     <script src="~/sb-admin/js/demo/datatables-demo.js"></script>
+
 }
 
 @model IEnumerable<MonHoc>
@@ -28,6 +48,7 @@
                             <th>Số Tín Chỉ</th>
                             <th>Số Tiết</th>
                             <th>Khoa</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tfoot>
@@ -36,6 +57,7 @@
                             <th>Số Tín Chỉ</th>
                             <th>Số Tiết</th>
                             <th>Khoa</th>
+                            <th></th>
                         </tr>
                     </tfoot>
                     <tbody>
@@ -57,10 +79,8 @@
                                         asp-action="Edit" asp-route-IdMonHoc="@item.IdMonHoc">
                                         Sửa
                                     </a>
-                                    <a class="btn btn-danger" asp-area="Admin" asp-controller="QuanLyChuongTrinhHoc"
-                                        asp-action="DeleteMonFromChuongTrinh" 
-                                        asp-route-IdMonHoc="@item.IdMonHoc"
-                                        asp-route-IdChuongTrinhHoc="@ViewBag.IdChuongTrinhHoc"
+                                    <a class="btn btn-danger"
+                                        onclick="deleteMonHocInChuongTrinhHoc('@item.IdMonHoc')"
                                     >
                                         Xóa
                                     </a>

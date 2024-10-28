@@ -11,13 +11,47 @@
 
     <!-- Page level custom scripts -->
     <script>
-        // Get data table
-        
-        //#dataTable_1
+        // Define base API URL with escaped ID
+        const baseUrl = `/api/chuongtrinhhoc`;
+        const idChuongTrinhHoc = '@(ViewBag.IdChuongTrinhhoc)';  // Ensuring it's a string
+
+        // Handle deleting a course from curriculum
+        function deleteMonHocInChuongTrinhHoc(idMonHoc) {
+            console.log(`Deleting ${idMonHoc} from ${idChuongTrinhHoc}`);
+            $.ajax({
+                url: `${baseUrl}/delete/${idMonHoc}/from/${idChuongTrinhHoc}/`,
+                type: 'DELETE',
+                success: function () {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error(`Delete failed: ${status} - ${error}`);
+                    alert('Xóa thất bại!');
+                }
+            });
+        }
+
+        // Handle adding a course to curriculum
+        function addMonHocToChuongTrinhHoc(idMonHoc) {
+            console.log(`Adding ${idMonHoc} to ${idChuongTrinhHoc}`);
+            $.ajax({
+                url: `${baseUrl}/add/${idMonHoc}/to/${idChuongTrinhHoc}/`,
+                type: 'PUT',
+                success: function () {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error(`Add failed: ${status} - ${error}`);
+                    alert('Thêm thất bại!');
+                }
+            });
+        }
+
         $(document).ready(function () {
+            // Initialize DataTables as before
             $('#dataTable_1').DataTable({
                 ajax: {
-                    url: '/api/chuongtrinhhoc/details/@ViewBag.IdChuongTrinhhoc',
+                    url: `${baseUrl}/details/${idChuongTrinhHoc}`,
                     type: 'GET',
                     dataSrc: 'monHocInChuongTrinhHoc',
                 },
@@ -25,16 +59,18 @@
                     {
                         data: 'tenMonHoc',
                         render: function (data, type, row) {
-                            return '<a href="/Admin/QuanLyMonHoc/Details?IdMonHoc=' + row.idMonHoc + '">' + data + '</a>';
+                            return `<a href="/Admin/QuanLyMonHoc/Details?IdMonHoc=${row.idMonHoc}">${data}</a>`;
                         }
                     },
                     { data: 'soTinChi' },
-                    { data: 'soTiet' },
+                    { data: 'soTietHoc' },
                     {
                         data: null,
                         render: function (data, type, row) {
-                            return '<button type="button" class="btn btn-danger" onclick="deleteMonHocInChuongTrinhHoc(' + row.idMonHoc + ')">Xóa</button>';
+                            return `<button type="button" class="btn btn-danger" onclick="deleteMonHocInChuongTrinhHoc('${row.idMonHoc}')">Xóa</button>`;
                         },
+                        sortable: false,
+                        searchable: false,
                     }
                 ],
                 language: {
@@ -42,10 +78,9 @@
                 },
             });
 
-            //#dataTable_2
             $('#dataTable_2').DataTable({
                 ajax: {
-                    url: '/api/chuongtrinhhoc/details/@ViewBag.IdChuongTrinhhoc',
+                    url: `${baseUrl}/details/${idChuongTrinhHoc}`,
                     type: 'GET',
                     dataSrc: 'monHocKhongCo',
                 },
@@ -53,16 +88,18 @@
                     {
                         data: 'tenMonHoc',
                         render: function (data, type, row) {
-                            return '<a href="/Admin/QuanLyMonHoc/Details?IdMonHoc=' + row.idMonHoc + '">' + data + '</a>';
+                            return `<a href="/Admin/QuanLyMonHoc/Details?IdMonHoc=${row.idMonHoc}">${data}</a>`;
                         }
                     },
                     { data: 'soTinChi' },
-                    { data: 'soTiet' },
+                    { data: 'soTietHoc' },
                     {
                         data: null,
                         render: function (data, type, row) {
-                            return '<button type="button" class="btn btn-primary" onclick="addMonHocInChuongTrinhHoc(' + row.idMonHoc + ')">Thêm</button>';
-                        }
+                            return `<button type="button" class="btn btn-primary" onclick="addMonHocToChuongTrinhHoc('${row.idMonHoc}')">Thêm</button>`;
+                        },
+                        sortable: false,
+                        searchable: false,
                     }
                 ],
                 language: {
@@ -70,35 +107,7 @@
                 },
             });
         });
-        // xu li xoa chuong trinh hoc khoi mon hoc
-        function deleteMonHocInChuongTrinhHoc(idMonHoc) {
-            $.ajax({
-                url: `/api/chuongtrinhhoc/delete/${idMonHoc}/from/@ViewBag.IdChuongTrinhhoc/`,
-                type: 'DELETE',
-                success: function (response) {
-                    alert('Xóa thành công!');
-                    location.reload();
-                },
-                error: function (xhr, status, error) {
-                    alert('Xóa thất bại!');
-                }
-            });
-        }
 
-        // xu li them mon hoc vao chuong trinh hoc
-        function addMonHocInChuongTrinhHoc(idMonHoc) {
-            $.ajax({
-                url: `/api/chuongtrinhhoc/add/${idMonHoc}/to/@ViewBag.IdChuongTrinhhoc/`,
-                type: 'PUT',
-                success: function (response) {
-                    alert('Thêm thành công!');
-                    location.reload();
-                },
-                error: function (xhr, status, error) {
-                    alert('Thêm thất bại!');
-                }
-            });
-        }
     </script>
 }
 

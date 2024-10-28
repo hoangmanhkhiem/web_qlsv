@@ -42,6 +42,8 @@ public class QuanLyChuongTrinhHocController : Controller
             where cth.IdChuongTrinhHoc == IdChuongTrinhHoc
             select new MonHoc{
                 TenMonHoc = mh.TenMonHoc,
+                IdMonHoc = mh.IdMonHoc,
+                IdKhoa = mh.IdKhoa,
                 SoTinChi = mh.SoTinChi,
                 SoTietHoc = mh.SoTietHoc,
                 Khoas = mh.Khoas
