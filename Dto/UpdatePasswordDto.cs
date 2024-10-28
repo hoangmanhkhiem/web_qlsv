@@ -1,7 +1,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace qlsv.ViewModels.dto
+namespace qlsv.Dto
 {
     public class UpdatePasswordDto
     {
