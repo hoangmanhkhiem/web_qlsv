@@ -3,11 +3,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 //
 using qlsv.Data;
 using qlsv.Models;
-using qlsv.ViewModels.dto;
+using qlsv.Dto;
 using qlsv.Helpers;
 
 namespace qlsv.Controllers;
@@ -109,13 +110,52 @@ public class GiaoVienController : ControllerBase
             // Convert the DTO to the entity model, assuming your entity model is GiaoVien
             var giaoVien = new GiaoVien
             {
+                IdGiaoVien = newGiaoVien.IdGiaoVien,
                 TenGiaoVien = newGiaoVien.TenGiaoVien,
                 Email = newGiaoVien.Email,
                 SoDienThoai = newGiaoVien.SoDienThoai,
                 IdKhoa = newGiaoVien.IdKhoa
             };
+            // Check duplicate ID, email, phone number
+            if (_context.GiaoViens.Any(gv => gv.IdGiaoVien == giaoVien.IdGiaoVien))
+            {
+                return BadRequest("ID giáo viên đã tồn tại.");
+            }
+            if (_context.GiaoViens.Any(gv => gv.Email == giaoVien.Email))
+            {
+                return BadRequest("Email đã tồn tại.");
+            }
+            if (_context.GiaoViens.Any(gv => gv.SoDienThoai == giaoVien.SoDienThoai))
+            {
+                return BadRequest("Số điện thoại đã tồn tại.");
+            }
+            // Create user identity with default password is 123456
+            // Find id role is GiaoVien
+            var role = _identityContext.Roles.FirstOrDefault(r => r.Name == "GiaoVien");
+            if (role == null)
+            {
+                return NotFound("Role GiaoVien not found.");
+            }
+            // Create new user
+            var user = new UserCustom
+            {
+                IdClaim = giaoVien.IdGiaoVien,
+                UserName = giaoVien.IdGiaoVien,
+                PasswordHash = _securityHelper.Hash("123456"),
+                FullName = giaoVien.TenGiaoVien,
+                Email = giaoVien.Email,
+                PhoneNumber = giaoVien.SoDienThoai,
+            };
+            // Add role to user
+            _identityContext.UserRoles.Add(new IdentityUserRole<string>
+            {
+                UserId = user.Id,
+                RoleId = role.Id
+            });
 
             // Add to database
+            _identityContext.Users.Add(user);
+            _identityContext.SaveChanges();
             _context.GiaoViens.Add(giaoVien);
             _context.SaveChanges();
 
