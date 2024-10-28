@@ -45,24 +45,23 @@
                     <h3 class="box-title mt-5">Danh Sách Các Môn Dạy</h3>
                     <div class="table-responsive">
                         <div class="container-fluid">
-                            <!-- DataTales MonHoc -->
+                            <!-- DataTales LopHocPhan -->
                             <div class="card shadow mb-4">
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <table class="table table-bordered" id="dataTable_MonHoc" width="100%"
-                                            cellspacing="0">
+                                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                             <thead>
                                                 <tr>
-                                                    <th>Tên Môn Học</th>
-                                                    <th>Số Tín Chỉ</th>
-                                                    <th>Số Tiết</th>
+                                                    <th>Lớp Học Phần</th>
+                                                    <th>Giảng Viên</th>
+                                                    <th>Môn học</th>
                                                 </tr>
                                             </thead>
                                             <tfoot>
                                                 <tr>
-                                                    <th>Tên Môn Học</th>
-                                                    <th>Số Tín Chỉ</th>
-                                                    <th>Số Tiết</th>
+                                                    <th>Lớp Học Phần</th>
+                                                    <th>Giảng Viên</th>
+                                                    <th>Môn học</th>
                                                 </tr>
                                             </tfoot>
                                         </table>
@@ -106,19 +105,29 @@
             $('#dataTable_MonHoc').DataTable(
                 {
                     ajax: {
-                        url: '/api/monhoc/giaovien/@Model.IdGiaoVien',
+                        url: '/api/lophocphan/giaovien/@Model.IdGiaoVien',
                         type: 'GET',
                         dataSrc: '',
                     },
                     columns: [
                         {
-                            data: 'TenMonHoc',
+                            data: 'tenLopHocPhan',
                             render: function (data, type, row) {
-                                return '<a href="/Admin/QuanLyMonHoc/Details/' + row.IdMonHoc + '">' + data + '</a>';
+                                return '<a href="/Admin/QuanLyLopHocPhan/Details?IdGiaoVien=' + row.idLopHocPhan + '">' + data + '</a>';
                             }
                         },
-                        { data: 'SoTinChi' },
-                        { data: 'SoTiet' },
+                        {
+                            data: 'tenGiaoVien',
+                            render: function (data, type, row) {
+                                return '<a href="/Admin/QuanLyGiaoVien/Details?IdGiaoVien=' + row.idGiaoVien + '">' + data + '</a>';
+                            }
+                        },
+                        {
+                            data: 'monHoc',
+                            render: function (data, type, row) {
+                                return '<a href="/Admin/QuanLyMonHoc/Details?IdMonHoc=' + row.idMonHoc + '">' + data + '</a>';
+                            }
+                        },
                     ],
                     language: {
                         url: '/sb-admin/json/data_tables_vi.json',
