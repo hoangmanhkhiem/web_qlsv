@@ -42,7 +42,8 @@
                         tenGiaoVien: $('#tenGiaoVien').val(),
                         email: $('#email').val(),
                         soDienThoai: $('#soDienThoai').val(),
-                        idKhoa: $('#idKhoa').val()
+                        idKhoa: $('#idKhoa').val(),
+                        idGiaoVien: $('#idGiaoVien').val()
                     }),
                     success: function () {
                         $('#dialogThemGiaoVien').modal('hide');
@@ -137,6 +138,10 @@
             </div>
             <div class="modal-body">
                 <form id="formThemGiaoVien">
+                    <div class="form-group">
+                        <label for="idGiaoVien">Mã Giáo Viên</label>
+                        <input type="text" class="form-control" id="idGiaoVien" name="idGiaoVien" required>
+                    </div>
                     <div class="form-group">
                         <label for="tenGiaoVien">Tên Giáo Viên</label>
                         <input type="text" class="form-control" id="tenGiaoVien" name="tenGiaoVien" required>
