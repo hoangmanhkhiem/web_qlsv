@@ -35,10 +35,6 @@ public class AvatarController : ControllerBase
                 ProfilePictureBase64 = us.ProfilePictureBase64
             }
         ).FirstOrDefault();
-        if (stringBase64 == null)
-        {
-            return NotFound();
-        }
         return Ok(stringBase64);
     }
 
@@ -58,11 +54,11 @@ public class AvatarController : ControllerBase
         // Check if stringBase64 is img/png
         if (stringBase64 == null)
         {
-            return BadRequest();
+            return BadRequest("Không có dữ liệu truyền vào");
         }
         if (stringBase64.Length < 22)
         {
-            return BadRequest();
+            return BadRequest("Invalid base64 string parameter format img/png");
         }
         if (stringBase64.Substring(0, 22) != "data:image/png;base64,")
         {
@@ -85,7 +81,7 @@ public class AvatarController : ControllerBase
         ).FirstOrDefault();
         if (user == null)
         {
-            return NotFound();
+            return NotFound("Không tìm thấy user");
         }
         user.ProfilePictureBase64 = null;
         _context.Entry(user).State = EntityState.Modified;
