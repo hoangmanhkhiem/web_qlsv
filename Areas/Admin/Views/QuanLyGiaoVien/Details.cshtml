@@ -102,7 +102,7 @@
     <script>
         $(document).ready(function () {
             // DataTables events
-            $('#dataTable_MonHoc').DataTable(
+            $('#dataTable').DataTable(
                 {
                     ajax: {
                         url: '/api/lophocphan/giaovien/@Model.IdGiaoVien',
@@ -123,7 +123,7 @@
                             }
                         },
                         {
-                            data: 'monHoc',
+                            data: 'tenMonHoc',
                             render: function (data, type, row) {
                                 return '<a href="/Admin/QuanLyMonHoc/Details?IdMonHoc=' + row.idMonHoc + '">' + data + '</a>';
                             }
