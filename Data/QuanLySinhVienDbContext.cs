@@ -99,8 +99,7 @@ public class QuanLySinhVienDbContext : DbContext
             entity.ToTable("GiaoVien");
 
             entity.Property(e => e.IdGiaoVien)
-                .HasMaxLength(100)
-                .HasDefaultValueSql("(newid())");
+                .HasMaxLength(100);
 
             entity.Property(e => e.Email).HasMaxLength(100);
 
@@ -135,8 +134,7 @@ public class QuanLySinhVienDbContext : DbContext
             entity.ToTable("LopHocPhan");
 
             entity.Property(e => e.IdLopHocPhan)
-                .HasMaxLength(100)
-                .HasDefaultValueSql("(newid())");
+                .HasMaxLength(100);
 
             entity.Property(e => e.IdGiaoVien).HasMaxLength(100);
 
@@ -160,8 +158,7 @@ public class QuanLySinhVienDbContext : DbContext
             entity.ToTable("MonHoc");
 
             entity.Property(e => e.IdMonHoc)
-                .HasMaxLength(100)
-                .HasDefaultValueSql("(newid())");
+                .HasMaxLength(100);
 
             entity.Property(e => e.IdKhoa).HasMaxLength(100);
 
