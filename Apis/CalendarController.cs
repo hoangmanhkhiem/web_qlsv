@@ -29,15 +29,12 @@ public class CalendarController : ControllerBase
     [HttpGet("giaovien/{id}")]
     public async Task<IActionResult> GetCalendarGiaoVien(string id)
     {
-        // Variables
-        List<CalendarEventObject> listEvent = new List<CalendarEventObject>();
-
         // Query database to get events for the teacher
         var events = await (from lhp in _context.LopHocPhans
                             join tglhp in _context.ThoiGianLopHocPhans on lhp.IdLopHocPhan equals tglhp.IdLopHocPhan
                             join tg in _context.ThoiGians on tglhp.IdThoiGian equals tg.IdThoiGian
                             where lhp.IdGiaoVien == id
-                            select new CalendarEventObject
+                            select new
                             {
                                 Id = tg.IdThoiGian,
                                 GroupId = lhp.IdLopHocPhan,
@@ -47,26 +44,13 @@ public class CalendarController : ControllerBase
                                 End = tg.NgayKetThuc
                             }).ToListAsync();
 
-        // Add results to listEvent
-        listEvent.AddRange(events);
-
         if (events.Count == 0)
         {
             return NotFound("Không tìm thấy lịch học");
         }
-        // To Json 
-        var res = JsonSerializer.Serialize(listEvent.Select(mh => new
-        {
-            id = mh.Id,
-            groupId = mh.GroupId,
-            title = mh.Title,
-            start = mh.Start?.ToString("yyyy-MM-ddTHH:mm:ss"),
-            end = mh.End?.ToString("yyyy-MM-ddTHH:mm:ss"),
-            description = mh.Description
-        }).ToList());
-
+    
         return Ok(
-            res
+            events
         );
     }
 
@@ -75,16 +59,13 @@ public class CalendarController : ControllerBase
     [HttpGet("sinhvien/{id}")]
     public async Task<IActionResult> GetCalendarSinhVien(string id)
     {
-        // Variables
-        List<CalendarEventObject> listEvent = new List<CalendarEventObject>();
-
         // Query database to get events for the student
         var events = await (from svlhp in _context.SinhVienLopHocPhans
                             join lhp in _context.LopHocPhans on svlhp.IdLopHocPhan equals lhp.IdLopHocPhan
                             join tglhp in _context.ThoiGianLopHocPhans on lhp.IdLopHocPhan equals tglhp.IdLopHocPhan
                             join tg in _context.ThoiGians on tglhp.IdThoiGian equals tg.IdThoiGian
                             where svlhp.IdSinhVien == id
-                            select new CalendarEventObject
+                            select new 
                             {
                                 Id = tg.IdThoiGian,
                                 GroupId = lhp.IdLopHocPhan,
@@ -95,25 +76,13 @@ public class CalendarController : ControllerBase
                             }).ToListAsync();
 
         // Add results to listEvent
-        listEvent.AddRange(events);
-
         if (events.Count == 0)
         {
             return NotFound("Không tìm thấy lịch học");
         }
-        // To Json 
-        var res = JsonSerializer.Serialize(listEvent.Select(mh => new
-        {
-            id = mh.Id,
-            groupId = mh.GroupId,
-            title = mh.Title,
-            start = mh.Start?.ToString("yyyy-MM-ddTHH:mm:ss"),
-            end = mh.End?.ToString("yyyy-MM-ddTHH:mm:ss"),
-            description = mh.Description
-        }).ToList());
-
+        
         return Ok(
-            res
+            events
         );
     }
 
@@ -124,7 +93,7 @@ public class CalendarController : ControllerBase
     [HttpGet("lophocphan/{id}")]
     public async Task<IActionResult> GetCalendarLopHocPhan(string id)
     {
-        List<CalendarEventObject> listEvents = await (
+        var listEvents = await (
             from tg_lhp in _context.ThoiGianLopHocPhans
             where tg_lhp.IdLopHocPhan == id
             join lhp in _context.LopHocPhans on tg_lhp.IdLopHocPhan equals lhp.IdLopHocPhan
@@ -143,17 +112,7 @@ public class CalendarController : ControllerBase
             return BadRequest("Không tìm thấy lịch học");
         }
 
-        var res = JsonSerializer.Serialize(listEvents.Select(mh => new
-        {
-            id = mh.Id,
-            groupId = mh.GroupId,
-            title = mh.Title,
-            start = mh.Start?.ToString("yyyy-MM-ddTHH:mm:ss"),
-            end = mh.End?.ToString("yyyy-MM-ddTHH:mm:ss"),
-            description = mh.Description.ToString()
-        }).ToList());
-
-        return Ok(res);
+        return Ok(listEvents);
     }
 
 }
