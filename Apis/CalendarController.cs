@@ -116,6 +116,46 @@ public class CalendarController : ControllerBase
             res
         );
     }
+
+    /**
+     * GET: api/calendar/lophocphan/{id}
+     * Get calerdar lop hoc phan with id lop hoc pha
+     */
+    [HttpGet("lophocphan/{id}")]
+    public async Task<IActionResult> GetCalendarLopHocPhan(string id)
+    {
+        List<CalendarEventObject> listEvents = await (
+            from tg_lhp in _context.ThoiGianLopHocPhans
+            where tg_lhp.IdLopHocPhan == id
+            join lhp in _context.LopHocPhans on tg_lhp.IdLopHocPhan equals lhp.IdLopHocPhan
+            join tg in _context.ThoiGians on tg_lhp.IdThoiGian equals tg.IdThoiGian
+            select new CalendarEventObject {
+                Id = tg.IdThoiGian,
+                GroupId = tg_lhp.IdLopHocPhan,
+                Title = lhp.TenHocPhan,
+                Description = $"Lớp: {lhp.TenHocPhan}",
+                Start = tg.NgayBatDau,
+                End = tg.NgayKetThuc
+            }
+        ).ToListAsync();
+
+        if (listEvents.Count < 0){
+            return BadRequest("Không tìm thấy lịch học");
+        }
+
+        var res = JsonSerializer.Serialize(listEvents.Select(mh => new
+        {
+            id = mh.Id,
+            groupId = mh.GroupId,
+            title = mh.Title,
+            start = mh.Start?.ToString("yyyy-MM-ddTHH:mm:ss"),
+            end = mh.End?.ToString("yyyy-MM-ddTHH:mm:ss"),
+            description = mh.Description.ToString()
+        }).ToList());
+
+        return Ok(res);
+    }
+
 }
 
 
