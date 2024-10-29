@@ -71,8 +71,7 @@ public class QuanLySinhVienDbContext : DbContext
             entity.ToTable("Diem");
 
             entity.Property(e => e.IdDiem)
-                .HasMaxLength(100)
-                .HasDefaultValueSql("(newid())");
+                .HasMaxLength(100);
 
             entity.Property(e => e.DiemKetThuc).HasColumnType("decimal(5, 2)");
 
