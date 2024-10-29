@@ -46,11 +46,6 @@ public class LopHocPhanController : ControllerBase
             }
         ).ToListAsync();
 
-        if (query == null || !query.Any()) // Ensure there's data
-        {
-            return NotFound("Không tìm thấy lớp học phần");
-        }
-
         // Directly return the JSON result
         return Ok(query);
     }
@@ -80,11 +75,6 @@ public class LopHocPhanController : ControllerBase
             }
         ).ToListAsync();
 
-        if (query == null || !query.Any()) // Ensure there's data
-        {
-            return NotFound("Không tìm thấy lớp học phần");
-        }
-
         // Directly return the JSON result
         return Ok(query);
     }
@@ -112,11 +102,6 @@ public class LopHocPhanController : ControllerBase
                 IdMonHoc = mon.IdMonHoc
             }
         ).ToListAsync();
-
-        if (query == null || !query.Any()) // Ensure there's data
-        {
-            return NotFound("Không tìm thấy lớp học phần");
-        }
 
         // Directly return the JSON result
         return Ok(query);

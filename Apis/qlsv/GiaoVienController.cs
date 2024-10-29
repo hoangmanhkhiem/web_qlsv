@@ -55,11 +55,6 @@ public class GiaoVienController : ControllerBase
             }
         ).ToListAsync();
 
-        if (query == null || !query.Any()) // Ensure there's data
-        {
-            return NotFound("Không tìm thấy chương trình học");
-        }
-
         // Directly return the JSON result
         return Ok(query);
     }
@@ -86,11 +81,6 @@ public class GiaoVienController : ControllerBase
                 TenKhoa = k.TenKhoa
             }
         ).ToListAsync();
-
-        if (query == null || !query.Any()) // Ensure there's data
-        {
-            return NotFound("Không tìm thấy chương trình học");
-        }
 
         // Directly return the JSON result
         return Ok(query);
