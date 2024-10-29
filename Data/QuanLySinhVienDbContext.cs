@@ -71,7 +71,8 @@ public class QuanLySinhVienDbContext : DbContext
             entity.ToTable("Diem");
 
             entity.Property(e => e.IdDiem)
-                .HasMaxLength(100);
+                .HasMaxLength(100)
+                .HasDefaultValueSql("(newid())");
 
             entity.Property(e => e.DiemKetThuc).HasColumnType("decimal(5, 2)");
 
@@ -121,8 +122,7 @@ public class QuanLySinhVienDbContext : DbContext
             entity.ToTable("Khoa");
 
             entity.Property(e => e.IdKhoa)
-                .HasMaxLength(100)
-                .HasDefaultValueSql("(newid())");
+                .HasMaxLength(100);
 
             entity.Property(e => e.TenKhoa).HasMaxLength(100);
         });
@@ -176,8 +176,7 @@ public class QuanLySinhVienDbContext : DbContext
             entity.ToTable("SinhVien");
 
             entity.Property(e => e.IdSinhVien)
-                .HasMaxLength(100)
-                .HasDefaultValueSql("(newid())");
+                .HasMaxLength(100);
 
             entity.Property(e => e.DiaChi).HasMaxLength(255);
 
