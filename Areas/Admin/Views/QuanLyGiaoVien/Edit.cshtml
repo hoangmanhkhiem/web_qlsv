@@ -96,6 +96,18 @@
                 }
             });
 
+            // Get LopHocPhan cua GiaoVien de xem co duoc thay doi khoa khong
+            $.ajax({
+                url: '/api/LopHocPhan/giaovien/@Model.IdGiaoVien',
+                type: 'GET',
+                success: function (res) {
+                    if (res.length) {
+                        document.querySelector("select[name='IdKhoa']").disabled = true;
+                        console.log("Khoa Khong The Thay Thoi Khi Dang Day Lop Hoc Phan");
+
+                    }
+                }
+            });
 
         });
     </script>
