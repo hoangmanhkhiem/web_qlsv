@@ -7,6 +7,7 @@ using System.Text.Json;
 using qlsv.Helpers;
 using qlsv.Data;
 using qlsv.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace qlsv.Controllers;
 
@@ -137,5 +138,54 @@ public class KhoaController : ControllerBase
 
         return Ok("Xóa khoa thành công");
     }
+
+    /**
+     *  GET: api/khoa/sinhvien/{idKhoa}
+     * Lay Sinh vien thuoc khoa
+     */
+    [HttpGet("sinhvien")]
+    public async Task<IActionResult> GetSinhVienFromKhoa(string IdKHoa) {
+
+        var qr = await (
+            from sv in _context.SinhViens
+            where sv.IdKhoa == IdKHoa
+            select new 
+            {
+                IdSinhVien = sv.IdSinhVien,
+                IdKhoa = IdKHoa,
+                IdChuongTrinhHoc = sv.IdChuongTrinhHoc,
+                HoTen = sv.HoTen,
+                Lop = sv.Lop,
+                NgaySinh = sv.NgaySinh,
+                DiaChi = sv.DiaChi
+            }
+        ).ToListAsync();
+
+        return Ok(qr);
+    }
+
+    /**
+     * GET: api/khoa/giaovien/{idKhoa}
+     * Lay Giao Vien Thuoc Khoa
+     */
+    [HttpGet("giaovien")]
+    public async Task<IActionResult> GetGiaoVienFromKhoa(string idKhoa)
+    {   
+        var qr = await (
+            from gv in _context.GiaoViens
+            where gv.IdKhoa == idKhoa
+            select new 
+            {
+                IdGiaoVien = gv.IdGiaoVien,
+                IdKhoa = gv.IdKhoa,
+                TenGiaoVien = gv.TenGiaoVien,
+                Email = gv.Email,
+                SoDienThoai = gv.SoDienThoai
+            }
+        ).ToListAsync();
+
+        return Ok(qr);
+    }
+
 }
 
