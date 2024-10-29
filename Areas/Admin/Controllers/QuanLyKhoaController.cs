@@ -29,6 +29,17 @@ public class QuanLyKhoaController : Controller
         return View();
     }
 
+    /**
+     * GET: /Admin/QuanLyKhoa/Deatail
+     * Xem thong tin chi tiet trong khoa
+     */
+    public IActionResult Details(string idKhoa){
+        
+        ViewBag.Id = idKhoa;
+        return View();
+    }
+
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
