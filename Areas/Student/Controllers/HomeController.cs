@@ -40,7 +40,7 @@ public class HomeController : Controller
         // Get iduser info from token
         var jwtToken = _jwtHelper.DecodeToken(accessToken);
 
-        string idUser = jwtToken.Claims.FirstOrDefault(c => c.Type == "idUser")?.Value;
+        string idUser = jwtToken.Claims.FirstOrDefault(c => c.Type == "idClaim")?.Value;
 
         ViewBag.idUser = idUser;
 
