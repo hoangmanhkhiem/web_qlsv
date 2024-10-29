@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 //
 using qlsv.Models;
 using qlsv.Services;
+using qlsv.Dto;
 
 namespace qlsv.Admin.Controllers;
 
@@ -114,6 +115,44 @@ public class QuanLyGiaoVienController : Controller
             }
         }
         return RedirectToAction("Edit", new { id = IdGiaoVien });
+    }
+
+    /**
+     * POST: /Admin/QuanLyGiaoVien/UploadCSV
+     * Upload CSV file create list giao vien
+     */
+    [HttpPost]
+    public async Task<IActionResult> UploadCSV(IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+        {
+            return BadRequest("File not found");
+        }
+
+        var giaoviens = new List<GiaoVien>();
+        using (var reader = new StreamReader(file.OpenReadStream()))
+        {
+            while (reader.Peek() >= 0)
+            {
+                var line = await reader.ReadLineAsync();
+                var values = line.Split(",");
+                var gv = new GiaoVienDto
+                {
+                    IdGiaoVien = values[0],
+                    TenGiaoVien = values[1],
+                    SoDienThoai = values[2],
+                    Email = values[3],
+                    IdKhoa = values[4]
+                };
+                // giaoviens.Add(gv);
+                Console.WriteLine(gv);
+            }
+        }
+
+        // _context.GiaoViens.AddRange(giaoviens);
+        // _context.SaveChanges();
+
+        return RedirectToAction("Index");
     }
 
 
