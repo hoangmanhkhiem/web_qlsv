@@ -1,4 +1,3 @@
-
 @section Styles {
     <link href="~/sb-admin/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 }
@@ -10,6 +9,27 @@
 
     <!-- Page level custom scripts -->
     <script>
+        // js them khoa
+        $('#addKhoa').submit(function (e) {
+            e.preventDefault();
+            var tenKhoa = $('#tenKhoa').val();
+            $.ajax({
+                url: `/api/khoa/`,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(`${tenKhoa}`),
+                success: function (data) {
+                    $('#addKhoa').modal('hide');
+                    $('#tenKhoa').val('');
+                    $('#dataTable').DataTable().ajax.reload();
+                },
+                error: function (error) {
+                    console.log(error);
+                    alert('Thêm khoa thất bại');
+                }
+            });
+        });
+
         $(document).ready(function () {
             $('#dataTable').DataTable({
                 ajax: {
@@ -31,6 +51,7 @@
                 },
             });
         });
+
     </script>
 }
 
@@ -61,3 +82,31 @@
 
 </div>
 <!-- /.container-fluid -->
+
+<!-- Dialog Create Khoa -->
+<div class="modal fade" id="addKhoa" tabindex="-1" role="dialog" aria-labelledby="addKhoaLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addKhoaLabel">Thêm Khoa Mới</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addKhoa">
+                    <div class="form-group" role="form">
+                        <label for="tenKhoa">Tên Khoa</label>
+                        <input type="text" class="form-control" id="tenKhoa" name="tenKhoa" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Thêm</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <!-- Button them khoa moi -->
+    <button class="btn btn-primary" data-toggle="modal" data-target="#addKhoa">Thêm Khoa Mới
+    </button>
+</div>
