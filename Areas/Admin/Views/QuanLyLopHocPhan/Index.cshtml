@@ -9,6 +9,67 @@
 
     <!-- Page level custom scripts -->
     <script>
+        // Handle load mon hoc and giang vien when click create lop hoc phan
+        $('#createLopHocPhanModal').on('show.bs.modal', function (e) {
+            $.ajax({
+                url: '/api/monhoc/',
+                type: 'GET',
+                success: function (data) {
+                    var monHoc = $('#idMonHoc');
+                    monHoc.empty();
+                    monHoc.append('<option value="">Chọn môn học</option>');
+                    $.each(data, function (index, item) {
+                        monHoc.append('<option value="' + item.idMonHoc + '">' + item.tenMonHoc + '</option>');
+                    });
+                }
+            });
+
+            $.ajax({
+                url: '/api/giaovien/',
+                type: 'GET',
+                success: function (data) {
+                    var giaoVien = $('#idGiaoVien');
+                    giaoVien.empty();
+                    giaoVien.append('<option value="">Chọn giảng viên</option>');
+                    $.each(data, function (index, item) {
+                        giaoVien.append('<option value="' + item.idGiaoVien + '">' + item.tenGiaoVien + '</option>');
+                    });
+                }
+            });
+        });
+
+        // Handle create lop hoc phan
+        $('#createLopHocPhan').click(function () {
+            var tenLopHocPhan = $('#tenLopHocPhan').val();
+            var idGiaoVien = $('#idGiaoVien').val();
+            var idMonHoc = $('#idMonHoc').val();
+
+            if (tenLopHocPhan.val() < 0 
+                || idGiaoVien.val() < 0
+                || idMonHoc.val() < 0) 
+                return;
+
+            $.ajax({
+                url: '/api/lophocphan/',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    tenLopHocPhan: tenLopHocPhan,
+                    idGiaoVien: idGiaoVien,
+                    idMonHoc: idMonHoc,
+                }),
+                success: function (data) {
+                    $('#createLopHocPhanModal').modal('hide');
+                    $('#dataTable').DataTable().ajax.reload();
+                },
+                error: function (data) {
+                    alert('Tạo mới lớp học phần thất bại');
+                    console.log(data);
+                }
+            });
+        });
+
+        // Handle load and create data tables 
         $(document).ready(function () {
             $('#dataTable').DataTable({
                 ajax: {
@@ -32,7 +93,7 @@
                     {
                         data: 'tenMonHoc',
                         render: function (data, type, row) {
-                            return '<a href="/Admin/QuanLyMonHoc/Details/' + row.idMonHoc + '">' + data + '</a>';
+                            return '<a href="/Admin/QuanLyMonHoc/Details/?IdMonHoc=' + row.idMonHoc + '">' + data + '</a>';
                         }
                     },
                 ],
@@ -71,5 +132,51 @@
             </div>
         </div>
     </div>
+</div>
 
+<!-- Dialog Create Lop Hoc Phan -->
+<div class="modal fade" id="createLopHocPhanModal" tabindex="-1" role="dialog"
+    aria-labelledby="createLopHocPhanModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createLopHocPhanModalLabel">Tạo mới Lớp Học Phần</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="createLopHocPhanForm">
+                    <div class="form-group form-md-line-input">
+                        <label for="tenLopHocPhan">Tên Lớp Học Phần</label>
+                        <input type="text" class="form-control" id="tenLopHocPhan" name="tenLopHocPhan"
+                            placeholder="Nhập tên lớp học phần" required>
+                    </div>
+                    <div class="form-group form-md-line-input">
+                        <label for="idGiaoVien">Giảng Viên</label>
+                        <select class="form-control" id="idGiaoVien" name="idGiaoVien">
+                            <option value="">Chọn giảng viên</option>
+                        </select>
+                    </div>
+                    <div class="form-group form-md-line-input">
+                        <label for="idMonHoc">Môn học</label>
+                        <select class="form-control" id="idMonHoc" name="idMonHoc">
+                            <option value="">Chọn môn học</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="createLopHocPhan">Tạo mới</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Button dialog create lhp -->
+<div class="container-fluid">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createLopHocPhanModal">
+        Tạo mới Lớp Học Phần
+    </button>
 </div>
