@@ -176,6 +176,15 @@ public class MonHocController : ControllerBase
         {
             return NotFound();
         }
+        // Kiem tra mon hoc co gan voi lop hoc phan nao khong, neu co khong duoc xoa
+        var lophocphans = await _quanLySinhVienDbContext.LopHocPhans.Where(lhp => lhp.IdMonHoc == id).ToListAsync();
+        if (lophocphans.Count > 0)
+        {
+            return BadRequest(new {
+                StatusCode = 400,
+                Message = "Hãy xóa lớp học phần trước!"
+            });
+        }
 
         _quanLySinhVienDbContext.MonHocs.Remove(monhoc);
         await _quanLySinhVienDbContext.SaveChangesAsync();
