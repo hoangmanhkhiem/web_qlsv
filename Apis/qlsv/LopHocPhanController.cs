@@ -140,7 +140,7 @@ public class LopHocPhanController : ControllerBase
      * DELETE: api/lophocphan/{IdLopHocPhan}
      * Delete lop hoc phan by IdLopHocPhan
      */
-    [HttpDelete("{id}")]
+    [HttpDelete("{IdLopHocPhan}")]
     public async Task<IActionResult> DeleteLopHocPhan(string IdLopHocPhan)
     {
 
@@ -173,7 +173,7 @@ public class LopHocPhanController : ControllerBase
         // if id lop hoc phan is null -> generate new id
         if (lopHocPhan.IdLopHocPhan == null)
         {
-            lopHocPhan.IdLopHocPhan = new Guid().ToString();
+            lopHocPhan.IdLopHocPhan = Guid.NewGuid().ToString();
         }
 
         // Create new lop hoc phan
@@ -219,7 +219,7 @@ public class LopHocPhanController : ControllerBase
      * PUT: api/lophocphan/{IdLopHocPhan}
      * Update lop hoc phan by IdLopHocPhan
      */
-    [HttpPut("{id}")]
+    [HttpPut("{IdLopHocPhan}")]
     public async Task<IActionResult> UpdateLopHocPhan(
         string IdLopHocPhan, 
         [FromBody] LopHocPhanDto lopHocPhan)
