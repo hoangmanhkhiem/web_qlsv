@@ -1,0 +1,160 @@
+@model LopHocPhan;
+
+@{
+    ViewBag.Title = "Chi tiết lớp học phần " + Model.TenHocPhan;
+}
+
+<h2 class="container-fluid">Chi tiết lớp học phần @Model.TenHocPhan</h2>
+
+<!-- Calendar lop hop phan -->
+<div class="container-fluid">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <h3 class="box-title mt-5">Lịch Học Của Lớp Học Phần</h3>
+        <div class="table-responsive" id="calendar">
+            <!-- js render calendar here -->
+        </div>
+    </div>
+</div>
+
+<!-- DataTales Sinh Vien Thuoc Lop Hoc Phan -->
+<div class="col-lg-12 col-md-12 col-sm-12">
+    <h3 class="box-title mt-5">Danh Sách Sinh Viên Thuộc Lóp Học Phần</h3>
+    <div class="table-responsive">
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Họ Và Tên</th>
+                                <th>Lớp</th>
+                                <th>Ngày Sinh</th>
+                                <th>Địa Chỉ</th>
+                                <th>Chương Trình Học</th>
+                                <th>Khoa</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Họ Và Tên</th>
+                                <th>Lớp</th>
+                                <th>Ngày Sinh</th>
+                                <th>Địa Chỉ</th>
+                                <th>Chương Trình Học</th>
+                                <th>Khoa</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <!-- Calendar -->
+    <link rel='stylesheet' href='~/lib/fullcalendar-6.1.15/css/v_calendar.css' />
+    <!-- Data table -->
+    <link href="~/sb-admin/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+}
+
+@section Scripts {
+    <!-- Calendar -->
+    <script src='~/lib/fullcalendar-6.1.15/dist/index.global.min.js'></script>
+    <!-- Data table -->
+    <script src="~/sb-admin/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/sb-admin/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Calendar events
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                displayEventTime: false,
+                initialView: 'dayGridMonth', // 'dayGridWeek', 'timeGridDay', 'listWeek'
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                buttonText: {
+                    today: 'Hôm nay',
+                    month: 'Tháng',
+                    week: 'Tuần',
+                    day: 'Ngày',
+                    list: 'Danh sách',
+                },
+                locale: 'vi',
+                timeZone: 'Asia/Ho_Chi_Minh',
+                titleFormat: {},
+                events: function (fetchInfo, successCallback, failureCallback) {
+                    $.ajax({
+                        url: '/api/calendar/lophocphan/@Model.IdLopHocPhan',
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function (data) {
+                            var events = data.map(function (item) {
+                                return {
+                                    id: item.id,
+                                    groupId: item.groupId,
+                                    title: item.title,
+                                    description: item.description,
+                                    start: item.start,
+                                    end: item.end,
+                                };
+                            });
+                            successCallback(events);
+                        },
+                        error: function () {
+                            failureCallback();
+                        }
+                    });
+                }
+            });
+            calendar.render();
+            window.calendar = calendar;
+
+            // Data table 
+            $('#dataTable').DataTable({
+                ajax: {
+                    url: '/api/sinhvien/@Model.IdLopHocPhan/lophocphan',
+                    type: 'GET',
+                    dataSrc: '',
+                },
+                columns: [
+                    {
+                        data: 'tenSinhVien',
+                        render: function (data, type, row) {
+                            return '<a href="/Admin/QuanLySinhVien/Details?IdSinhVien=' + row.idSinhVien + '">' + data + '</a>';
+                        }
+                    },
+                    {
+                        data: 'lop',
+                    },
+                    {
+                        data: 'ngaySinh',
+                    },
+                    {
+                        data: 'diaChi',
+                    },
+                    {
+                        data: 'tenChuongTrinhHoc',
+                        render: function (data, type, row) {
+                            return '<a href="/Admin/QuanLyChuongTrinhHoc/Details?IdChuongTrinhHoc=' + row.idChuongTrinhHoc + '">' + data + '</a>';
+                        }
+                    },
+                    {
+                        data: 'tenKhoa',
+                        render: function (data, type, row) {
+                            return '<a href="/Admin/QuanLyKhoa/Details?IdKhoa=' + row.idKhoa + '">' + data + '</a>';
+                        }
+                    }
+                ],
+                language: {
+                    url: '/sb-admin/json/data_tables_vi.json',
+                },
+            });
+        });
+    </script>
+}

@@ -7,6 +7,7 @@ using System.Text.Json;
 using qlsv.Helpers;
 using qlsv.Data;
 using qlsv.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace qlsv.Controllers;
 
@@ -35,7 +36,8 @@ public class SinhVienController : ControllerBase
             from sv in _context.SinhViens
             join khoa in _context.Khoas on sv.IdKhoa equals khoa.IdKhoa
             join cch in _context.ChuongTrinhHocs on sv.IdChuongTrinhHoc equals cch.IdChuongTrinhHoc
-            select new {
+            select new
+            {
                 // List id
                 IdSinhVien = sv.IdSinhVien,
                 IdKhoa = sv.IdKhoa,
@@ -64,7 +66,8 @@ public class SinhVienController : ControllerBase
             where sv.IdSinhVien == id
             join khoa in _context.Khoas on sv.IdKhoa equals khoa.IdKhoa
             join cch in _context.ChuongTrinhHocs on sv.IdChuongTrinhHoc equals cch.IdChuongTrinhHoc
-            select new {
+            select new
+            {
                 // List id
                 IdSinhVien = sv.IdSinhVien,
                 IdKhoa = sv.IdKhoa,
@@ -132,5 +135,38 @@ public class SinhVienController : ControllerBase
         await _context.SaveChangesAsync();
         return Ok("Xóa sinh viên thành công");
     }
+
+    /**
+     * GET: api/sinhvien/{id}/lophocphan
+     * GET Sinh Vien Thuoc Lop Hoc Phan
+     */
+    [HttpGet("{id}/lophocphan")]
+    public async Task<IActionResult> GetSinhVienThuocLopHocPhan(string id)
+    {
+        var qr = await (
+            from lhp in _context.LopHocPhans
+            where lhp.IdLopHocPhan == id
+            join svlhp in _context.SinhVienLopHocPhans on lhp.IdLopHocPhan equals svlhp.IdLopHocPhan
+            join sv in _context.SinhViens on svlhp.IdSinhVien equals sv.IdSinhVien
+            join k in _context.Khoas on sv.IdKhoa equals k.IdKhoa
+            join cth in _context.ChuongTrinhHocs on sv.IdChuongTrinhHoc equals cth.IdChuongTrinhHoc
+            select new
+            {
+                IdSinhVien = sv.IdSinhVien,
+                IdKhoa = sv.IdKhoa,
+                IdChuongTrinhHoc = sv.IdChuongTrinhHoc,
+                TenSinhVien = sv.HoTen,
+                Lop = sv.Lop,
+                NgaySinh = sv.NgaySinh.HasValue ? sv.NgaySinh.Value.ToString("dd/MM/yyyy") : null,
+                DiaChi = sv.DiaChi,
+                TenKhoa = k.TenKhoa,
+                TenChuongTrinhHoc = cth.TenChuongTrinhHoc
+            }
+        ).ToListAsync();
+
+        return Ok(qr);
+    }
+
+
 }
 

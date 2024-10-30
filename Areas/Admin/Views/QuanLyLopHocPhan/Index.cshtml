@@ -9,6 +9,49 @@
 
     <!-- Page level custom scripts -->
     <script>
+        // Handle edit name lop hoc phan
+        // set value into input field when click edit button
+        $('#editLopHocPhanModal').on('show.bs.modal', function (e) {
+            var button = $(e.relatedTarget);
+            // Get data
+            var idLopHocPhan = button.attr('data-idLopHocPhan'); 
+            var idMonHoc = button.attr('data-idMonHoc');
+            var idGiaoVien = button.attr('data-idGiaoVien');
+            var tenLopHocPhan = button.closest('tr').find('td').eq(0).text();
+            // Set data source
+            $('#editLopHocPhanForm #idLopHocPhan').val(idLopHocPhan);
+            $('#editLopHocPhanForm #idMonHoc').val(idMonHoc);
+            $('#editLopHocPhanForm #idGiaoVien').val(idGiaoVien);
+            $('#editLopHocPhanForm #tenLopHocPhan').val(tenLopHocPhan);
+        });
+        // submit form edit
+        $('#editLopHocPhan').click(function () {
+            var idLopHocPhan = $('#editLopHocPhanForm #idLopHocPhan').val();
+            var idMonHoc = $('#editLopHocPhanForm #idMonHoc').val();
+            var idGiaoVien = $('#editLopHocPhanForm #idGiaoVien').val();
+            var tenLopHocPhan = $('#editLopHocPhanForm #tenLopHocPhan').val();
+            $.ajax({
+                url: `/api/lophocphan/${idLopHocPhan}`,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    tenLopHocPhan: tenLopHocPhan,
+                    idGiaoVien: idGiaoVien,
+                    idMonHoc: idMonHoc,
+                    idLopHocPhan: idLopHocPhan
+                }),
+                success: function (data) {
+                    $('#editLopHocPhanModal').modal('hide');
+                    $('#dataTable').DataTable().ajax.reload();
+                },
+                error: function (data) {
+                    alert('Sửa lớp học phần thất bại');
+                    console.log(data);
+                }
+            });
+        });
+
+
         // Handle delete lhp
         $('#deleteLopHocPhanModal').on('show.bs.modal', function (e) {
             var button = $(e.relatedTarget);
@@ -65,14 +108,15 @@
 
         // Handle create lop hoc phan
         $('#createLopHocPhan').click(function () {
-            var tenLopHocPhan = $('#tenLopHocPhan').val();
-            var idGiaoVien = $('#idGiaoVien').val();
-            var idMonHoc = $('#idMonHoc').val();
+            var tenLopHocPhan = $('#tenLopHocPhan').val().trim();
+            var idGiaoVien = $('#idGiaoVien').val().trim();
+            var idMonHoc = $('#idMonHoc').val().trim();
 
-            if (tenLopHocPhan.val() < 0
-                || idGiaoVien.val() < 0
-                || idMonHoc.val() < 0)
+            // Check if any required field is empty
+            if (!tenLopHocPhan || !idGiaoVien || !idMonHoc) {
+                alert("Please fill in all required fields.");
                 return;
+            }
 
             $.ajax({
                 url: '/api/lophocphan/',
@@ -94,6 +138,7 @@
             });
         });
 
+
         // Handle load and create data tables 
         $(document).ready(function () {
             $('#dataTable').DataTable({
@@ -106,7 +151,7 @@
                     {
                         data: 'tenLopHocPhan',
                         render: function (data, type, row) {
-                            return '<a href="/Admin/QuanLyHocPhan/Details/' + row.idLopHocPhan + '">' + data + '</a>';
+                            return '<a href="/Admin/QuanLyLopHocPhan/Details?IdLopHocPhan=' + row.idLopHocPhan + '">' + data + '</a>';
                         }
                     },
                     {
@@ -127,11 +172,17 @@
                         searchable: false,
                         sortable: false,
                         render: function (data, type, row) {
-                            return `                                   
-                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteLopHocPhanModal" data-id="${row.idLopHocPhan}">
-                                        Xóa
-                                    </button>    
-                                `;
+                            return `      
+                                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editLopHocPhanModal" 
+                                                    data-idLopHocPhan="${row.idLopHocPhan}" 
+                                                    data-idMonHoc="${row.idMonHoc}" 
+                                                    data-idGiaoVien="${row.idGiaoVien}">
+                                                    Sửa
+                                                </button>                             
+                                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteLopHocPhanModal" data-id="${row.idLopHocPhan}">
+                                                    Xóa
+                                                </button>    
+                                            `;
                         }
                     }
                 ],
@@ -238,6 +289,34 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
                 <button type="button" class="btn btn-danger" id="deleteLopHocPhan">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dialog sua tem lop hoc phan -->
+<div class="modal fade" id="editLopHocPhanModal" tabindex="-1" role="dialog" aria-labelledby="editLopHocPhanModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editLopHocPhanModalLabel">Sửa Lớp Học Phần</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editLopHocPhanForm">
+                    <div class="form-group">
+                        <label for="tenLopHocPhan">Tên Lớp Học Phần</label>
+                        <input type="text" class="form-control" id="tenLopHocPhan" name="tenLopHocPhan"
+                            placeholder="Nhập tên lớp học phần" required>
+                        <input type="hidden" name="idLopHocPhan" id="idLopHocPhan">
+                        <input type="hidden" name="idMonHoc" id="idMonHoc">
+                        <input type="hidden" name="idGiaoVien" id="idGiaoVien">
+                    </div>
+                    <button type="button" class="btn btn-primary" id="editLopHocPhan">Sửa</button>
+                </form>
             </div>
         </div>
     </div>
