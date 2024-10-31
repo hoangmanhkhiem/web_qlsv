@@ -7,6 +7,7 @@ using System.Text.Json;
 using qlsv.Helpers;
 using qlsv.Data;
 using qlsv.Models;
+using qlsv.Dto;
 
 namespace qlsv.Controllers;
 
@@ -106,12 +107,34 @@ public class NguyenVongController : ControllerBase
      * create new nguyen vong
      */
     [HttpPost]
-    public async Task<IActionResult> CreateNguyenVong(DangKyNguyenVong nguyenVong)
+    public async Task<IActionResult> CreateNguyenVong(NguyenVongSinhVienDto nguyenVong)
     {
-        _context.DangKyNguyenVongs.Add(nguyenVong);
+        // Check id sinh vien, id mon hoc
+        var checkSinhVien = await _context.SinhViens.FindAsync(nguyenVong.IdSinhVien);
+        var checkMonHoc = await _context.MonHocs.FindAsync(nguyenVong.IdMonHoc);
+        if (checkSinhVien == null || checkMonHoc == null)
+        {
+            return NotFound("Không tìm thấy sinh viên hoặc môn học");
+        }
+
+        // Check xem nguyen vong da dang ky chua, neu roi khong cho dang ki tiep
+        var checkNguyenVong = _context.DangKyNguyenVongs
+            .Where(nv => nv.IdSinhVien == nguyenVong.IdSinhVien && nv.IdMonHoc == nguyenVong.IdMonHoc)
+            .FirstOrDefault();
+        if (checkNguyenVong != null){
+            return BadRequest("Nguyện vọng đã được đăng ký");
+        }
+
+        // Create new nguyen vong
+        DangKyNguyenVong dangKyNguyenVong = new DangKyNguyenVong{
+            IdSinhVien = nguyenVong.IdSinhVien,
+            IdMonHoc = nguyenVong.IdMonHoc,
+        };
+
+        _context.DangKyNguyenVongs.Add(dangKyNguyenVong);
         await _context.SaveChangesAsync();
 
-        return Ok(nguyenVong);
+        return Ok("Nguyện vọng đã được thêm");
     }
 
     /**
