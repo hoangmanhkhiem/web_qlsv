@@ -51,7 +51,6 @@
                     <tbody>
                         @foreach (var item in Model)
                         {
-
                             var res = item.DiemTongKet < 4;
                             string ketqua = res ? "Học Lại" : "Qua Môn";
                             string color = res ? "text-danger" : "text-success"; 
@@ -62,7 +61,7 @@
                                 <th>@item.DiemQuaTrinh</th>
                                 <th>@item.DiemKetThuc</th>
                                 <th>@item.DiemTongKet</th>
-                                <th>@item.DiemTongKet</th>
+                                <th>@item.LanHoc</th>
                                 <th>
                                     @ketqua
                                 </th>
@@ -76,10 +75,3 @@
 
 </div>
 <!-- /.container-fluid -->
-
-
-<!-- Bảng Nguyện Vọng Đã Đăng Kí -->
-@await Component.InvokeAsync("DataTables", new {
-    table = "NguyenVong",
-    idUser = ViewBag.IdUser
-});

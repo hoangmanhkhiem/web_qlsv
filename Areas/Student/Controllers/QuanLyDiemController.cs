@@ -52,12 +52,12 @@ public class QuanLyDiemController : Controller
                 DiemKetThuc = diem.DiemKetThuc,
                 DiemTongKet = diem.DiemTongKet,
                 LopHocPhans = lopHocPhan, 
-                SinhViens = sinhVien     
+                SinhViens = sinhVien,
+                LanHoc = diem.LanHoc, 
             }
             ).ToList();
 
         return View(listDiem);
-
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
