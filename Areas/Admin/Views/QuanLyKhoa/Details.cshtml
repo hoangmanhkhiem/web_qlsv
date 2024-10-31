@@ -1,3 +1,6 @@
+
+@model Khoa
+
 @section Styles {
     <link href="~/sb-admin/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 }
@@ -13,7 +16,7 @@
         $(document).ready(function () {
             $('#dataTable_gv').DataTable({
                 ajax: {
-                    url: '/api/khoa/giaovien?idKhoa=@ViewBag.Id',
+                    url: '/api/khoa/giaovien?idKhoa=@Model.IdKhoa',
                     type: 'GET',
                     dataSrc: '',
                 },
@@ -42,7 +45,7 @@
         $(document).ready(function () {
             $('#dataTable_sv').DataTable({
                 ajax: {
-                    url: '/api/khoa/sinhvien?idKhoa=@ViewBag.Id',
+                    url: '/api/khoa/sinhvien?idKhoa=@Model.IdKhoa',
                     type: 'GET',
                     dataSrc: '',
                 },
@@ -74,7 +77,7 @@
 
 <!-- Header -->
 <div class="card-header py-3">
-    <h2 class="m-0 font-weight-bold text-primary">Thông Tin Khoa</h2>
+    <h2 class="m-0 font-weight-bold text-primary">Thông Tin Khoa @Model.TenKhoa</h2>
 </div>
 
 <!-- /.container-fluid -->
