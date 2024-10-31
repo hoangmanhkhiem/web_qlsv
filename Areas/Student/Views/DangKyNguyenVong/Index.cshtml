@@ -15,6 +15,35 @@
 
     <!-- Handle -->
     <script>
+        /**
+         * handle đăng ký nguyện vọng
+         */
+        $(document).on('click', '#btnDangKyNguyenVong', function () {
+            var idMonHoc = $(this).attr('data-idMonHoc');
+            var idSinhVien = $(this).attr('data-idSinhVien');
+
+            $.ajax({
+                url: '/api/NguyenVong',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    idMonHoc: idMonHoc,
+                    idSinhVien: idSinhVien,
+                }),
+                success: function (res) {
+                    console.log(res);
+                    location.reload();
+                },
+                error: function (err) {
+                    console.log(err);
+                    alert('Đăng Ký Thất Bại');
+                }
+            });
+        });
+
+        /**
+         * handle data table
+         */
         $(document).ready(function () {
             // Kết Quả Đăng Kí Học Cải Thiện
             $("#dataTable_nguyen_vong").dataTable({
@@ -29,13 +58,21 @@
                     {data: 'tenMonHoc'},
                     {
                         data: 'trangThai',
+                        sortable: false,
+                        searchable: false,
                         render: function (data, type, row) {
-                            if (row.data == null) {
-                                return "Chưa Xác Nhận";
-                            } else if (row.data == fasle) {
-                                return "Đã Xác Nhận";
+                            if (row.data == false) {
+                                return `
+                                    <span class="badge badge-warning">Chưa Xác Nhận</span>
+                                `;
+                            } else if (row.data == true) {
+                                return `
+                                    <span class="badge badge-success">Đã Xác Nhận</span>
+                                `;
                             } else {
-                                return "Đã Hủy";
+                                return `
+                                    <span class="badge badge-danger">Đã Hủy</span>
+                                `;
                             }
                         }
                     },
@@ -61,10 +98,18 @@
                     {
                         data: null,
                         render: function (data, type, row) {
-                            // TODO code
+                            return `
+                                <button id="btnDangKyNguyenVong" class="btn btn-primary" 
+                                    data-idMonHoc="${row.idMonHoc}" 
+                                    data-idSinhVien="${row.idSinhVien}"
+                                    >Đăng Ký</button>
+                            `;
                         }
                     },
                 ],
+                language: {
+                    url: '/sb-admin/json/data_tables_vi.json',
+                }
             });
 
             
