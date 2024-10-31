@@ -54,21 +54,33 @@
                         render: function (data, type, row) {
                             if (row.trangThai == null) {
                                 return `
-                                    <button class="btn btn-success btn-sm accept-btn" data-id="${row.idDangKyNguyenVong}">Chấp nhận</button>
-                                    <button class="btn btn-danger btn-sm reject-btn" data-id="${row.idDangKyNguyenVong}">Từ chối</button>
-                                `;
+                                            <button class="btn btn-success btn-sm accept-btn" data-id="${row.idDangKyNguyenVong}">Chấp nhận</button>
+                                            <button class="btn btn-danger btn-sm reject-btn" data-id="${row.idDangKyNguyenVong}">Từ chối</button>
+                                        `;
                             } else if (row.trangThai == true) {
                                 return `
-                                    <button class="btn btn-danger btn-sm reject-btn" data-id="${row.idDangKyNguyenVong}">Từ chối</button>
-                                `;
+                                            <button class="btn btn-danger btn-sm reject-btn" data-id="${row.idDangKyNguyenVong}">Từ chối</button>
+                                        `;
                             } else {
                                 return `
-                                    <button class="btn btn-warning btn-sm accept-btn" data-id="${row.idDangKyNguyenVong}">Chấp nhận</button>
-                                `;
+                                            <button class="btn btn-warning btn-sm accept-btn" data-id="${row.idDangKyNguyenVong}">Chấp nhận</button>
+                                        `;
                             }
                         },
-                        orderable: false,
-                        searchable: false
+                    },
+                    {
+                        data: null,
+                        searchable: false,
+                        sortable: false,
+                        render: function (data, type, row) {
+                            return `
+                                        <button id="deleteNguyenVong" class="btn btn-danger btn-sm delete-btn" 
+                                            data-toggle="modal" data-target="#deleteNguyenVongModal"
+                                            data-id="${row.idDangKyNguyenVong}"
+                                        >
+                                            Xóa</button>
+                                    `;
+                        },
                     }
                 ]
             });
@@ -103,7 +115,31 @@
                         console.log(err);
                         alert('Lỗi Không Thể Thay Đổi Trạng Thái Nguyện Vọng');
                     }
-                }); 
+                });
+            });
+
+            /**
+             * Handle delete button click
+             */
+            $('#dataTable').on('click', '.delete-btn', function () {
+                const idNguyenVong = $(this).data('id');
+                $('#deleteNguyenVongBtn').data('id', idNguyenVong);
+                $('#deleteNguyenVongModal').modal('show');
+                $('#deleteNguyenVongBtn').click(function () {
+                    const idNguyenVong = $(this).data('id');
+                    $.ajax({
+                        url: `/api/nguyenvong/${idNguyenVong}`,
+                        type: 'DELETE',
+                        success: function () {
+                            $('#dataTable').DataTable().ajax.reload();
+                            $('#deleteNguyenVongModal').modal('hide');
+                        },
+                        error: function (err) {
+                            console.log(err);
+                            alert('Lỗi Không Thể Xóa Nguyện Vọng');
+                        }
+                    });
+                });
             });
         });
     </script>
@@ -126,6 +162,7 @@
                             <th>Môn Học</th>
                             <th>Trạng Thái</th>
                             <th>Chức Năng</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tfoot>
@@ -135,6 +172,7 @@
                             <th>Môn Học</th>
                             <th>Trạng Thái</th>
                             <th>Chức Năng</th>
+                            <th></th>
                         </tr>
                     </tfoot>
                 </table>
@@ -144,3 +182,23 @@
 
 </div>
 <!-- /.container-fluid -->
+
+<!-- Dialog delete nguyen vong -->
+<div class="modal fade" id="deleteNguyenVongModal" tabindex="-1" role="dialog"
+    aria-labelledby="deleteNguyenVongModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteNguyenVongModalLabel">Xác Nhận Xóa Nguyện Vọng</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">Bạn có chắc chắn muốn xóa nguyện vọng này không?</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Hủy</button>
+                <button class="btn btn-danger" id="deleteNguyenVongBtn">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
