@@ -130,27 +130,33 @@ public class DiemController : ControllerBase
     public async Task<IActionResult> GetDiemDangKyNguyenVong(string idSinhVien)
     {
         var query = await (
-            from d in _context.Diems
-            where d.IdSinhVien == idSinhVien && d.DiemTongKet >= 7
-            group d by d.IdLopHocPhan into g
-            let latestAttempt = g.OrderByDescending(d => d.LanHoc).FirstOrDefault() // Chọn lần học mới nhất thỏa mãn
-            where latestAttempt != null // Đảm bảo không lấy giá trị null
+            from diem in _context.Diems
+            join lopHocPhan in _context.LopHocPhans
+                on diem.IdLopHocPhan equals lopHocPhan.IdLopHocPhan
+            where diem.IdSinhVien == idSinhVien && diem.DiemTongKet <= 7
+            join latestDiem in (
+                from d in _context.Diems
+                where d.IdSinhVien == idSinhVien && d.DiemTongKet <= 7
+                group d by d.IdLopHocPhan into g
+                select new
+                {
+                    IdLopHocPhan = g.Key,
+                    MaxLanHoc = g.Max(x => x.LanHoc)
+                }
+            ) on new { diem.IdLopHocPhan, diem.LanHoc } equals new { latestDiem.IdLopHocPhan, LanHoc = latestDiem.MaxLanHoc }
             select new
             {
-                IdDiem = latestAttempt.IdDiem,
-                IdSinhVien = latestAttempt.IdSinhVien,
-                IdLopHocPhan = latestAttempt.IdLopHocPhan,
-                DiemQuaTrinh = latestAttempt.DiemQuaTrinh,
-                DiemKetThuc = latestAttempt.DiemKetThuc,
-                DiemTongKet = latestAttempt.DiemTongKet,
-                LanHoc = latestAttempt.LanHoc,
-            }).ToListAsync();
+                IdDiem = diem.IdDiem,
+                IdSinhVien = diem.IdSinhVien,
+                IdLopHocPhan = diem.IdLopHocPhan,
+                TenLopHocPhan = lopHocPhan.TenHocPhan,  
+                DiemQuaTrinh = diem.DiemQuaTrinh,
+                DiemKetThuc = diem.DiemKetThuc,
+                DiemTongKet = diem.DiemTongKet,
+                LanHoc = diem.LanHoc,
+            }
+        ).ToListAsync();
 
-
-        if (query == null || !query.Any()) // Ensure there's data
-        {
-            return NotFound("Không tìm thấy điểm");
-        }
 
         // Directly return the JSON result
         return Ok(query);
@@ -188,7 +194,8 @@ public class DiemController : ControllerBase
      * Add new diem
      */
     [HttpPost]
-    public async Task<IActionResult> AddDiem(DiemDto diem){
+    public async Task<IActionResult> AddDiem(DiemDto diem)
+    {
         // Handle if dont have Id diem
         if (diem.IdDiem == null)
         {
@@ -198,10 +205,12 @@ public class DiemController : ControllerBase
         // Check id lop hoc phan, id sinh vien
         var checkLopHocPhan = await _context.LopHocPhans.FindAsync(diem.IdLopHocPhan);
         var checkSinhVien = await _context.SinhViens.FindAsync(diem.IdSinhVien);
-        if (checkLopHocPhan == null){
+        if (checkLopHocPhan == null)
+        {
             return BadRequest("Lớp học phần không tồn tại");
         }
-        if (checkSinhVien == null){
+        if (checkSinhVien == null)
+        {
             return BadRequest("Sinh viên không tồn tại");
         }
 
@@ -228,8 +237,9 @@ public class DiemController : ControllerBase
      * Update diem by id
      */
     [HttpPut("{IdDiem}")]
-    public async Task<IActionResult> EditDiem(string IdDiem, DiemDto diem) {
-        
+    public async Task<IActionResult> EditDiem(string IdDiem, DiemDto diem)
+    {
+
         if (diem.IdDiem != IdDiem)
         {
             return BadRequest("Id không khớp");
@@ -238,10 +248,12 @@ public class DiemController : ControllerBase
         // Check id lop hoc phan, id sinh vien
         var checkLopHocPhan = await _context.LopHocPhans.FindAsync(diem.IdLopHocPhan);
         var checkSinhVien = await _context.SinhViens.FindAsync(diem.IdSinhVien);
-        if (checkLopHocPhan == null){
+        if (checkLopHocPhan == null)
+        {
             return BadRequest("Lớp học phần không tồn tại");
         }
-        if (checkSinhVien == null){
+        if (checkSinhVien == null)
+        {
             return BadRequest("Sinh viên không tồn tại");
         }
 
