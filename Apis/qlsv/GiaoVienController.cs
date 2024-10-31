@@ -182,10 +182,16 @@ public class GiaoVienController : ControllerBase
     }
 
     [HttpPost("updatepassword")]
-    public IActionResult UpdatePassword([FromBody] UpdatePasswordDto updatePasswordDto)
+    public IActionResult UpdatePassword([FromBody] AdminUpdatePassGiaoVienDto updatePasswordDto)
     {
-        if (string.IsNullOrWhiteSpace(updatePasswordDto.NewPassword) ||
-        string.IsNullOrWhiteSpace(updatePasswordDto.OldPassword) ||
+        // if (string.IsNullOrWhiteSpace(updatePasswordDto.NewPassword) ||
+        // string.IsNullOrWhiteSpace(updatePasswordDto.OldPassword) ||
+        // updatePasswordDto.NewPassword != updatePasswordDto.ConfirmPassword ||
+        // updatePasswordDto.IdUser == null)
+        // {
+        //     return BadRequest("Invalid data.");
+        // }
+                if (string.IsNullOrWhiteSpace(updatePasswordDto.NewPassword) ||
         updatePasswordDto.NewPassword != updatePasswordDto.ConfirmPassword ||
         updatePasswordDto.IdUser == null)
         {
@@ -202,13 +208,13 @@ public class GiaoVienController : ControllerBase
             }
 
             // Verify the old password
-            var passwordHasher = user.PasswordHash;
-            bool verificationResult = _securityHelper.ValidateHash(updatePasswordDto.OldPassword, passwordHasher);
+            // var passwordHasher = user.PasswordHash;
+            // bool verificationResult = _securityHelper.ValidateHash(updatePasswordDto.OldPassword, passwordHasher);
 
-            if (verificationResult == false)
-            {
-                return Unauthorized("Mật khẩu cũ không chính xác.");
-            }
+            // if (verificationResult == false)
+            // {
+            //     return Unauthorized("Mật khẩu cũ không chính xác.");
+            // }
 
             // Hash the new password and update the user's PasswordHash field
             user.PasswordHash = _securityHelper.Hash(updatePasswordDto.NewPassword);
