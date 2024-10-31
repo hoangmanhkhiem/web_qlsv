@@ -32,7 +32,7 @@
                     {
                         data: 'tenMonHoc',
                         render: function (data, type, row) {
-                            return '<a href="/Admin/QuanLyMonHoc/Details?IdMonHoc=' + row.MonHocs.idMonHoc + '">' + data + '</a>';
+                            return '<a href="/Admin/QuanLyMonHoc/Details?IdMonHoc=' + row.idMonHoc + '">' + data + '</a>';
                         }
                     },
                     {
@@ -45,7 +45,7 @@
                                 return '<span class="badge badge-success">Đã xác nhận</span>';
                             }
                             else {
-                                return '<span class="badge badge-danger">Không xác nhận</span>';
+                                return '<span class="badge badge-danger">Từ Chối</span>';
                             }
                         }
                     },
@@ -78,10 +78,14 @@
                 const idNguyenVong = $(this).data('id');
                 // AJAX call to update status to 'accepted'
                 $.ajax({
-                    url: '/api/nguyenvong/' + idSinhVien + '/accept',
-                    type: 'POST',
+                    url: `/api/nguyenvong/${idNguyenVong}/approve`,
+                    type: 'PUT',
                     success: function () {
                         $('#dataTable').DataTable().ajax.reload();
+                    },
+                    error: function (err) {
+                        console.log(err);
+                        alert('Lỗi Không Thể Thay Đổi Trạng Thái Nguyện Vọng');
                     }
                 });
             });
@@ -90,12 +94,16 @@
                 const idNguyenVong = $(this).data('id');
                 // AJAX call to update status to 'rejected'
                 $.ajax({
-                    url: '/api/nguyenvong/' + idSinhVien + '/reject',
-                    type: 'POST',
+                    url: `/api/nguyenvong/${idNguyenVong}/reject`,
+                    type: 'PUT',
                     success: function () {
                         $('#dataTable').DataTable().ajax.reload();
+                    },
+                    error: function (err) {
+                        console.log(err);
+                        alert('Lỗi Không Thể Thay Đổi Trạng Thái Nguyện Vọng');
                     }
-                });
+                }); 
             });
         });
     </script>
