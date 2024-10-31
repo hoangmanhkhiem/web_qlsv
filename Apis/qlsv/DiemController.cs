@@ -129,10 +129,13 @@ public class DiemController : ControllerBase
     [HttpGet("{idSinhVien}/sinhvien/dangkinguyenvong")]
     public async Task<IActionResult> GetDiemDangKyNguyenVong(string idSinhVien)
     {
+        // Lấy các môn học có điểm tổng kết >= 7 và lần học là lớn nhất
         var query = await (
             from diem in _context.Diems
             join lopHocPhan in _context.LopHocPhans
                 on diem.IdLopHocPhan equals lopHocPhan.IdLopHocPhan
+            join monhoc in _context.MonHocs
+                on lopHocPhan.IdMonHoc equals monhoc.IdMonHoc
             where diem.IdSinhVien == idSinhVien && diem.DiemTongKet <= 7
             join latestDiem in (
                 from d in _context.Diems
@@ -149,6 +152,7 @@ public class DiemController : ControllerBase
                 IdDiem = diem.IdDiem,
                 IdSinhVien = diem.IdSinhVien,
                 IdLopHocPhan = diem.IdLopHocPhan,
+                IdMonHoc = monhoc.IdMonHoc,
                 TenLopHocPhan = lopHocPhan.TenHocPhan,  
                 DiemQuaTrinh = diem.DiemQuaTrinh,
                 DiemKetThuc = diem.DiemKetThuc,
@@ -157,6 +161,15 @@ public class DiemController : ControllerBase
             }
         ).ToListAsync();
 
+        // lay cac mon hoc da dang ky cua sinh vien
+        var queryDangKy = await (
+            from dk in _context.DangKyNguyenVongs
+            where dk.IdSinhVien == idSinhVien
+            select dk.IdMonHoc
+        ).ToListAsync();
+
+        // Loại bỏ các môn học đã đăng ký
+        query = query.Where(x => !queryDangKy.Contains(x.IdMonHoc)).ToList();
 
         // Directly return the JSON result
         return Ok(query);
