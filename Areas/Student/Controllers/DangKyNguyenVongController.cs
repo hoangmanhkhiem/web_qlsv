@@ -40,26 +40,13 @@ public class DangKyNguyenVongController : Controller
             return RedirectToAction("Index", "Login", new { area = "Identity" });
         }
 
-        List<Diem> listDiem = _context.Diems
-            .Where(d => d.IdSinhVien == idUser && d.DiemTongKet < 7) // Lọc điểm dưới 7 trước
-            .AsEnumerable() // Chuyển dữ liệu sang client để xử lý nhóm
-            .GroupBy(d => d.IdLopHocPhan) // Nhóm theo lớp học phần
-            .Select(g => g.OrderByDescending(d => d.LanHoc).FirstOrDefault()) // Chọn lần học cuối cùng
-            .Where(diemCuoi => !_context.DangKyNguyenVongs
-                .Any(nv => nv.IdSinhVien == idUser && nv.IdMonHoc == diemCuoi.LopHocPhans.IdMonHoc)) // Loại bỏ nếu đã có trong nguyện vọng
-            .Select(diemCuoi => new Diem
-            {
-                IdDiem = diemCuoi.IdDiem,
-                DiemQuaTrinh = diemCuoi.DiemQuaTrinh,
-                DiemKetThuc = diemCuoi.DiemKetThuc,
-                DiemTongKet = diemCuoi.DiemTongKet,
-                LopHocPhans = diemCuoi.LopHocPhans,
-                SinhViens = diemCuoi.SinhViens
-            })
-            .ToList();
+        SinhVien sinhVien = _context.SinhViens.FirstOrDefault(s => s.IdSinhVien == idUser);
+        if (sinhVien == null)
+        {
+            return RedirectToAction("Index", "Login", new { area = "Identity" });
+        }
 
-        ViewBag.IdUser = idUser;
-        return View(listDiem);
+        return View(sinhVien);
 
     }
 
