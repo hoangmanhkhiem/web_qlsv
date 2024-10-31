@@ -43,11 +43,6 @@ public class CalendarController : ControllerBase
                                 Start = tg.NgayBatDau,
                                 End = tg.NgayKetThuc
                             }).ToListAsync();
-
-        if (events.Count == 0)
-        {
-            return NotFound("Không tìm thấy lịch học");
-        }
     
         return Ok(
             events
@@ -75,12 +70,7 @@ public class CalendarController : ControllerBase
                                 End = tg.NgayKetThuc
                             }).ToListAsync();
 
-        // Add results to listEvent
-        if (events.Count == 0)
-        {
-            return NotFound("Không tìm thấy lịch học");
-        }
-        
+        // Add results to listEvent        
         return Ok(
             events
         );
@@ -107,10 +97,6 @@ public class CalendarController : ControllerBase
                 End = tg.NgayKetThuc
             }
         ).ToListAsync();
-
-        if (listEvents.Count < 0){
-            return BadRequest("Không tìm thấy lịch học");
-        }
 
         return Ok(listEvents);
     }
