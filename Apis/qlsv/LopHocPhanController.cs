@@ -271,5 +271,28 @@ public class LopHocPhanController : ControllerBase
         });
     }
 
+    /**
+     * GET: api/monhoc/{idLopHocPhan}/lophocphan/
+     * Get lop hoc phan from id mon hoc
+     */
+    [HttpGet("{idLopHocPhan}/lophocphan")]
+    public async Task<IActionResult> GetLopHocPhanFromMonHoc(string idLopHocPhan)
+    {
+        // query
+        var qr = await (
+            from lhp in _context.LopHocPhans
+            where lhp.IdLopHocPhan == idLopHocPhan
+            join gv in _context.GiaoViens on lhp.IdGiaoVien equals gv.IdGiaoVien
+            select new {
+                IdLopHocPhan = lhp.IdLopHocPhan,
+                IdGiaoVien = gv.IdGiaoVien,
+                IdMonHoc = lhp.IdMonHoc,
+                TenHocPhan = lhp.TenHocPhan,
+                TenGiaoVien = gv.TenGiaoVien,
+            }
+        ).ToListAsync();
+
+        return Ok(qr);
+    }
 
 }
