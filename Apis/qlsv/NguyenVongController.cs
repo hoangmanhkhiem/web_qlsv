@@ -192,7 +192,7 @@ public class NguyenVongController : ControllerBase
             return NotFound("Không tìm thấy nguyện vọng");
         }
 
-        nguyenVong.TrangThai = true;
+        nguyenVong.TrangThai = 1;
         await _context.SaveChangesAsync();
 
         return Ok(nguyenVong);
@@ -211,7 +211,7 @@ public class NguyenVongController : ControllerBase
             return NotFound("Không tìm thấy nguyện vọng");
         }
 
-        nguyenVong.TrangThai = false;
+        nguyenVong.TrangThai = 0;
         await _context.SaveChangesAsync();
 
         return Ok(nguyenVong);

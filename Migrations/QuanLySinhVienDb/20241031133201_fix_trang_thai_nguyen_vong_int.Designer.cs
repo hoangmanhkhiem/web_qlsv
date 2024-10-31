@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using qlsv.Data;
 
@@ -11,9 +12,11 @@ using qlsv.Data;
 namespace web_qlsv.Migrations.QuanLySinhVienDb
 {
     [DbContext(typeof(QuanLySinhVienDbContext))]
-    partial class QuanLySinhVienDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241031133201_fix_trang_thai_nguyen_vong_int")]
+    partial class fix_trang_thai_nguyen_vong_int
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

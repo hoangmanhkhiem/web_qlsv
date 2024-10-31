@@ -29,11 +29,11 @@
                         @foreach (var item in Model)
                         {
                             string colorDiv = "";
-                            if (item.TrangThai == null)
+                            if (item.TrangThai == -1)
                             {
                                 colorDiv = "bg-warning";
                             }
-                            else if (item.TrangThai == true)
+                            else if (item.TrangThai == 1)
                             {
                                 colorDiv = "bg-success";
                             }

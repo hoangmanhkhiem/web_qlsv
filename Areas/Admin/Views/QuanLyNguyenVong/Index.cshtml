@@ -38,10 +38,10 @@
                     {
                         data: 'trangThai',
                         render: function (data, type, row) {
-                            if (data == null) {
+                            if (data == -1) {
                                 return '<span class="badge badge-warning">Chưa xác nhận</span>';
                             }
-                            else if (data == true) {
+                            else if (data == 1) {
                                 return '<span class="badge badge-success">Đã xác nhận</span>';
                             }
                             else {

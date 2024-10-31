@@ -61,11 +61,11 @@
                         sortable: false,
                         searchable: false,
                         render: function (data, type, row) {
-                            if (row.data == false) {
+                            if (data == -1) {
                                 return `
                                     <span class="badge badge-warning">Chưa Xác Nhận</span>
                                 `;
-                            } else if (row.data == true) {
+                            } else if (data == 1) {
                                 return `
                                     <span class="badge badge-success">Đã Xác Nhận</span>
                                 `;
