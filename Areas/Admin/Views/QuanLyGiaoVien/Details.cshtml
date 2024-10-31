@@ -140,7 +140,7 @@
                 url: '/api/avatar/user/@Model.IdGiaoVien',
                 async: false,
                 success: function (data) {
-                    const src = 'data:image/png;base64,' + data.replace(/^"|"$/g, '');
+                    const src = 'data:image/png;base64,' + data;
                     $('#avt_user').attr('src', src);
                 },
                 error: function (xhr, status, error) {
