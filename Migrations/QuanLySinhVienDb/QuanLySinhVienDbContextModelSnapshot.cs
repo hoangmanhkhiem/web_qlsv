@@ -83,6 +83,11 @@ namespace web_qlsv.Migrations.QuanLySinhVienDb
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<int>("TrangThai")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(-1);
+
                     b.HasKey("IdDangKyNguyenVong");
 
                     b.HasIndex("IdMonHoc");
@@ -132,10 +137,8 @@ namespace web_qlsv.Migrations.QuanLySinhVienDb
             modelBuilder.Entity("qlsv.Models.GiaoVien", b =>
                 {
                     b.Property<string>("IdGiaoVien")
-                        .ValueGeneratedOnAdd()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasDefaultValueSql("(newid())");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Email")
                         .HasMaxLength(100)
@@ -164,10 +167,8 @@ namespace web_qlsv.Migrations.QuanLySinhVienDb
             modelBuilder.Entity("qlsv.Models.Khoa", b =>
                 {
                     b.Property<string>("IdKhoa")
-                        .ValueGeneratedOnAdd()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasDefaultValueSql("(newid())");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("TenKhoa")
                         .HasMaxLength(100)
@@ -181,10 +182,8 @@ namespace web_qlsv.Migrations.QuanLySinhVienDb
             modelBuilder.Entity("qlsv.Models.LopHocPhan", b =>
                 {
                     b.Property<string>("IdLopHocPhan")
-                        .ValueGeneratedOnAdd()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasDefaultValueSql("(newid())");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("IdGiaoVien")
                         .HasMaxLength(100)
@@ -211,10 +210,8 @@ namespace web_qlsv.Migrations.QuanLySinhVienDb
             modelBuilder.Entity("qlsv.Models.MonHoc", b =>
                 {
                     b.Property<string>("IdMonHoc")
-                        .ValueGeneratedOnAdd()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasDefaultValueSql("(newid())");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("IdKhoa")
                         .HasMaxLength(100)
@@ -240,10 +237,8 @@ namespace web_qlsv.Migrations.QuanLySinhVienDb
             modelBuilder.Entity("qlsv.Models.SinhVien", b =>
                 {
                     b.Property<string>("IdSinhVien")
-                        .ValueGeneratedOnAdd()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasDefaultValueSql("(newid())");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("DiaChi")
                         .HasMaxLength(255)

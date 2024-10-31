@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 //
 using qlsv.Models;
+using qlsv.Data;
 
 namespace qlsv.Admin.Controllers;
 
@@ -11,13 +12,15 @@ public class QuanLyKhoaController : Controller
 {
     // Variable
     private readonly ILogger<QuanLyKhoaController> _logger;
-    
+    private readonly QuanLySinhVienDbContext _context;
 
     // Constructor
     public QuanLyKhoaController(
-        ILogger<QuanLyKhoaController> logger
-    ) {
+        ILogger<QuanLyKhoaController> logger,
+        QuanLySinhVienDbContext quanLySinhVienDbContext)
+    {
         _logger = logger;
+        _context = quanLySinhVienDbContext;
     }
 
     /**
@@ -28,6 +31,22 @@ public class QuanLyKhoaController : Controller
     {
         return View();
     }
+
+    /**
+     * GET: /Admin/QuanLyKhoa/Deatail
+     * Xem thong tin chi tiet trong khoa
+     */
+    public IActionResult Details(string idKhoa){
+        
+        // variables
+        Khoa? qr = _context.Khoas.Where(k => k.IdKhoa == idKhoa).FirstOrDefault();
+        if (qr == null)
+        {
+            return NotFound();
+        }
+        return View(qr);
+    }
+
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

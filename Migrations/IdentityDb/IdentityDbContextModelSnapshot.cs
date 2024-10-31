@@ -180,6 +180,12 @@ namespace web_qlsv.Migrations.IdentityDb
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdClaim")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
@@ -211,6 +217,9 @@ namespace web_qlsv.Migrations.IdentityDb
 
                     b.Property<byte[]>("ProfilePicture")
                         .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("ProfilePictureBase64")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");

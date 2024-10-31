@@ -69,10 +69,13 @@ public class JwtHelper
                      join roleItem in _context.Roles on role.RoleId equals roleItem.Id
                      where user.Id == userId
                      select roleItem.Name).ToList();
+        // Get Id Claim 
+        string idClaim = _context.Users.FirstOrDefault(x => x.Id == userId).IdClaim;
 
         var claims = new List<Claim>
         {
             new Claim("idUser", userId),
+            new Claim("idClaim", idClaim == null ? "null" : idClaim)
         };
 
         // Add roles to claims

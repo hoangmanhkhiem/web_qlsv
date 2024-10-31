@@ -1,8 +1,11 @@
 
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
 //
 using qlsv.Models;
+using qlsv.Data;
 
 namespace qlsv.Admin.Controllers;
 
@@ -11,13 +14,15 @@ public class QuanLyLopHocPhanController : Controller
 {
     // Variable
     private readonly ILogger<QuanLyLopHocPhanController> _logger;
-    
+    private readonly QuanLySinhVienDbContext _context;
 
     // Constructor
     public QuanLyLopHocPhanController(
-        ILogger<QuanLyLopHocPhanController> logger
-    ) {
+        ILogger<QuanLyLopHocPhanController> logger,
+        QuanLySinhVienDbContext context)
+    {
         _logger = logger;
+        _context = context;
     }
 
     /**
@@ -27,6 +32,18 @@ public class QuanLyLopHocPhanController : Controller
     public IActionResult Index()
     {
         return View();
+    }
+
+    // GET: /Admin/QuanLyLopHocPhan/Details?IdLopHocPhan={id}
+    public IActionResult Details(string IdLopHocPhan)
+    {  
+        
+        var lhp = _context.LopHocPhans
+            .Include(x => x.MonHocs)
+            .Include(x => x.GiaoViens)
+            .FirstOrDefault(x => x.IdLopHocPhan == IdLopHocPhan);
+
+        return View(lhp);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

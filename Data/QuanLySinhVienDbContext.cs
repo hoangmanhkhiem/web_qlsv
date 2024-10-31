@@ -100,8 +100,7 @@ public class QuanLySinhVienDbContext : DbContext
             entity.ToTable("GiaoVien");
 
             entity.Property(e => e.IdGiaoVien)
-                .HasMaxLength(100)
-                .HasDefaultValueSql("(newid())");
+                .HasMaxLength(100);
 
             entity.Property(e => e.Email).HasMaxLength(100);
 
@@ -123,8 +122,7 @@ public class QuanLySinhVienDbContext : DbContext
             entity.ToTable("Khoa");
 
             entity.Property(e => e.IdKhoa)
-                .HasMaxLength(100)
-                .HasDefaultValueSql("(newid())");
+                .HasMaxLength(100);
 
             entity.Property(e => e.TenKhoa).HasMaxLength(100);
         });
@@ -136,8 +134,7 @@ public class QuanLySinhVienDbContext : DbContext
             entity.ToTable("LopHocPhan");
 
             entity.Property(e => e.IdLopHocPhan)
-                .HasMaxLength(100)
-                .HasDefaultValueSql("(newid())");
+                .HasMaxLength(100);
 
             entity.Property(e => e.IdGiaoVien).HasMaxLength(100);
 
@@ -161,8 +158,7 @@ public class QuanLySinhVienDbContext : DbContext
             entity.ToTable("MonHoc");
 
             entity.Property(e => e.IdMonHoc)
-                .HasMaxLength(100)
-                .HasDefaultValueSql("(newid())");
+                .HasMaxLength(100);
 
             entity.Property(e => e.IdKhoa).HasMaxLength(100);
 
@@ -180,8 +176,7 @@ public class QuanLySinhVienDbContext : DbContext
             entity.ToTable("SinhVien");
 
             entity.Property(e => e.IdSinhVien)
-                .HasMaxLength(100)
-                .HasDefaultValueSql("(newid())");
+                .HasMaxLength(100);
 
             entity.Property(e => e.DiaChi).HasMaxLength(255);
 
@@ -277,6 +272,9 @@ public class QuanLySinhVienDbContext : DbContext
             entity.Property(e => e.IdMonHoc).HasMaxLength(100);
 
             entity.Property(e => e.IdSinhVien).HasMaxLength(100);
+
+            // Mặc định khởi tạo trạng thái là -1. 1 Là đc chấp nhận, 0 là từ chối
+            entity.Property(e => e.TrangThai).HasDefaultValue(-1);
 
             entity.HasOne(d => d.SinhViens)
                 .WithMany(p => p.DangKyNguyenVongs)
