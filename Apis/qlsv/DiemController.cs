@@ -34,23 +34,22 @@ public class DiemController : ControllerBase
         // Query
         var query = await (
             from d in _context.Diems
+            join mon in _context.MonHocs
+                on d.IdLopHocPhan equals mon.IdMonHoc
             select new
             {
                 IdDiem = d.IdDiem,
                 IdSinhVien = d.IdSinhVien,
                 IdLopHocPhan = d.IdLopHocPhan,
+                IdMon = mon.IdMonHoc,
 
                 DiemQuaTrinh = d.DiemQuaTrinh,
                 DiemKetThuc = d.DiemKetThuc,
                 DiemTongKet = d.DiemTongKet,
                 LanHoc = d.LanHoc,
+                TenMonHoc = mon.TenMonHoc,
             }
         ).ToListAsync();
-
-        if (query == null || !query.Any()) // Ensure there's data
-        {
-            return NotFound("Không tìm thấy điểm");
-        }
 
         // Directly return the JSON result
         return Ok(query);
@@ -66,24 +65,23 @@ public class DiemController : ControllerBase
         // Query
         var query = await (
             from d in _context.Diems
+            join mon in _context.MonHocs
+                on d.IdLopHocPhan equals mon.IdMonHoc
             where d.IdDiem == id
             select new
             {
                 IdDiem = d.IdDiem,
                 IdSinhVien = d.IdSinhVien,
                 IdLopHocPhan = d.IdLopHocPhan,
+                IdMon = mon.IdMonHoc,
 
                 DiemQuaTrinh = d.DiemQuaTrinh,
                 DiemKetThuc = d.DiemKetThuc,
                 DiemTongKet = d.DiemTongKet,
                 LanHoc = d.LanHoc,
+                TenMonHoc = mon.TenMonHoc,
             }
         ).ToListAsync();
-
-        if (query == null || !query.Any()) // Ensure there's data
-        {
-            return NotFound("Không tìm thấy điểm");
-        }
 
         // Directly return the JSON result
         return Ok(query);
@@ -100,23 +98,22 @@ public class DiemController : ControllerBase
         var query = await (
             from d in _context.Diems
             where d.IdSinhVien == idSinhVien
+            join mon in _context.MonHocs
+                on d.IdLopHocPhan equals mon.IdMonHoc
             select new
             {
                 IdDiem = d.IdDiem,
                 IdSinhVien = d.IdSinhVien,
                 IdLopHocPhan = d.IdLopHocPhan,
+                IdMon = mon.IdMonHoc,
 
                 DiemQuaTrinh = d.DiemQuaTrinh,
                 DiemKetThuc = d.DiemKetThuc,
                 DiemTongKet = d.DiemTongKet,
                 LanHoc = d.LanHoc,
+                TenMonHoc = mon.TenMonHoc,
             }
         ).ToListAsync();
-
-        if (query == null || !query.Any()) // Ensure there's data
-        {
-            return NotFound("Không tìm thấy điểm");
-        }
 
         // Directly return the JSON result
         return Ok(query);
@@ -158,6 +155,7 @@ public class DiemController : ControllerBase
                 DiemKetThuc = diem.DiemKetThuc,
                 DiemTongKet = diem.DiemTongKet,
                 LanHoc = diem.LanHoc,
+                TenMonHoc = monhoc.TenMonHoc,
             }
         ).ToListAsync();
 
