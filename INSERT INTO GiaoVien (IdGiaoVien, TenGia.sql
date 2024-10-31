@@ -1,1 +1,0 @@
-INSERT INTO GiaoVien (IdG)
