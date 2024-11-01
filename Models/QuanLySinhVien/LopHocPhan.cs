@@ -10,6 +10,8 @@ namespace qlsv.Models
         public string TenHocPhan { get; set; } = null!;
         public string? IdGiaoVien { get; set; }
         public string? IdMonHoc { get; set; }
+        public DateTime? ThoiGianBatDau { get; set; }
+        public DateTime? ThoiGianKetThuc { get; set; }
 
         // Variables linked to another table
         public virtual GiaoVien? GiaoViens { get; set; }
