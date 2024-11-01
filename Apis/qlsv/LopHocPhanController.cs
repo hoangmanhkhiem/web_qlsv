@@ -43,7 +43,9 @@ public class LopHocPhanController : ControllerBase
                 TenMonHoc = mh.TenMonHoc,
                 IdLopHocPhan = lhp.IdLopHocPhan,
                 IdGiaoVien = gv.IdGiaoVien,
-                IdMonHoc = mh.IdMonHoc
+                IdMonHoc = mh.IdMonHoc,
+                ThoiGianBatDau = lhp.ThoiGianBatDau,
+                ThoiGianKetThuc = lhp.ThoiGianKetThuc
             }
         ).ToListAsync();
 
@@ -72,7 +74,9 @@ public class LopHocPhanController : ControllerBase
                 TenMonHoc = mon.TenMonHoc,
                 IdLopHocPhan = lhp.IdLopHocPhan,
                 IdGiaoVien = gv.IdGiaoVien,
-                IdMonHoc = mon.IdMonHoc
+                IdMonHoc = mon.IdMonHoc,
+                ThoiGianBatDau = lhp.ThoiGianBatDau,
+                ThoiGianKetThuc = lhp.ThoiGianKetThuc
             }
         ).ToListAsync();
 
@@ -100,7 +104,9 @@ public class LopHocPhanController : ControllerBase
                 TenMonHoc = mon.TenMonHoc,
                 IdLopHocPhan = lhp.IdLopHocPhan,
                 IdGiaoVien = gv.IdGiaoVien,
-                IdMonHoc = mon.IdMonHoc
+                IdMonHoc = mon.IdMonHoc,
+                ThoiGianBatDau = lhp.ThoiGianBatDau,
+                ThoiGianKetThuc = lhp.ThoiGianKetThuc
             }
         ).ToListAsync();
 
@@ -128,7 +134,9 @@ public class LopHocPhanController : ControllerBase
                 TenMonHoc = mon.TenMonHoc,
                 IdLopHocPhan = lhp.IdLopHocPhan,
                 IdGiaoVien = gv.IdGiaoVien,
-                IdMonHoc = mon.IdMonHoc
+                IdMonHoc = mon.IdMonHoc,
+                ThoiGianBatDau = lhp.ThoiGianBatDau,
+                ThoiGianKetThuc = lhp.ThoiGianKetThuc
             }
         ).FirstOrDefaultAsync();
 
@@ -182,7 +190,9 @@ public class LopHocPhanController : ControllerBase
             IdLopHocPhan = lopHocPhan.IdLopHocPhan,
             TenHocPhan = lopHocPhan.TenLopHocPhan,
             IdGiaoVien = lopHocPhan.IdGiaoVien,
-            IdMonHoc = lopHocPhan.IdMonHoc
+            IdMonHoc = lopHocPhan.IdMonHoc,
+            ThoiGianBatDau = lopHocPhan.ThoiGianBatDau,
+            ThoiGianKetThuc = lopHocPhan.ThoiGianKetThuc,
         };
 
         // Check giao vien, mon hoc
@@ -210,7 +220,9 @@ public class LopHocPhanController : ControllerBase
                 IdLopHocPhan = newLopHocPhan.IdLopHocPhan,
                 TenLopHocPhan = newLopHocPhan.TenHocPhan,
                 IdGiaoVien = newLopHocPhan.IdGiaoVien,
-                IdMonHoc = newLopHocPhan.IdMonHoc
+                IdMonHoc = newLopHocPhan.IdMonHoc,
+                ThoiGianBatDau = newLopHocPhan.ThoiGianBatDau,
+                ThoiGianKetThuc = newLopHocPhan.ThoiGianKetThuc,
             }
         });
     }
@@ -240,6 +252,8 @@ public class LopHocPhanController : ControllerBase
         qr.TenHocPhan = lopHocPhan.TenLopHocPhan;
         qr.IdGiaoVien = lopHocPhan.IdGiaoVien;
         qr.IdMonHoc = lopHocPhan.IdMonHoc;
+        qr.ThoiGianBatDau = lopHocPhan.ThoiGianBatDau;
+        qr.ThoiGianKetThuc = lopHocPhan.ThoiGianKetThuc;
 
         // Check giao vien, mon hoc
         var mon = await _context.MonHocs.FindAsync(lopHocPhan.IdMonHoc);
@@ -266,7 +280,9 @@ public class LopHocPhanController : ControllerBase
                 IdLopHocPhan = qr.IdLopHocPhan,
                 TenLopHocPhan = qr.TenHocPhan,
                 IdGiaoVien = qr.IdGiaoVien,
-                IdMonHoc = qr.IdMonHoc
+                IdMonHoc = qr.IdMonHoc,
+                ThoiGianBatDau = qr.ThoiGianBatDau,
+                ThoiGianKetThuc = qr.ThoiGianKetThuc
             }
         });
     }
@@ -289,6 +305,8 @@ public class LopHocPhanController : ControllerBase
                 IdMonHoc = lhp.IdMonHoc,
                 TenHocPhan = lhp.TenHocPhan,
                 TenGiaoVien = gv.TenGiaoVien,
+                ThoiGianBatDau = lhp.ThoiGianBatDau,
+                ThoiGianKetThuc = lhp.ThoiGianKetThuc
             }
         ).ToListAsync();
 
