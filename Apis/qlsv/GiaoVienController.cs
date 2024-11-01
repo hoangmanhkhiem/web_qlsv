@@ -181,7 +181,7 @@ public class GiaoVienController : ControllerBase
         return Ok(existingGiaoVien);
     }
 
-    [HttpPost("updatepassword")]
+    [HttpPost("adminupdatepassword")]
     public IActionResult UpdatePassword([FromBody] AdminUpdatePasswordDto updatePasswordDto)
     {
         // if (string.IsNullOrWhiteSpace(updatePasswordDto.NewPassword) ||
