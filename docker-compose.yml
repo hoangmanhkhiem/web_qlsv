@@ -12,6 +12,6 @@ services:
       - '1435:1433'
     volumes:
       # Use in local {path_local}:/var/opt/mssql/ 
-      - /workspaces/web_qlsv/sql:/var/opt/mssql/ 
+      - /workspaces/sql:/var/opt/mssql/ 
     restart: unless-stopped
     # user: '1000:1000'  # Uncomment only if required

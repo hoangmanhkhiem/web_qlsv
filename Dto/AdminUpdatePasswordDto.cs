@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace qlsv.Dto
 {
-    public class AdminUpdatePassGiaoVienDto
+    public class AdminUpdatePasswordDto
     {
         [Required]
         public string IdUser { get; set; }
