@@ -40,38 +40,8 @@ public class InitDbContext
                 var passwordHash = "i1CelkDpmAmgU08yFCskzfda4mWOI12kwgW571+2OiY="; // SecurityHelper.Hash(password);
                 admin.PasswordHash = passwordHash;
 
-                // User basic
-                var sv = new UserCustom
-                {
-                    UserName = "sv",
-                    Email = "st1@v.com",
-                    EmailConfirmed = true,
-                    ProfilePicture = new byte[] { 0 },
-                    FirstName = "Student",
-                    LastName = "1",
-                    Address = "HN",
-                    Phone = "21342331"
-                };
-
-                passwordHash = "i1CelkDpmAmgU08yFCskzfda4mWOI12kwgW571+2OiY="; // SecurityHelper.Hash(password);
-                sv.PasswordHash = passwordHash;
-
-                var gv = new UserCustom
-                {
-                    UserName = "gv",
-                    Email = "lecturer@v.com",
-                    EmailConfirmed = true,
-                    ProfilePicture = new byte[] { 0 },
-                    FirstName = "lecturer",
-                    LastName = "1",
-                    Address = "HN",
-                    Phone = "21342331"
-                };
-                passwordHash = "i1CelkDpmAmgU08yFCskzfda4mWOI12kwgW571+2OiY="; // SecurityHelper.Hash(password);
-                gv.PasswordHash = passwordHash;
-
                 // Save changes
-                context.Users.AddRange(admin, sv, gv);
+                context.Users.AddRange(admin);
                 context.SaveChanges();
             }
 
@@ -105,17 +75,11 @@ public class InitDbContext
             if (!context.UserRoles.Any())
             {
                 var adminUser = context.Users.FirstOrDefault(u => u.UserName == "admin");
-                var sinhvienUser = context.Users.FirstOrDefault(u => u.UserName == "sv");
-                var giaovienUser = context.Users.FirstOrDefault(u => u.UserName == "gv");
-
+                
                 var adminRole = context.Roles.FirstOrDefault(r => r.Name == "Admin");
-                var sinhvienRole = context.Roles.FirstOrDefault(r => r.Name == "SinhVien");
-                var giaovienRole = context.Roles.FirstOrDefault(r => r.Name == "GiaoVien");
-
+                
                 context.UserRoles.AddRange(
-                    new IdentityUserRole<string> { UserId = adminUser.Id, RoleId = adminRole.Id },
-                    new IdentityUserRole<string> { UserId = sinhvienUser.Id, RoleId = sinhvienRole.Id },
-                    new IdentityUserRole<string> { UserId = giaovienUser.Id, RoleId = giaovienRole.Id }
+                    new IdentityUserRole<string> { UserId = adminUser.Id, RoleId = adminRole.Id }
                 );
                 context.SaveChanges();
             }
