@@ -15,6 +15,8 @@ namespace qlsv.Models
         [DataType(DataType.DateTime)] 
         public DateTime NgayKetThuc { get; set; }
 
+        public string? DiaDiem { get; set; }
+
         // Variables linked to another table
         public virtual ICollection<ThoiGianLopHocPhan> ThoiGianLopHocPhans { get; set; }
     

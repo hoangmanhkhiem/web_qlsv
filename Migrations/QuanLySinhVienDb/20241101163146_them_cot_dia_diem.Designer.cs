@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using qlsv.Data;
 
@@ -11,9 +12,11 @@ using qlsv.Data;
 namespace web_qlsv.Migrations.QuanLySinhVienDb
 {
     [DbContext(typeof(QuanLySinhVienDbContext))]
-    partial class QuanLySinhVienDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241101163146_them_cot_dia_diem")]
+    partial class them_cot_dia_diem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
