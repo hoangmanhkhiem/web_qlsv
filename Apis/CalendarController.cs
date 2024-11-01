@@ -39,9 +39,10 @@ public class CalendarController : ControllerBase
                                 Id = tg.IdThoiGian,
                                 GroupId = lhp.IdLopHocPhan,
                                 Title = lhp.TenHocPhan,
-                                Description = $"Giáo viên: {lhp.TenHocPhan}",
+                                Description = $"Giáo viên: {lhp.TenHocPhan}, Địa Điểm {tg.DiaDiem}",
                                 Start = tg.NgayBatDau,
-                                End = tg.NgayKetThuc
+                                End = tg.NgayKetThuc,
+                                DiaDiem = tg.DiaDiem
                             }).ToListAsync();
     
         return Ok(
@@ -65,9 +66,10 @@ public class CalendarController : ControllerBase
                                 Id = tg.IdThoiGian,
                                 GroupId = lhp.IdLopHocPhan,
                                 Title = lhp.TenHocPhan,
-                                Description = $"Lớp: {lhp.TenHocPhan}",
+                                Description = $"Lớp: {lhp.TenHocPhan}, Địa Điểm {tg.DiaDiem}",
                                 Start = tg.NgayBatDau,
-                                End = tg.NgayKetThuc
+                                End = tg.NgayKetThuc,
+                                DiaDiem = tg.DiaDiem
                             }).ToListAsync();
 
         // Add results to listEvent        
@@ -88,13 +90,14 @@ public class CalendarController : ControllerBase
             where tg_lhp.IdLopHocPhan == id
             join lhp in _context.LopHocPhans on tg_lhp.IdLopHocPhan equals lhp.IdLopHocPhan
             join tg in _context.ThoiGians on tg_lhp.IdThoiGian equals tg.IdThoiGian
-            select new CalendarEventObject {
+            select new {
                 Id = tg.IdThoiGian,
                 GroupId = tg_lhp.IdLopHocPhan,
                 Title = lhp.TenHocPhan,
-                Description = $"Lớp: {lhp.TenHocPhan}",
+                Description = $"Lớp: {lhp.TenHocPhan}, Địa Điểm {tg.DiaDiem}",
                 Start = tg.NgayBatDau,
-                End = tg.NgayKetThuc
+                End = tg.NgayKetThuc,
+                DiaDiem = tg.DiaDiem,
             }
         ).ToListAsync();
 
