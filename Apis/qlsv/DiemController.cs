@@ -301,6 +301,5 @@ public class DiemController : ControllerBase
 
         return Ok("Cập nhật điểm thành công");
     }
-
 }
 
