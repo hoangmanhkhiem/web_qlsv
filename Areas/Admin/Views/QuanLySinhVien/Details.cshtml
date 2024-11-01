@@ -69,6 +69,7 @@
                                     <thead>
                                         <tr>
                                             <th>Môn</th>
+                                            <th>Lớp Học Phần</th>
                                             <th>Điểm Quá Trình</th>
                                             <th>Điểm Kết Thúc</th>
                                             <th>Điểm Tổng Kết</th>
@@ -79,6 +80,7 @@
                                     <tfoot>
                                         <tr>
                                             <th>Môn</th>
+                                            <th>Lớp Học Phần</th>
                                             <th>Điểm Quá Trình</th>
                                             <th>Điểm Kết Thúc</th>
                                             <th>Điểm Tổng Kết</th>
@@ -171,11 +173,22 @@
                 },
                 columns: [
                     { data: "tenMonHoc" },
+                    { data: "tenLopHocPhan" },
                     { data: "diemQuaTrinh" },
                     { data: "diemKetThuc" },
                     { data: "diemTongKet" },
                     { data: "lanHoc" },
-                    { data: "trangThai" }
+                    {
+                        data: null,
+                        render: function (data, type, row) {
+                            if (row.diemTongKet <= 4) {
+                                return '<span class="badge badge-danger">Học Lại</span>';
+                            }
+                            else {
+                                return '<span class="badge badge-success">Qua Môn</span>';
+                            }
+                        }
+                    }
                 ],
             });
         });

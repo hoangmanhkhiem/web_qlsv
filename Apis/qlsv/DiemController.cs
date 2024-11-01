@@ -34,8 +34,10 @@ public class DiemController : ControllerBase
         // Query
         var query = await (
             from d in _context.Diems
+            join lhp in _context.LopHocPhans
+                on d.IdLopHocPhan equals lhp.IdLopHocPhan
             join mon in _context.MonHocs
-                on d.IdLopHocPhan equals mon.IdMonHoc
+                on lhp.IdMonHoc equals mon.IdMonHoc
             select new
             {
                 IdDiem = d.IdDiem,
@@ -48,6 +50,7 @@ public class DiemController : ControllerBase
                 DiemTongKet = d.DiemTongKet,
                 LanHoc = d.LanHoc,
                 TenMonHoc = mon.TenMonHoc,
+                TenLopHocPhan = lhp.TenHocPhan,
             }
         ).ToListAsync();
 
@@ -65,8 +68,10 @@ public class DiemController : ControllerBase
         // Query
         var query = await (
             from d in _context.Diems
+            join lhp in _context.LopHocPhans
+                on d.IdLopHocPhan equals lhp.IdLopHocPhan
             join mon in _context.MonHocs
-                on d.IdLopHocPhan equals mon.IdMonHoc
+                on lhp.IdMonHoc equals mon.IdMonHoc
             where d.IdDiem == id
             select new
             {
@@ -80,6 +85,7 @@ public class DiemController : ControllerBase
                 DiemTongKet = d.DiemTongKet,
                 LanHoc = d.LanHoc,
                 TenMonHoc = mon.TenMonHoc,
+                TenLopHocPhan = lhp.TenHocPhan,
             }
         ).ToListAsync();
 
@@ -98,8 +104,10 @@ public class DiemController : ControllerBase
         var query = await (
             from d in _context.Diems
             where d.IdSinhVien == idSinhVien
+            join lhp in _context.LopHocPhans
+                on d.IdLopHocPhan equals lhp.IdLopHocPhan
             join mon in _context.MonHocs
-                on d.IdLopHocPhan equals mon.IdMonHoc
+                on lhp.IdMonHoc equals mon.IdMonHoc
             select new
             {
                 IdDiem = d.IdDiem,
@@ -112,6 +120,7 @@ public class DiemController : ControllerBase
                 DiemTongKet = d.DiemTongKet,
                 LanHoc = d.LanHoc,
                 TenMonHoc = mon.TenMonHoc,
+                TenLopHocPhan = lhp.TenHocPhan,
             }
         ).ToListAsync();
 
