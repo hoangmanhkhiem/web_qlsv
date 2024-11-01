@@ -111,6 +111,8 @@
             var tenLopHocPhan = $('#tenLopHocPhan').val().trim();
             var idGiaoVien = $('#idGiaoVien').val().trim();
             var idMonHoc = $('#idMonHoc').val().trim();
+            var ngayBatDau = $('#thoiGianBatDau').val().trim();
+            var ngayKetThuc = $('#thoiGianKetThuc').val().trim();
 
             // Check if any required field is empty
             if (!tenLopHocPhan || !idGiaoVien || !idMonHoc) {
@@ -126,13 +128,15 @@
                     tenLopHocPhan: tenLopHocPhan,
                     idGiaoVien: idGiaoVien,
                     idMonHoc: idMonHoc,
+                    thoiGianBatDau: ngayBatDau,
+                    thoiGianKetThuc: ngayKetThuc
                 }),
                 success: function (data) {
                     $('#createLopHocPhanModal').modal('hide');
                     $('#dataTable').DataTable().ajax.reload();
                 },
                 error: function (data) {
-                    alert('Tạo mới lớp học phần thất bại');
+                    alert(`Lỗi: ${data.responseText}`);
                     console.log(data);
                 }
             });
@@ -167,8 +171,34 @@
                         }
                     },
                     {
+                        data: 'thoiGianBatDau',
+                        render: function (data, type, row) {
+                            return new Date(data).toLocaleDateString();
+                        }
+                    },
+                    {
+                        data: 'thoiGianKetThuc',
+                        render: function (data, type, row) {
+                            return new Date(data).toLocaleDateString();
+                        }
+                    },
+                    {
                         data: null,
-                        width: '15%',
+                        render: function (data, type, row) {
+                            if (new Date(row.ThoiGianKetThuc) < Date.now()) {
+                                return '<span class="badge badge-danger">Đã Kết Thúc</span>';
+                            }
+                            else if (new Date(row.ThoiGianBatDau) <= Date.now()) {
+                                return '<span class="badge badge-success">Đang Diễn Ra</span>';
+                            }
+                            else {
+                                return '<span class="badge badge-warning">Sắp Diễn Ra</span>';
+                            }
+                        },
+                    },
+                    {
+                        data: null,
+                        width: '12%',
                         searchable: false,
                         sortable: false,
                         render: function (data, type, row) {
@@ -208,6 +238,9 @@
                             <th>Lớp Học Phần</th>
                             <th>Giảng Viên</th>
                             <th>Môn học</th>
+                            <th>Thời Gian Bắt Đầu</th>
+                            <th>Thời Gian Kết Thúc</th>
+                            <th>Trạng Thái</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -216,6 +249,9 @@
                             <th>Lớp Học Phần</th>
                             <th>Giảng Viên</th>
                             <th>Môn học</th>
+                            <th>Thời Gian Bắt Đầu</th>
+                            <th>Thời Gian Kết Thúc</th>
+                            <th>Trạng Thái</th>
                             <th></th>
                         </tr>
                     </tfoot>
@@ -254,6 +290,14 @@
                         <select class="form-control" id="idMonHoc" name="idMonHoc">
                             <option value="">Chọn môn học</option>
                         </select>
+                    </div>
+                    <div class="form-group form-md-line-input">
+                        <label for="thoiGianBatDau">Thời Gian Bắt Đầu</label>
+                        <input type="date" class="form-control" id="thoiGianBatDau" name="thoiGianBatDau" required>
+                    </div>
+                    <div class="form-group form-md-line-input">
+                        <label for="thoiGianKetThuc">Thời Gian Kết Thúc</label>
+                        <input type="date" class="form-control" id="thoiGianKetThuc" name="thoiGianKetThuc" required>
                     </div>
                 </form>
             </div>

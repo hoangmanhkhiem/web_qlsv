@@ -184,6 +184,12 @@ public class LopHocPhanController : ControllerBase
             lopHocPhan.IdLopHocPhan = Guid.NewGuid().ToString();
         }
 
+        // Check thoi gian
+        if (lopHocPhan.ThoiGianBatDau >= lopHocPhan.ThoiGianKetThuc)
+        {
+            return BadRequest("Thời gian không hợp lệ");
+        }
+
         // Create new lop hoc phan
         var newLopHocPhan = new LopHocPhan
         {
