@@ -182,7 +182,7 @@ public class GiaoVienController : ControllerBase
     }
 
     [HttpPost("updatepassword")]
-    public IActionResult UpdatePassword([FromBody] AdminUpdatePassGiaoVienDto updatePasswordDto)
+    public IActionResult UpdatePassword([FromBody] AdminUpdatePasswordDto updatePasswordDto)
     {
         // if (string.IsNullOrWhiteSpace(updatePasswordDto.NewPassword) ||
         // string.IsNullOrWhiteSpace(updatePasswordDto.OldPassword) ||
