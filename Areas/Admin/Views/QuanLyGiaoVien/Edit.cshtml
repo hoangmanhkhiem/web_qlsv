@@ -30,7 +30,6 @@
 
         // Xu li thay doi mat khau
         function changePassword() {
-            var oldPassword = document.getElementById("oldPassword").value;
             var newPassword = document.getElementById("newPassword").value;
             var confirmPassword = document.getElementById("confirmPassword").value;
             var idGiaoVien = document.getElementById("idGiaoVien").value;
@@ -49,7 +48,6 @@
                 },
                 data: JSON.stringify({
                     idUser: idGiaoVien,
-                    oldPassword: oldPassword,
                     newPassword: newPassword,
                     confirmPassword: confirmPassword
                 }),
