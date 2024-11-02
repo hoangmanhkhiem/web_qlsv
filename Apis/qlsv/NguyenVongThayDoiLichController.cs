@@ -155,6 +155,47 @@ namespace qlsv.Controllers
             return Ok("Xoá Nguyện Vọng Thành Công");
         }
 
+        // Chấp Nhận Yêu Cầu
+        [HttpPut("{id}/accpet")]
+        public async Task<IActionResult> GetAccpet(string id)
+        {
+
+            var qr = await _context.DangKyDoiLichs
+                .FirstOrDefaultAsync(q => q.IdDangKyDoiLich == id);
+
+            if (qr == null)
+            {
+                return BadRequest("Không Tìm Thấy Lịch Đăng Ký");
+            }
+
+            qr.TrangThai = 1;
+
+            await _context.SaveChangesAsync();
+
+            return Ok("Chấp Nhận Đăng Ký Lịch Giáo Viên " + id);
+        }
+
+        // Từ Chối Yêu Cầu
+        [HttpPut("{id}/reject")]
+        public async Task<IActionResult> RejectRequest(string id)
+        {
+            var request = await _context.DangKyDoiLichs
+                .FirstOrDefaultAsync(q => q.IdDangKyDoiLich == id);
+
+            if (request == null)
+            {
+                return BadRequest("Không Tìm Thấy Lịch Đăng Ký");
+            }
+
+            // Set TrangThai to -1 to indicate rejection
+            request.TrangThai = 0;
+
+            await _context.SaveChangesAsync();
+
+            return Ok("Đã Từ Chối Đăng Ký Lịch Giáo Viên " + id);
+        }
+
+
         // Find Nguyen Vong Cua Giao Vien
         [HttpGet("{idGiaoVien}/giaovien")]
         public async Task<IActionResult> GetNguyenVongGiaoVien(string idGiaoVien)

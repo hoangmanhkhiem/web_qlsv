@@ -9,6 +9,17 @@
 
     <!-- Page level custom scripts -->
     <script>
+        // Date formatting function
+        function formatDate(dateString) {
+            if (!dateString) return "N/A";
+            const date = new Date(dateString);
+            return date.toLocaleDateString("vi-VN", {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+
         $(document).ready(function () {
             $('#dataTable').DataTable({
                 ajax: {
@@ -54,17 +65,17 @@
                         render: function (data, type, row) {
                             if (row.trangThai == null) {
                                 return `
-                                            <button class="btn btn-success btn-sm accept-btn" data-id="${row.idDangKyNguyenVong}">Chấp nhận</button>
-                                            <button class="btn btn-danger btn-sm reject-btn" data-id="${row.idDangKyNguyenVong}">Từ chối</button>
-                                        `;
+                                                        <button class="btn btn-success btn-sm accept-btn" data-id="${row.idDangKyNguyenVong}">Chấp nhận</button>
+                                                        <button class="btn btn-danger btn-sm reject-btn" data-id="${row.idDangKyNguyenVong}">Từ chối</button>
+                                                    `;
                             } else if (row.trangThai == true) {
                                 return `
-                                            <button class="btn btn-danger btn-sm reject-btn" data-id="${row.idDangKyNguyenVong}">Từ chối</button>
-                                        `;
+                                                        <button class="btn btn-danger btn-sm reject-btn" data-id="${row.idDangKyNguyenVong}">Từ chối</button>
+                                                    `;
                             } else {
                                 return `
-                                            <button class="btn btn-warning btn-sm accept-btn" data-id="${row.idDangKyNguyenVong}">Chấp nhận</button>
-                                        `;
+                                                        <button class="btn btn-warning btn-sm accept-btn" data-id="${row.idDangKyNguyenVong}">Chấp nhận</button>
+                                                    `;
                             }
                         },
                     },
@@ -74,13 +85,82 @@
                         sortable: false,
                         render: function (data, type, row) {
                             return `
-                                        <button id="deleteNguyenVong" class="btn btn-danger btn-sm delete-btn" 
-                                            data-toggle="modal" data-target="#deleteNguyenVongModal"
-                                            data-id="${row.idDangKyNguyenVong}"
-                                        >
-                                            Xóa</button>
-                                    `;
+                                                    <button id="deleteNguyenVong" class="btn btn-danger btn-sm delete-btn" 
+                                                        data-toggle="modal" data-target="#deleteNguyenVongModal"
+                                                        data-id="${row.idDangKyNguyenVong}"
+                                                    >
+                                                        Xóa</button>
+                                                `;
                         },
+                    }
+                ]
+            });
+
+            $('#dataTable_gv').DataTable({
+                ajax: {
+                    url: '/api/nguyenvongthaydoilich/',
+                    type: 'GET',
+                    dataSrc: '',
+                },
+                language: {
+                    url: '/sb-admin/json/data_tables_vi.json',
+                },
+                columns: [
+                    {
+                        data: 'tenLopHocPhan'
+                    },
+                    {
+                        data: 'thoiGianBatDauHienTai',
+                        render: function (data, type, row) {
+                            return formatDate(data);
+                        }
+                    },
+                    {
+                        data: 'thoiGianKetThucHienTai',
+                        render: function (data, type, row) {
+                            return formatDate(data);
+                        }
+                    },
+                    {
+                        data: 'thoiGianBatDauMoi',
+                        render: function (data, type, row) {
+                            return formatDate(data);
+                        }
+                    },
+                    {
+                        data: 'thoiGianKetThucMoi',
+                        render: function (data, type, row) {
+                            return formatDate(data);
+                        }
+                    },
+                    {
+                        data: 'trangThai',
+                        render: function (data, type, row) {
+                            if (row.trangThai == -1) {
+                                return '<span class="badge badge-warning">Chờ Xét Duyệt</span>';
+                            } else if (row.trangThai == 1) {
+                                return '<span class="badge badge-success">Đã Xác Nhận</span>';
+                            } else {
+                                return '<span class="badge badge-danger">Bị Huỷ</span>';
+                            }
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function (data, type, row) {
+                            if (row.trangThai == -1) {
+                                return `
+                                            <button class="btn btn-success btn-sm accept-btn" data-id="${row.idDangKyDoiLich}">Chấp nhận</button>
+                                            <button class="btn btn-danger btn-sm reject-btn" data-id="${row.idDangKyDoiLich}">Từ chối</button>
+                                        `;
+                            } else if (row.trangThai == 1) {
+                                return `<button class="btn btn-danger btn-sm reject-btn" data-id="${row.idDangKyDoiLich}">Từ chối</button>`;
+                            } else {
+                                return `<button class="btn btn-warning btn-sm accept-btn" data-id="${row.idDangKyDoiLich}">Chấp nhận</button>`;
+                            }
+                        },
+                        sortable: false,
+                        searchable: false
                     }
                 ]
             });
@@ -141,6 +221,43 @@
                     });
                 });
             });
+
+            /**
+             * Xử Lí Chấp Nhận, Từ Chối Đăng Kí Đổi Lịch
+             */
+            // Handle the Accept button click
+            $('#dataTable_gv').on('click', '.accept-btn', function () {
+                const idDangKyDoiLich = $(this).data('id');
+
+                $.ajax({
+                    url: `/api/nguyenvongthaydoilich/${idDangKyDoiLich}/accpet`, // Note: "accept" spelling fixed if needed
+                    type: 'PUT',
+                    success: function () {
+                        location.reload();
+                    },
+                    error: function (err) {
+                        console.log(err);
+                        alert("Lỗi: Không thể chấp nhận yêu cầu");
+                    }
+                });
+            });
+
+            // Handle the Reject button click
+            $('#dataTable_gv').on('click', '.reject-btn', function () {
+                const idDangKyDoiLich = $(this).data('id');
+
+                $.ajax({
+                    url: `/api/nguyenvongthaydoilich/${idDangKyDoiLich}/reject`,
+                    type: 'PUT',
+                    success: function () {
+                        location.reload();
+                    },
+                    error: function (err) {
+                        console.log(err);
+                        alert(`Lỗi: ${err.responseXML}`);
+                    }
+                });
+            });
         });
     </script>
 }
@@ -150,7 +267,7 @@
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Nguyện Vọng Đăng Kí</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Nguyện Vọng Sinh Viên Đăng Kí</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -179,9 +296,46 @@
             </div>
         </div>
     </div>
-
 </div>
 <!-- /.container-fluid -->
+
+<!-- Quản Lí Nguyện Vọng Giáo Viên Đổi Lịch -->
+<div class="container-fluid">
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Nguyện Vọng Giáo Viên Đăng Kí Đổi Lịch</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable_gv" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Lớp Học Phần</th>
+                            <th>Thời Gian Bắt Đầu Hiện Tại</th>
+                            <th>Thời Gian Kết Thúc Hiện Tại</th>
+                            <th>Thời Gian Bắt Đầu Mới</th>
+                            <th>Thời Gian Kết Thúc Mới</th>
+                            <th>Trạng Thái</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Lớp Học Phần</th>
+                            <th>Thời Gian Bắt Đầu Hiện Tại</th>
+                            <th>Thời Gian Kết Thúc Hiện Tại</th>
+                            <th>Thời Gian Bắt Đầu Mới</th>
+                            <th>Thời Gian Kết Thúc Mới</th>
+                            <th>Trạng Thái</th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Dialog delete nguyen vong -->
 <div class="modal fade" id="deleteNguyenVongModal" tabindex="-1" role="dialog"
