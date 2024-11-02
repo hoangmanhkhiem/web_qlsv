@@ -32,6 +32,8 @@
                             <th>Lớp Học Phần</th>
                             <th>Giảng Viên</th>
                             <th>Môn học</th>
+                            <th>Thời Gian Bắt Đầu</th>
+                            <th>Thời Gian Kết Thúc</th>
                         </tr>
                     </thead>
                     <tfoot>
@@ -39,6 +41,8 @@
                             <th>Lớp Học Phần</th>
                             <th>Giảng Viên</th>
                             <th>Môn học</th>
+                            <th>Thời Gian Bắt Đầu</th>
+                            <th>Thời Gian Kết Thúc</th>
                         </tr>
                     </tfoot>
                     <tbody>
@@ -52,6 +56,14 @@
                                 </td>
                                 <td>@item.GiaoViens.TenGiaoVien</td>
                                 <td>@item.MonHocs.TenMonHoc</td>
+                                <td>
+                                    @(item.ThoiGianBatDau.HasValue ?
+                                        item.ThoiGianBatDau.Value.ToString("dd/MM/yyyy") : "N/A")
+                                </td>
+                                <td>
+                                    @(item.ThoiGianKetThuc.HasValue ?
+                                        item.ThoiGianKetThuc.Value.ToString("dd/MM/yyyy") : "N/A")
+                                </td>
                             </tr>
                         }
                     </tbody>

@@ -57,7 +57,7 @@ public class QuanLyLopHocPhanController : Controller
     }
     
     // GET: Teacher/QuanLyLopHocPhan/Details/
-    public IActionResult Details(string idLhp)
+    public async Task<IActionResult> Details(string idLhp)
     {
         var diems = _context.Diems
             .Where(d => d.IdLopHocPhan == idLhp)
@@ -75,6 +75,17 @@ public class QuanLyLopHocPhanController : Controller
             .ToList();
         ViewBag.LopHocPhan = _context.LopHocPhans.FirstOrDefault(d => d.IdLopHocPhan == idLhp)
             ?.TenHocPhan;
+        
+        LopHocPhan? lhp = await _context.LopHocPhans
+            .Include(d => d.MonHocs)
+            .FirstOrDefaultAsync(d => d.IdLopHocPhan == idLhp);
+
+        if (lhp == null)
+        {
+            return NotFound("Id: " + idLhp + " không tồn tại !!!"); 
+        }
+
+        ViewBag.LopHocPhan = lhp;
 
         return View(diems);
     }
