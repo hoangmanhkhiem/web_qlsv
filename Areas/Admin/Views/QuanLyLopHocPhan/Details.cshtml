@@ -18,7 +18,7 @@
 
 <!-- DataTales Sinh Vien Thuoc Lop Hoc Phan -->
 <div class="col-lg-12 col-md-12 col-sm-12">
-    <h3 class="box-title mt-5">Danh Sách Sinh Viên Thuộc Lóp Học Phần</h3>
+    <h3 class="box-title mt-5">Danh Sách Sinh Viên Thuộc Lớp Học Phần</h3>
     <div class="table-responsive">
         <div class="card shadow mb-4">
             <div class="card-body">
@@ -46,6 +46,77 @@
                         </tfoot>
                     </table>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Danh Sách Điểm Lớp Học Phần -->
+<div class="col-lg-12 col-md-12 col-sm-12">
+    <h3 class="box-title mt-5">Danh Sách Điểm Sinh Viên Thuộc Lớp Học Phần</h3>
+    <div class="table-responsive">
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable_diem" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Sinh Viên</th>
+                                <th>Điểm Quá Trình</th>
+                                <th>Điểm Kết Thúc</th>
+                                <th>Điểm Tổng Kết</th>
+                                <th>Trạng Thái</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Sinh Viên</th>
+                                <th>Điểm Quá Trình</th>
+                                <th>Điểm Kết Thúc</th>
+                                <th>Điểm Tổng Kết</th>
+                                <th>Trạng Thái</th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dialog modal sua diem -->
+<div class="modal fade" id="modalSuaDiem" tabindex="-1" role="dialog" aria-labelledby="modalSuaDiemLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalSuaDiemLabel">Sửa Điểm</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formSuaDiem">
+                    <div class="form-group">
+                        <label for="diemQuaTrinh">Điểm Quá Trình</label>
+                        <input type="number" class="form-control" id="diemQuaTrinh" name="diemQuaTrinh" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="diemKetThuc">Điểm Kết Thúc</label>
+                        <input type="number" class="form-control" id="diemKetThuc" name="diemKetThuc" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="diemTongKet">Điểm Tổng Kết</label>
+                        <input type="number" class="form-control" id="diemTongKet" name="diemTongKet" required>
+                    </div>
+                    <input type="hidden" id="idDiem" name="idDiem">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="btnSuaDiem">Lưu</button>
             </div>
         </div>
     </div>
@@ -154,6 +225,104 @@
                 language: {
                     url: '/sb-admin/json/data_tables_vi.json',
                 },
+            });
+
+            // Data table điểm sinh viên lớp học phần
+            $('#dataTable_diem').DataTable({
+                ajax: {
+                    url: '/api/diem/@Model.IdLopHocPhan/lophocphan',
+                    type: 'GET',
+                    dataSrc: '',
+                },
+                columns: [
+                    {
+                        data: 'tenSinhVien',
+                        render: function (data, type, row) {
+                            return '<a href="/Admin/QuanLySinhVien/Details?IdSinhVien=' + row.idSinhVien + '">' + data + '</a>';
+                        }
+                    },
+                    {
+                        data: 'diemQuaTrinh',
+                    },
+                    {
+                        data: 'diemKetThuc',
+                    },
+                    {
+                        data: 'diemTongKet',
+                    },
+                    {
+                        data: null,
+                        render: function (data, type, row) {
+                            if (row.diemTongKet <= 4) {
+                                return '<span class="badge badge-danger">Học Lại</span>';
+                            }
+                            else {
+                                return '<span class="badge badge-success">Qua Môn</span>';
+                            }
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function (data, type, row) {
+                            return `
+                                    <button class="btn btn-primary btn-sm" 
+                                        data-toggle="modal" data-target="#modalSuaDiem" 
+                                        data-idDiem="${row.idDiem}" 
+                                        data-diem-qua-trinh="${row.diemQuaTrinh}" 
+                                        data-diem-ket-thuc="${row.diemKetThuc}" 
+                                        data-diem-tong-ket="${row.diemTongKet}">
+                                    Sửa
+                                    </button>
+                                `;
+                        }
+                    }
+                ],
+                language: {
+                    url: '/sb-admin/json/data_tables_vi.json',
+                },
+            });
+
+            /**
+             * Sự kiện click button sửa điểm
+             */
+            // Lấy và gán giá trị vào modal sửa điểm
+            $('#modalSuaDiem').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                // get
+                var idDiem = button.attr('data-idDiem');
+                var diemQuaTrinh = button.attr('data-diem-qua-trinh');
+                var diemKetThuc = button.attr('data-diem-ket-thuc');
+                var diemTongKet = button.attr('data-diem-tong-ket');
+                // set
+                $('#idDiem').val(idDiem);
+                $('#diemQuaTrinh').val(diemQuaTrinh);
+                $('#diemKetThuc').val(diemKetThuc);
+                $('#diemTongKet').val(diemTongKet);
+                // changle title
+                $('#modalSuaDiemLabel').text('Sửa Điểm Sinh Viên ' + button.closest('tr').find('td:eq(0)').text());
+            });
+            // Ajax sửa điểm
+            $('#btnSuaDiem').click(function () {
+                var form = $('#formSuaDiem');
+                $.ajax({
+                    url: '/api/diem/nhap',
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        idDiem: $('#idDiem').val(),
+                        diemQuaTrinh: $('#diemQuaTrinh').val(),
+                        diemKetThuc: $('#diemKetThuc').val(),
+                        diemTongKet: $('#diemTongKet').val(),
+                    }),
+                    success: function (data) {
+                        $('#modalSuaDiem').modal('hide');
+                        $('#dataTable_diem').DataTable().ajax.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(xhr.responseText);
+                        alert('Có lỗi xảy ra, vui lòng thử lại sau');
+                    }
+                });
             });
         });
     </script>

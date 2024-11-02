@@ -302,5 +302,68 @@ public class DiemController : ControllerBase
         return Ok("Cập nhật điểm thành công");
     }
 
+    /**
+     * GET: /api/diem/{idLopHocPhan}/lophocphan
+     * Get diem by id lop hoc phan
+     */
+    [HttpGet("{idLopHocPhan}/lophocphan")]
+    public async Task<IActionResult> GetDiemByIdLopHocPhan(string idLopHocPhan)
+    {
+        var qr = await (
+            from lhp in _context.LopHocPhans
+            where lhp.IdLopHocPhan == idLopHocPhan
+            join d in _context.Diems
+                on lhp.IdLopHocPhan equals d.IdLopHocPhan
+            join mon in _context.MonHocs
+                on lhp.IdMonHoc equals mon.IdMonHoc
+            join sv in _context.SinhViens
+                on d.IdSinhVien equals sv.IdSinhVien
+            select new {
+                IdDiem = d.IdDiem,
+                IdSinhVien = d.IdSinhVien,
+                IdLopHocPhan = d.IdLopHocPhan,
+                IdMon = mon.IdMonHoc,
+                
+                TenSinhVien = sv.HoTen,
+                DiemQuaTrinh = d.DiemQuaTrinh,
+                DiemKetThuc = d.DiemKetThuc,
+                DiemTongKet = d.DiemTongKet,
+                LanHoc = d.LanHoc,
+                TenMonHoc = mon.TenMonHoc,
+                TenLopHocPhan = lhp.TenHocPhan,
+            }
+        ).ToListAsync();
+
+        return Ok(qr);
+    }
+
+    /**
+     * PUT: /api/diem/nhap/{idDiem}
+     * PUT: Nhập điểm cho sinh viên
+     */
+    [HttpPut("nhap")]
+    public async Task<IActionResult> NhapDiemSinhVien(NhapDiemDto nhapDiemDto)
+    {
+        if (nhapDiemDto.IdDiem == null)
+        {
+            return BadRequest("Id điểm không được để trống");
+        }
+        // Query
+        var qr = _context.Diems.Where(x => x.IdDiem == nhapDiemDto.IdDiem).FirstOrDefault();
+        if (qr == null)
+        {
+            return NotFound("Không tìm thấy điểm");
+        }
+
+        qr.DiemQuaTrinh = nhapDiemDto.DiemQuaTrinh;
+        qr.DiemKetThuc = nhapDiemDto.DiemKetThuc;
+        qr.DiemTongKet = nhapDiemDto.DiemTongKet;
+        _context.Diems.Update(qr);
+        await _context.SaveChangesAsync();
+
+        return Ok();
+    }
+
+
 }
 

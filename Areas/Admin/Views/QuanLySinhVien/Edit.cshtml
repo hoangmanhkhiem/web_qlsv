@@ -1,7 +1,7 @@
-@model GiaoVien
+@model SinhVien
 
 @{
-    ViewBag.Title = "Details User";
+    ViewBag.Title = "Chỉnh Sửa Thông Tin Sinh Vien";
 }
 
 @section Scripts {
@@ -32,7 +32,7 @@
         function changePassword() {
             var newPassword = document.getElementById("newPassword").value;
             var confirmPassword = document.getElementById("confirmPassword").value;
-            var idGiaoVien = document.getElementById("idGiaoVien").value;
+            var IdSinhVien = document.getElementById("IdSinhVien").value;
 
             if (newPassword != confirmPassword) {
                 alert("Mật khẩu mới không trùng khớp");
@@ -40,14 +40,11 @@
             }
 
             $.ajax({
-                url: '/api/GiaoVien/adminupdatepassword',
+                url: '/api/SinhVien/adminupdatepassword',
                 type: "POST",
-                headers: {
-                    'Accept': '*/*',
-                    'Content-Type': 'application/json'
-                },
+                contentType: "application/json",
                 data: JSON.stringify({
-                    idUser: idGiaoVien,
+                    idUser: IdSinhVien,
                     newPassword: newPassword,
                     confirmPassword: confirmPassword
                 }),
@@ -55,8 +52,8 @@
                     alert("Thay đổi mật khẩu thành công");
                 },
                 error: function (response) {
-                    alert("Thay đổi mật khẩu thất bại");
                     console.log(response.status, response.text);
+                    alert("Thay đổi mật khẩu thất bại");
                 }
             });
         }
@@ -65,7 +62,7 @@
         $(document).ready(function () {
             // Xu li lay anh tu sever va hien thi ra view
             $.ajax({
-                url: '/api/avatar/user/@Model.IdGiaoVien',
+                url: '/api/avatar/user/@Model.IdSinhVien',
                 type: "GET",
                 success: function (response) {
                     if (response != null) {
@@ -74,37 +71,9 @@
                 }
             });
 
-            // Xu li lay danh sach khoa tu sever va hien thi ra view
-            $.ajax({
-                url: '/api/khoa',
-                type: "GET",
-                success: function (response) {
-                    if (response != null) {
-                        response.forEach(function (khoa) {
-                            var option = document.createElement("option");
-                            option.text = khoa.tenKhoa;
-                            option.value = khoa.idKhoa;
-                            if (khoa.idKhoa == "@Model.IdKhoa") {
-                                option.selected = true;
-                            }
-                            document.querySelector("select[name='IdKhoa']").appendChild(option);
-                        });
-
-                    }
-                }
-            });
-
-            // Get LopHocPhan cua GiaoVien de xem co duoc thay doi khoa khong
-            $.ajax({
-                url: '/api/LopHocPhan/giaovien/@Model.IdGiaoVien',
-                type: 'GET',
-                success: function (res) {
-                    if (res.length) {
-                        document.querySelector("select[name='IdKhoa']").disabled = true;
-                        console.log("Khoa Khong The Thay Thoi Khi Dang Day Lop Hoc Phan");
-
-                    }
-                }
+            // AJAX edit data sinh vien
+            $('#changePasswordForm').submit(function (e) {
+                e.preventDefault();
             });
 
         });
@@ -119,8 +88,8 @@
             <!-- Profile picture card-->
             <div class="card mb-4 mb-xl-0">
                 <div>
-                    <form asp-action="UpgraeAvatar" asp-area="Admin" asp-controller="QuanLyGiaoVien"
-                        asp-route-IdGiaoVien="@Model.IdGiaoVien" method="post" enctype="multipart/form-data">
+                    <form asp-action="UpgraeAvatar" asp-area="Admin" asp-controller="QuanLysinhvien"
+                        asp-route-IdSinhVien="@Model.IdSinhVien" method="post" enctype="multipart/form-data">
                         <div class="d-flex justify-content-center mb-4">
                             <img class="img-fluid rounded-circle" id="selectedAvatar" src="" alt="..."
                                 style="width: 200px; height: 200px;">
@@ -144,35 +113,39 @@
             <div class="card mb-4">
                 <div class="card-header">Account Details</div>
                 <div class="card-body">
-                    <form asp-action="Edit" asp-area="Admin" asp-controller="QuanLyGiaoVien" method="post">
+                    <form asp-action="Edit" asp-area="Admin" asp-controller="QuanLySinhVien" method="post">
+                        <!-- Ho ten -->
                         <div class="mb-3">
-                            <label class="small mb-1" asp-for="TenGiaoVien">Họ Và Tên</label>
-                            <input asp-for="TenGiaoVien" class="form-control" placeholder="Tên Giáo Viên"
-                                value="@Model.TenGiaoVien">
-                            <span asp-validation-for="TenGiaoVien" class="text-danger"></span>
+                            <label class="small mb-1" asp-for="HoTen">Họ Và Tên</label>
+                            <input asp-for="HoTen" class="form-control" placeholder="Tên Sinh Viên"
+                                value="@Model.HoTen">
+                            <span asp-validation-for="HoTen" class="text-danger"></span>
                         </div>
+                        <!-- Lop -->
                         <div class="mb-3">
-                            <label class="small mb-1" asp-for="Email">Email</label>
-                            <input asp-for="Email" class="form-control" placeholder="Địa Chỉ Email"
-                                value="@Model.Email">
-                            <span asp-validation-for="Email" class="text-danger"></span>
+                            <label class="small mb-1" asp-for="Lop">Lớp</label>
+                            <input asp-for="Lop" class="form-control" placeholder="Lớp" value="@Model.Lop">
+                            <span asp-validation-for="Lop" class="text-danger"></span>
                         </div>
+                        <!-- Dia Chi -->
                         <div class="mb-3">
-                            <label class="small mb-1" asp-for="SoDienThoai">Số Điện Thoại</label>
-                            <input asp-for="SoDienThoai" class="form-control" placeholder="Số Điện Thoại Giáo Viên"
-                                value="@Model.SoDienThoai">
-                            <span asp-validation-for="SoDienThoai" class="text-danger"></span>
+                            <label class="small mb-1" asp-for="DiaChi">Địa Chỉ</label>
+                            <input asp-for="DiaChi" class="form-control" placeholder="Địa Chỉ"
+                                value="@Model.DiaChi">
+                            <span asp-validation-for="DiaChi" class="text-danger"></span>
                         </div>
+                        <!-- Ngày Sinh -->
                         <div class="mb-3">
-                            <!-- select khoa -->
-                            <label class="small mb-1" asp-for="IdKhoa">Khoa</label>
-                            <select asp-for="IdKhoa" class="form-control">
-                                <option value="">-- Chọn Khoa --</option>
-                            </select>
-                            <span asp-validation-for="IdKhoa" class="text-danger"></span>
+                            <label class="small mb-1" asp-for="NgaySinh">Ngày Sinh</label>
+                            <input asp-for="NgaySinh" type="date" class="form-control" placeholder="Ngày Sinh"
+                                value="@(Model.NgaySinh.HasValue ? Model.NgaySinh.Value.ToString("yyyy-MM-dd") : "")">
+                            <span asp-validation-for="NgaySinh" class="text-danger"></span>
                         </div>
+                        
                         <!-- Save changes button-->
-                        <input hidden class="hidden" asp-for="IdGiaoVien" value="@Model.IdGiaoVien">
+                        <input hidden class="hidden" asp-for="IdChuongTrinhHoc" value="@Model.IdChuongTrinhHoc">
+                        <input hidden class="hidden" asp-for="IdKhoa" value="@Model.IdKhoa">
+                        <input hidden class="hidden" asp-for="IdSinhVien" value="@Model.IdSinhVien">
                         <button class="btn btn-primary" type="submit">Save changes</button>
                     </form>
                 </div>
@@ -182,11 +155,6 @@
                 <div class="card-header">Thay Đổi Mật Khẩu</div>
                 <div class="card-body">
                     <form id="changePasswordForm">
-                        @* <div class="mb-3">
-                            <label class="small mb-1" for="oldPassword">Mật Khẩu Hiện Tại</label>
-                            <input class="form-control" id="oldPassword" type="password"
-                                placeholder="Enter your current password">
-                        </div> *@
                         <div class="mb-3">
                             <label class="small mb-1" for="newPassword">Mật Khẩu Mới</label>
                             <input class="form-control" id="newPassword" type="password"
@@ -197,7 +165,7 @@
                             <input class="form-control" id="confirmPassword" type="password"
                                 placeholder="Confirm your new password">
                         </div>
-                        <input hidden class="hidden" id="idGiaoVien" value="@Model.IdGiaoVien">
+                        <input hidden class="hidden" id="IdSinhVien" value="@Model.IdSinhVien">
                         <button class="btn btn-primary" type="button" onclick="changePassword()">Change
                             Password</button>
                     </form>

@@ -8,6 +8,7 @@ using qlsv.Helpers;
 using qlsv.Data;
 using qlsv.Models;
 using Microsoft.EntityFrameworkCore;
+using qlsv.Dto;
 
 namespace qlsv.Controllers;
 
@@ -17,12 +18,18 @@ public class SinhVienController : ControllerBase
 {
     // Variables
     private readonly QuanLySinhVienDbContext _context;
+    private readonly IdentityDbContext _identityContext;
+    private readonly SecurityHelper _securityHelper;
 
     // Constructor
     public SinhVienController(
-        QuanLySinhVienDbContext quanLySinhVienDbContext)
+        QuanLySinhVienDbContext quanLySinhVienDbContext,
+        IdentityDbContext identityDbContext,
+        SecurityHelper securityHelper)
     {
         _context = quanLySinhVienDbContext;
+        _identityContext = identityDbContext;
+        _securityHelper = securityHelper;
     }
 
     /**
@@ -89,7 +96,7 @@ public class SinhVienController : ControllerBase
      * sua thong tin sinh vien
      */
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateSinhVien(string id, [FromBody] SinhVien sinhVien)
+    public async Task<IActionResult> UpdateSinhVien(string id, [FromBody] SinhVienDto sinhVien)
     {
         // Find the existing sinh vien
         var existingSinhVien = await _context.SinhViens.FindAsync(id);
@@ -102,11 +109,21 @@ public class SinhVienController : ControllerBase
         existingSinhVien.Lop = sinhVien.Lop;
         existingSinhVien.NgaySinh = sinhVien.NgaySinh;
         existingSinhVien.DiaChi = sinhVien.DiaChi;
-        existingSinhVien.IdKhoa = sinhVien.IdKhoa;
-        existingSinhVien.IdChuongTrinhHoc = sinhVien.IdChuongTrinhHoc;
         // Save the changes
         await _context.SaveChangesAsync();
-        return Ok("Sửa thông tin sinh viên thành công");
+        return Ok(new
+        {
+            statusCode = 200,
+            message = "Cập nhật sinh viên thành công",
+            data = new
+            {
+                IdSinhVien = existingSinhVien.IdSinhVien,
+                TenSinhVien = existingSinhVien.HoTen,
+                Lop = existingSinhVien.Lop,
+                NgaySinh = existingSinhVien.NgaySinh.HasValue ? existingSinhVien.NgaySinh.Value.ToString("dd/MM/yyyy") : null,
+                DiaChi = existingSinhVien.DiaChi,
+            }
+        });
     }
 
     /**
@@ -167,6 +184,41 @@ public class SinhVienController : ControllerBase
         return Ok(qr);
     }
 
+    // POST: api/sinhvien/adminupdatepassword
+    [HttpPost("adminupdatepassword")]
+    public IActionResult UpdatePassword([FromBody] AdminUpdatePasswordDto updatePasswordDto)
+    {
+
+        if (string.IsNullOrWhiteSpace(updatePasswordDto.NewPassword) ||
+            updatePasswordDto.NewPassword != updatePasswordDto.ConfirmPassword ||
+            updatePasswordDto.IdUser == null)
+        {
+            return BadRequest("Invalid data.");
+        }
+
+        try
+        {
+            // Find the user in the Identity system by teacher ID
+            var user = _identityContext.Users.FirstOrDefault(u => u.IdClaim == updatePasswordDto.IdUser);
+            if (user == null)
+            {
+                return NotFound("Giáo viên không tồn tại.");
+            }
+
+            // Hash the new password and update the user's PasswordHash field
+            user.PasswordHash = _securityHelper.Hash(updatePasswordDto.NewPassword);
+
+            // Save changes to the Identity database
+            _identityContext.Users.Update(user);
+            _identityContext.SaveChanges();
+
+            return Ok("Password updated successfully.");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "Internal server error: " + ex.Message);
+        }
+    }
 
 }
 

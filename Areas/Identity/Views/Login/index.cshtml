@@ -44,31 +44,7 @@
                             </div>
                             <div class="d-flex justify-content-between align-items-center">
                                 <!-- Checkbox -->
-                                <a href="#" class="text-body" data-toggle="modal"
-                                    data-target="#forgotPasswordModal">Quên mật khẩu?</a>
-
-                                <!-- Modal -->
-                                <div class="modal fade" id="forgotPasswordModal" tabindex="-1" role="dialog"
-                                    aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="forgotPasswordModalLabel">Liên hệ admin</h5>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                    aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                Vui lòng liên hệ admin để được hỗ trợ khôi phục mật khẩu.
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-dismiss="modal">Đóng</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <a href="#" class="text-body" id="forgotPasswordLink">Quên mật khẩu?</a>
                             </div>
 
                             <div class="text-center text-lg-start mt-4 pt-2">
@@ -82,6 +58,42 @@
             </div>
         </div>
     </main>
+    <!-- Modal -->
+                                <div class="modal fade" id="forgotPasswordModal" tabindex="-1" role="dialog"
+     aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="forgotPasswordModalLabel">Liên hệ admin</h5>
+                <button type="button" class="close" id="closeModalButton" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Vui lòng liên hệ admin để được hỗ trợ khôi phục mật khẩu.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="closeModalButtonFooter">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script>
+        document.getElementById('forgotPasswordLink').addEventListener('click', function (event) {
+        event.preventDefault();
+        $('#forgotPasswordModal').modal('show');
+    });
+    // Close modal when clicking the close button (X)
+    document.getElementById('closeModalButton').addEventListener('click', function () {
+        $('#forgotPasswordModal').modal('hide'); // Hide the modal
+    });
+
+    // Close modal when clicking the footer button
+    document.getElementById('closeModalButtonFooter').addEventListener('click', function () {
+        $('#forgotPasswordModal').modal('hide'); // Hide the modal
+    });
+    </script>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

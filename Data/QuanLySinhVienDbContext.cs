@@ -231,9 +231,9 @@ public class QuanLySinhVienDbContext : DbContext
                 .HasMaxLength(100)
                 .HasDefaultValueSql("(newid())");
 
-            entity.Property(e => e.NgayBatDau).HasColumnType("date");
+            entity.Property(e => e.NgayBatDau).HasColumnType("datetime");
 
-            entity.Property(e => e.NgayKetThuc).HasColumnType("date");
+            entity.Property(e => e.NgayKetThuc).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<ThoiGianLopHocPhan>(entity =>

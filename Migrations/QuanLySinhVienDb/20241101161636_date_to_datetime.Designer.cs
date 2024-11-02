@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using qlsv.Data;
 
@@ -11,9 +12,11 @@ using qlsv.Data;
 namespace web_qlsv.Migrations.QuanLySinhVienDb
 {
     [DbContext(typeof(QuanLySinhVienDbContext))]
-    partial class QuanLySinhVienDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241101161636_date_to_datetime")]
+    partial class date_to_datetime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -198,12 +201,6 @@ namespace web_qlsv.Migrations.QuanLySinhVienDb
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<DateTime?>("ThoiGianBatDau")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ThoiGianKetThuc")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("IdLopHocPhan");
 
                     b.HasIndex("IdGiaoVien");
@@ -312,9 +309,6 @@ namespace web_qlsv.Migrations.QuanLySinhVienDb
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
                         .HasDefaultValueSql("(newid())");
-
-                    b.Property<string>("DiaDiem")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("NgayBatDau")
                         .HasColumnType("datetime");
