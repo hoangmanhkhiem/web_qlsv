@@ -23,17 +23,58 @@ namespace qlsv.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllNguyenVong()
         {
-            var requests = await _context.DangKyDoiLichs.ToListAsync();
+            var requests = await (
+                from nguyenvong in _context.DangKyDoiLichs
+                join tg_lhp in _context.ThoiGianLopHocPhans
+                    on nguyenvong.IdThoiGian equals tg_lhp.IdThoiGian
+                join lhp in _context.LopHocPhans
+                    on tg_lhp.IdLopHocPhan equals lhp.IdLopHocPhan
+                select new
+                {
+                    idDangKyDoiLich = nguyenvong.IdDangKyDoiLich,
+                    idThoiGian = nguyenvong.IdThoiGian,
+                    thoiGianBatDauHienTai = nguyenvong.ThoiGianBatDauHienTai,
+                    thoiGianKetThucHienTai = nguyenvong.ThoiGianKetThucHienTai,
+                    thoiGianBatDauMoi = nguyenvong.ThoiGianBatDauMoi,
+                    thoiGianKetThucMoi = nguyenvong.ThoiGianKetThucMoi,
+                    trangThai = nguyenvong.TrangThai,
+                    idLopHocPhan = lhp.TenHocPhan,
+                }
+            ).ToListAsync();
+
             return Ok(requests);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetNguyenVongById(string id)
         {
-            var request = await _context.DangKyDoiLichs
-                .FirstOrDefaultAsync(nv => nv.IdDangKyDoiLich == id);
+            var request = await (
+                from nguyenvong in _context.DangKyDoiLichs
+                join tg_lhp in _context.ThoiGianLopHocPhans
+                    on nguyenvong.IdThoiGian equals tg_lhp.IdThoiGian
+                join lhp in _context.LopHocPhans
+                    on tg_lhp.IdLopHocPhan equals lhp.IdLopHocPhan
+                where nguyenvong.IdDangKyDoiLich == id
+                select new
+                {
+                    idDangKyDoiLich = nguyenvong.IdDangKyDoiLich,
+                    idThoiGian = nguyenvong.IdThoiGian,
+                    thoiGianBatDauHienTai = nguyenvong.ThoiGianBatDauHienTai,
+                    thoiGianKetThucHienTai = nguyenvong.ThoiGianKetThucHienTai,
+                    thoiGianBatDauMoi = nguyenvong.ThoiGianBatDauMoi,
+                    thoiGianKetThucMoi = nguyenvong.ThoiGianKetThucMoi,
+                    trangThai = nguyenvong.TrangThai,
+                    idLopHocPhan = lhp.IdLopHocPhan,
+                    tenHocPhan = lhp.TenHocPhan
+                }
+            ).FirstOrDefaultAsync();
 
-            return request == null ? NotFound("Nguyện Vọng Không Tìm Thấy") : Ok(request);
+            if (request == null)
+            {
+                return NotFound("Nguyện Vọng Không Tìm Thấy");
+            }
+
+            return Ok(request);
         }
 
         [HttpPost]
