@@ -142,7 +142,15 @@
             });
         });
 
-
+        function formatDateTimeForInput(dateString) {
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${year}-${month}-${day}T${hours}:${minutes}`;
+        }
         // Handle load and create data tables 
         $(document).ready(function () {
             $('#dataTable').DataTable({
@@ -173,22 +181,31 @@
                     {
                         data: 'thoiGianBatDau',
                         render: function (data, type, row) {
-                            return new Date(data).toLocaleDateString();
+                            let date = new Date(data);
+                            let day = String(date.getDate()).padStart(2, '0');
+                            let month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+                            let year = date.getFullYear();
+                            return `${day}/${month}/${year}`;
                         }
                     },
                     {
                         data: 'thoiGianKetThuc',
                         render: function (data, type, row) {
-                            return new Date(data).toLocaleDateString();
+                            let date = new Date(data);
+                            let day = String(date.getDate()).padStart(2, '0');
+                            let month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+                            let year = date.getFullYear();
+                            return `${day}/${month}/${year}`;
                         }
                     },
                     {
                         data: null,
                         render: function (data, type, row) {
-                            if (new Date(row.ThoiGianKetThuc) < Date.now()) {
+                            let dateNow = formatDateTimeForInput(Date.now());
+                            if (row.thoiGianKetThuc < dateNow) {
                                 return '<span class="badge badge-danger">Đã Kết Thúc</span>';
                             }
-                            else if (new Date(row.ThoiGianBatDau) <= Date.now()) {
+                            else if (row.thoiGianBatDau <= dateNow) {
                                 return '<span class="badge badge-success">Đang Diễn Ra</span>';
                             }
                             else {
