@@ -215,10 +215,6 @@ namespace qlsv.Controllers
                                                lhp.TenHocPhan
                                            }).ToListAsync();
 
-            if (dangKyDoiLichList == null || !dangKyDoiLichList.Any())
-            {
-                return NotFound("Không tìm thấy đăng ký đổi lịch cho giáo viên này.");
-            }
 
             return Ok(dangKyDoiLichList);
         }

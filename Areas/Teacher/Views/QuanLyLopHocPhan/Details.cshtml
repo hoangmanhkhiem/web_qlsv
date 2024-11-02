@@ -66,11 +66,10 @@
                     const diemQuaTrinh = parseFloat(row.find(`input[name="row-${idThoiGian}-dqt"]`).val());
                     const diemKetThuc = parseFloat(row.find(`input[name="row-${idThoiGian}-dkt"]`).val());
                     const diemTongKet = parseFloat(row.find(`input[name="row-${idThoiGian}-dtt"]`).val());
-
                     // Check if any score is modified and add it to updatedRows if it is
                     if (!isNaN(diemQuaTrinh) && !isNaN(diemKetThuc) && !isNaN(diemTongKet)) {
                         updatedRows.push({
-                            IdThoiGian: idThoiGian,
+                            IdDiem: idThoiGian,
                             DiemQuaTrinh: diemQuaTrinh,
                             DiemKetThuc: diemKetThuc,
                             DiemTongKet: diemTongKet
