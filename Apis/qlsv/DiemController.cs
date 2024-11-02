@@ -159,7 +159,7 @@ public class DiemController : ControllerBase
                 IdSinhVien = diem.IdSinhVien,
                 IdLopHocPhan = diem.IdLopHocPhan,
                 IdMonHoc = monhoc.IdMonHoc,
-                TenLopHocPhan = lopHocPhan.TenHocPhan,  
+                TenLopHocPhan = lopHocPhan.TenHocPhan,
                 DiemQuaTrinh = diem.DiemQuaTrinh,
                 DiemKetThuc = diem.DiemKetThuc,
                 DiemTongKet = diem.DiemTongKet,
@@ -318,12 +318,13 @@ public class DiemController : ControllerBase
                 on lhp.IdMonHoc equals mon.IdMonHoc
             join sv in _context.SinhViens
                 on d.IdSinhVien equals sv.IdSinhVien
-            select new {
+            select new
+            {
                 IdDiem = d.IdDiem,
                 IdSinhVien = d.IdSinhVien,
                 IdLopHocPhan = d.IdLopHocPhan,
                 IdMon = mon.IdMonHoc,
-                
+
                 TenSinhVien = sv.HoTen,
                 DiemQuaTrinh = d.DiemQuaTrinh,
                 DiemKetThuc = d.DiemKetThuc,
@@ -361,9 +362,44 @@ public class DiemController : ControllerBase
         _context.Diems.Update(qr);
         await _context.SaveChangesAsync();
 
-        return Ok();
+        return Ok(new {
+            StatusCode = 200,
+            Message = "Cập Nhập Thành Công"
+        });
     }
 
+    /**
+     * PUT:  /api/diem/nhaplist/
+     * PUT: Cap Nhap List Diem Sinh Vien
+     */
+    [HttpPut("nhaplist")]
+    public async Task<IActionResult> NhapListDiemSinhVien(List<NhapDiemDto> listDiem)
+    {
+        foreach (NhapDiemDto diem in listDiem)
+        {
+            if (diem.IdDiem == null)
+            {
+                return BadRequest("Id điểm không được để trống");
+            }
+            // Query
+            var qr = _context.Diems.Where(x => x.IdDiem == diem.IdDiem).FirstOrDefault();
+            if (qr == null)
+            {
+                return NotFound("Không tìm thấy điểm với id: " + diem.IdDiem);
+            }
 
+            qr.DiemQuaTrinh = diem.DiemQuaTrinh;
+            qr.DiemKetThuc = diem.DiemKetThuc;
+            qr.DiemTongKet = diem.DiemTongKet;
+            _context.Diems.Update(qr);
+        }
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new {
+            StatusCode = 200,
+            Message = "Cập Nhập Thành Công List Điểm"
+        });
+    }
 }
 

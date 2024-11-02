@@ -64,13 +64,12 @@
 
                 // AJAX call to submit data
                 $.ajax({
-                    url: '@Url.Action("UpdateDiem", "YourController")',
-                    type: 'POST',
+                    url: '/api/diem/nhaplist',
+                    type: 'PUT',
                     contentType: 'application/json',
                     data: JSON.stringify(updatedRows),
                     success: function (response) {
-                        alert('Cập nhật thành công!');
-                        // Optionally, refresh or reload data here if needed
+                        console.log(`Cập nhập thành công điểm ${idDiem}`);
                     },
                     error: function (xhr, status, error) {
                         alert('Lỗi cập nhật: ' + error);
