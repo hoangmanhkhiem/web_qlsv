@@ -1,5 +1,4 @@
 
-
 INSERT INTO Users (Id,IdClaim, FullName,Phone,Email,PasswordHash, UserName,EmailConfirmed, PhoneNumberConfirmed, TwoFactorEnabled, LockoutEnabled, AccessFailedCount)
 VALUES
     (NEWID(),'222631111', N'Hoàng Mạnh Khiêm', '0987654321', 'khiem@gmai.com', 'i1CelkDpmAmgU08yFCskzfda4mWOI12kwgW571+2OiY=', '222631111',1,1,1,1,1),
