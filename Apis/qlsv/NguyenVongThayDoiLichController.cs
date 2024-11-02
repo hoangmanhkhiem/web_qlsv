@@ -38,7 +38,8 @@ namespace qlsv.Controllers
                     thoiGianBatDauMoi = nguyenvong.ThoiGianBatDauMoi,
                     thoiGianKetThucMoi = nguyenvong.ThoiGianKetThucMoi,
                     trangThai = nguyenvong.TrangThai,
-                    idLopHocPhan = lhp.TenHocPhan,
+                    idLopHocPhan = lhp.IdLopHocPhan,
+                    tenLopHocPhan = lhp.TenHocPhan,
                 }
             ).ToListAsync();
 
