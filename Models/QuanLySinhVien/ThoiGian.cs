@@ -19,7 +19,8 @@ namespace qlsv.Models
 
         // Variables linked to another table
         public virtual ICollection<ThoiGianLopHocPhan> ThoiGianLopHocPhans { get; set; }
-    
+        public virtual ICollection<DangKyDoiLich> DangKyDoiLichs { get; set; }
+
         // Constructor
         public ThoiGian()
         {
