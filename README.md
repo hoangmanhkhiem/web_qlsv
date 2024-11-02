@@ -3,8 +3,9 @@
 - **Mail**: *khiemhm04@gmail.com*
 
 # TODO:
-- Api Full table in QuanLySinhVienDbContext
+- Input data with file
 - Auth ...  
+- ....
 
 # How to run:
 - Run database in docker:
@@ -15,6 +16,10 @@
     ```
 - Init table db
     + **Note**: Install `dotnet ef global`
+    ```bash
+      dotnet tool install --global dotnet-ef
+
+    ```
     + Create table **ApplicationDbContext**:
         ```
             dotnet ef database update --context ApplicationDbContext
@@ -35,7 +40,16 @@
         ```
             dotnet ef database update --context ViewDbContext
         ```
-    + Run application:
+    + Run application (creaete admin and db init static):
         ```
             dotnet run
         ```
+    + End Application.
+- Run sql template
+    + New query `QuanLySinhVienDbContext` path file `/sql/QuanLySinhVienDb.sql`.
+    + New query `IdentityDbContext` path file `/sql/IdentityDb.sql`.
+  
+- Run application 
+```
+    dotnet run
+```
