@@ -113,6 +113,33 @@ namespace qlsv.Controllers
             return Ok("Xoá Nguyện Vọng Thành Công");
         }
 
+        // Find Nguyen Vong Cua Giao Vien
+        [HttpGet("{idGiaoVien}/giaovien")]
+        public async Task<IActionResult> GetNguyenVongGiaoVien(string idGiaoVien)
+        {
+            var dangKyDoiLichList = await (from dkdl in _context.DangKyDoiLichs
+                                           join tglhp in _context.ThoiGianLopHocPhans on dkdl.IdThoiGian equals tglhp.IdThoiGian
+                                           join lhp in _context.LopHocPhans on tglhp.IdLopHocPhan equals lhp.IdLopHocPhan
+                                           where lhp.IdGiaoVien == idGiaoVien
+                                           select new
+                                           {
+                                               dkdl.IdDangKyDoiLich,
+                                               dkdl.ThoiGianBatDauHienTai,
+                                               dkdl.ThoiGianKetThucHienTai,
+                                               dkdl.ThoiGianBatDauMoi,
+                                               dkdl.ThoiGianKetThucMoi,
+                                               dkdl.TrangThai,
+                                               lhp.TenHocPhan
+                                           }).ToListAsync();
+
+            if (dangKyDoiLichList == null || !dangKyDoiLichList.Any())
+            {
+                return NotFound("Không tìm thấy đăng ký đổi lịch cho giáo viên này.");
+            }
+
+            return Ok(dangKyDoiLichList);
+        }
+
         // Helper method to check if already registered
         private async Task<bool> CheckIfAlreadyRegistered(string idThoiGian) =>
             await _context.DangKyDoiLichs.AnyAsync(t => t.IdThoiGian == idThoiGian);
