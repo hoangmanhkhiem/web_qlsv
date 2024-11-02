@@ -149,15 +149,15 @@
                                 }
                                 else {
                                     return `
-                                                                    <button class="btn btn-primary btn-sm" 
-                                                                        data-toggle="modal" data-target="#modalThayDoiLich"
-                                                                        data-idThoiGian="${row.id}"
-                                                                        data-thoi-gian-bat-dau-hien="${formatDateTimeForInput(row.start)}"
-                                                                        data-thoi-gian-ket-thuc="${formatDateTimeForInput(row.end)}" 
-                                                                        >
-                                                                    Yêu Cầu Đổi Lịch
-                                                                    </button>
-                                                                `;
+                                                                        <button class="btn btn-primary btn-sm" 
+                                                                            data-toggle="modal" data-target="#modalThayDoiLich"
+                                                                            data-idThoiGian="${row.id}"
+                                                                            data-thoi-gian-bat-dau-hien="${formatDateTimeForInput(row.start)}"
+                                                                            data-thoi-gian-ket-thuc="${formatDateTimeForInput(row.end)}" 
+                                                                            >
+                                                                        Yêu Cầu Đổi Lịch
+                                                                        </button>
+                                                                    `;
                                 }
                             }
                         },
@@ -171,23 +171,19 @@
             });
 
             // Upgrade nguyen vong thay doi lich
-            
+
         });
 
     </script>
 }
 
 <div class="container-fluid">
-    <h2>Lớp Học Phần @ViewBag.LopHocPhan</h2>
+    <h2>Lớp Học Phần @ViewBag.LopHocPhan.TenHocPhan</h2>
     <div class="form-group">
         <p>&emsp;Thời gian bắt đầu từ:
-            @(ViewBag.LopHocPhan?.ThoiGianBatDau != null
-                ? ViewBag.LopHocPhan.ThoiGianBatDau.Value.ToString("dd/MM/yyyy")
-                : "N/A")
+            @(ViewBag.LopHocPhan?.ThoiGianBatDau.ToString("dd/MM/yyyy"))
             đến
-            @(ViewBag.LopHocPhan?.ThoiGianKetThuc != null
-                ? ViewBag.LopHocPhan.ThoiGianKetThuc.Value.ToString("dd/MM/yyyy")
-                : "N/A").
+            @(ViewBag.LopHocPhan?.ThoiGianKetThuc.ToString("dd/MM/yyyy")).
         </p>
 
         <p>&emsp;Số tín chỉ: @(ViewBag.LopHocPhan?.MonHocs?.SoTinChi ?? "N/A")
