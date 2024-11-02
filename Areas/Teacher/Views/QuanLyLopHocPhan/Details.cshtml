@@ -10,7 +10,29 @@
     <script src="~/sb-admin/vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="~/sb-admin/vendor/datatables/dataTables.bootstrap4.min.js"></script>
     <script>
+        function formatDateTimeForInput(dateString) {
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${year}-${month}-${day}T${hours}:${minutes}`;
+        }
         $(document).ready(function () {
+            var listNguyenVongThayDoiLich = [];
+            // Aj get lish nguyen vong thay doi lich
+            $.ajax({
+                url: '/api/NguyenVongThayDoiLich/',
+                type: 'GET',
+                success: function (response) {
+                    listNguyenVongThayDoiLich = response;
+                },
+                error: function (xhr, status, error) {
+                    alert('Lỗi cập nhật: ' + error);
+                }
+            });
+
             // Input validation to allow only numbers with optional decimal points, between 0 and 10
             $('input[type="text"]').on('input', function () {
                 const regex = /^\d*\.?\d*$/;
@@ -64,16 +86,141 @@
 
                 // AJAX call to submit data
                 $.ajax({
-                    url: '@Url.Action("UpdateDiem", "YourController")',
-                    type: 'POST',
+                    url: '/api/diem/nhaplist',
+                    type: 'PUT',
                     contentType: 'application/json',
                     data: JSON.stringify(updatedRows),
                     success: function (response) {
-                        alert('Cập nhật thành công!');
-                        // Optionally, refresh or reload data here if needed
+                        console.log(`Cập nhập thành công điểm ${idThoiGian}`);
                     },
                     error: function (xhr, status, error) {
                         alert('Lỗi cập nhật: ' + error);
+                    }
+                });
+            });
+
+            /**
+             * Xử lí thời gian lớp học phần 
+             */
+            // Data table thời gian lớp học phần
+            var dataTable_date = $('#dataTable_date').DataTable({
+                ajax: {
+                    url: '/api/calendar/lophocphan/@ViewBag.LopHocPhan.IdLopHocPhan',
+                    type: 'GET',
+                    dataSrc: '',
+                },
+                columns: [
+                    {
+                        data: 'start',
+                        render: function (data, type, row) {
+                            return new Date(data).toLocaleString();
+                        }
+                    },
+                    {
+                        data: 'end',
+                        render: function (data, type, row) {
+                            return new Date(data).toLocaleString();
+                        }
+                    },
+                    { data: 'diaDiem' },
+                    {
+                        data: null,
+                        render: function (data, type, row) {
+                            if (new Date(row.end) < Date.now()) {
+                                return '<span class="badge badge-danger">Đã Kết Thúc</span>';
+                            }
+                            else if (new Date(row.start) <= Date.now()) {
+                                return '<span class="badge badge-success">Đang Diễn Ra</span>';
+                            }
+                            else {
+                                return '<span class="badge badge-warning">Sắp Diễn Ra</span>';
+                            }
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function (data, type, row) {
+                            if (new Date(row.start) <= Date.now()) {
+                                return '';
+                            }
+                            else {
+                                if (listNguyenVongThayDoiLich.some(x => x.idThoiGian === row.id)) {
+                                    return '<span class="badge badge-warning">Đã Đăng Ký Nguyện Vọng Thay Đổi Lịch</span>';
+                                }
+                                else {
+                                    return `
+                                                                        <button class="btn btn-primary btn-sm" 
+                                                                            data-toggle="modal" data-target="#modalThayDoiLich"
+                                                                            data-idThoiGian="${row.id}"
+                                                                            data-thoi-gian-bat-dau-hien="${formatDateTimeForInput(row.start)}"
+                                                                            data-thoi-gian-ket-thuc="${formatDateTimeForInput(row.end)}" 
+                                                                            >
+                                                                        Yêu Cầu Đổi Lịch
+                                                                        </button>
+                                                                    `;
+                                }
+                            }
+                        },
+                        searchable: false,
+                        sortable: false,
+                    }
+                ],
+                language: {
+                    url: '/sb-admin/json/data_tables_vi.json',
+                },
+            });
+
+            // Upgrade nguyen vong thay doi lich
+            $('#dataTable_date').on('click', 'button', function () {
+                const idThoiGian = $(this).data('idthoigian');
+                const thoiGianBatDauHienTai = $(this).data('thoi-gian-bat-dau-hien');
+                const thoiGianKetThucHienTai = $(this).data('thoi-gian-ket-thuc');
+
+                $('#idThoiGian').val(idThoiGian);
+                $('#idThoiGianBatDauHienTai').val(thoiGianBatDauHienTai);
+                $('#idThoiGianKetThucHienTai').val(thoiGianKetThucHienTai);
+                console.log(thoiGianBatDauHienTai);
+                console.log(thoiGianKetThucHienTai);
+                // set
+                $('#thoiGianBatDauMoi').val(new Date(thoiGianBatDauHienTai).toISOString().slice(0, 10));
+                $('#thoiGianKetThucMoi').val(new Date(thoiGianKetThucHienTai).toISOString().slice(0, 10));
+            });
+
+            // handle ajax request
+            $('#btnDangKySuaThoiGian').on('click', function () {
+                const idThoiGian = $('#idThoiGian').val();
+                const thoiGianBatDauMoi = $('#thoiGianBatDauMoi').val();
+                const thoiGianKetThucMoi = $('#thoiGianKetThucMoi').val();
+                const thoiGianBatDauHienTai = $('#idThoiGianBatDauHienTai').val();
+                const thoiGianKetThucHienTai = $('#idThoiGianKetThucHienTai').val();
+
+                if (thoiGianBatDauMoi === '' || thoiGianKetThucMoi === '') {
+                    alert('Vui lòng nhập đầy đủ thông tin');
+                    return;
+                }
+
+                if (thoiGianBatDauMoi === thoiGianBatDauHienTai && thoiGianKetThucMoi === thoiGianKetThucHienTai) {
+                    alert('Không có thay đổi nào được thực hiện');
+                    return;
+                }
+
+                $.ajax({
+                    url: '/api/NguyenVongThayDoiLich/',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        idThoiGian: idThoiGian,
+                        thoiGianBatDauMoi: thoiGianBatDauMoi,
+                        thoiGianKetThucMoi: thoiGianKetThucMoi,
+                        thoiGianBatDauHienTai: thoiGianBatDauHienTai, 
+                        thoiGianKetThucHienTai: thoiGianKetThucHienTai
+                    }),
+                    success: function (response) {
+                        $('#modalThayDoiLich').modal('hide');
+                        location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Lỗi: ' + error.xhr.responseText);
                     }
                 });
             });
@@ -82,15 +229,28 @@
     </script>
 }
 
-<h2>Lớp Học Phần @ViewBag.LopHocPhan</h2>
+<div class="container-fluid">
+    <h2>Lớp Học Phần @ViewBag.LopHocPhan.TenHocPhan</h2>
+    <div class="form-group">
+        <p>&emsp;Thời gian bắt đầu từ:
+            @(ViewBag.LopHocPhan?.ThoiGianBatDau.ToString("dd/MM/yyyy"))
+            đến
+            @(ViewBag.LopHocPhan?.ThoiGianKetThuc.ToString("dd/MM/yyyy")).
+        </p>
+
+        <p>&emsp;Số tín chỉ: @(ViewBag.LopHocPhan?.MonHocs?.SoTinChi?.ToString() ?? "N/A")
+            và số tiết học: @(ViewBag.LopHocPhan?.MonHocs?.SoTietHoc?.ToString() ?? "N/A").
+        </p>
+    </div>
+</div>
 
 <!-- Begin Page Content -->
 <div class="container-fluid">
-    <button id="updateButton" class="btn btn-primary">Cập Nhật</button>
-    <!-- DataTales Example -->
+    <button id="updateButton" class="btn btn-primary m">Cập Nhật</button>
+    <!-- DataTales điểm -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Nguyện Vọng Đăng Kí</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Điểm Sinh Viên Lớp Học Phần</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -135,6 +295,75 @@
             </div>
         </div>
     </div>
-
 </div>
 <!-- /.container-fluid -->
+
+<!-- Data table Danh Sách Thời Gian Học Lớp Học Phần -->
+<!-- Hiển Bảng Thời Gian Lớp Học Phần -->
+<div class="col-lg-12 col-md-12 col-sm-12">
+    <h3 class="box-title mt-5">Chi Tiết Thời Gian Lớp Học Phần</h3>
+    <div class="table-responsive">
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable_date" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Thời Gian Bắt Đầu</th>
+                                <th>Thời Gian Kết Thúc</th>
+                                <th>Địa Điểm</th>
+                                <th>Trạng Thái</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Thời Gian Bắt Đầu</th>
+                                <th>Thời Gian Kết Thúc</th>
+                                <th>Địa Điểm</th>
+                                <th>Trạng Thái</th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dialog yeu cau thay doi lich -->
+<div class="modal fade" id="modalThayDoiLich" tabindex="-1" role="dialog" aria-labelledby="modalThayDoiLichLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalThayDoiLichLabel">Đăng Ký Nguyện Vọng Thay Đổi Lịch</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formDangKyThayDoiLich">
+                    <div class="form-group">
+                        <label for="thoiGianBatDauMoi">Thời Gian Bắt Đầu Mới</label>
+                        <input type="date" class="form-control" id="thoiGianBatDauMoi" name="thoiGianBatDauMoi"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="thoiGianKetThucMoi">Thời Gian Kết Thúc Mới</label>
+                        <input type="date" class="form-control" id="thoiGianKetThucMoi" name="thoiGianKetThucMoi"
+                            required>
+                    </div>
+                    <input type="hidden" id="idThoiGian" name="idThoiGian">
+                    <input type="hidden" id="idThoiGianBatDauHienTai" name="idThoiGianBatDauHienTai">
+                    <input type="hidden" id="idThoiGianKetThucHienTai" name="idThoiGianKetThucHienTai">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="btnDangKySuaThoiGian">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>

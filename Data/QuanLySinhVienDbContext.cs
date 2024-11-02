@@ -18,6 +18,7 @@ public class QuanLySinhVienDbContext : DbContext
     public DbSet<ThoiGian> ThoiGians { get; set; } = null!;
     public DbSet<ThoiGianLopHocPhan> ThoiGianLopHocPhans { get; set; } = null!;
     public DbSet<DangKyNguyenVong> DangKyNguyenVongs { get; set; } = null!;
+    public DbSet<DangKyDoiLich> DangKyDoiLichs { get; set; } = null!;
 
     // Constructor
     public QuanLySinhVienDbContext(DbContextOptions<QuanLySinhVienDbContext> options)
@@ -283,6 +284,28 @@ public class QuanLySinhVienDbContext : DbContext
             entity.HasOne(d => d.MonHocs)
                 .WithMany(p => p.DangKyNguyenVongs)
                 .HasForeignKey(d => d.IdMonHoc);
+        });
+
+        modelBuilder.Entity<DangKyDoiLich>(entity => {
+            entity.HasKey(e => e.IdDangKyDoiLich);
+
+            entity.ToTable("DangKyDoiLich");
+
+            entity.Property(e => e.IdDangKyDoiLich)
+                .HasMaxLength(100)
+                .HasDefaultValueSql("(newid())");
+
+            entity.Property(e => e.ThoiGianBatDauHienTai).HasColumnType("datetime");
+            entity.Property(e => e.ThoiGianKetThucHienTai).HasColumnType("datetime");
+            entity.Property(e => e.ThoiGianKetThucMoi).HasColumnType("datetime");
+            entity.Property(e => e.ThoiGianKetThucMoi).HasColumnType("datetime");
+
+            // Mặc định khởi tạo trạng thái là -1. 1 Là đc chấp nhận, 0 là từ chối
+            entity.Property(e => e.TrangThai).HasDefaultValue(-1);
+
+            entity.HasOne(d => d.ThoiGians)
+                .WithMany(p => p.DangKyDoiLichs)
+                .HasForeignKey(d => d.IdThoiGian);
         });
     }
 }

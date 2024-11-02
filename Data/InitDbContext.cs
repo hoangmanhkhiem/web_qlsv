@@ -186,6 +186,15 @@ public class InitDbContext
                         Action = "Index",
                         Content = "Danh Sách Sinh Viên",
                         IconClass = "fas fa-user-graduate"
+                    },
+                    new ViewNavItem
+                    {
+                        LocationNavItem = "TEACHER",
+                        Area = "TEACHER",
+                        Controller = "DangKyNguyenVong",
+                        Action = "Index",
+                        Content = "Danh Sách Nguyện Vọng",
+                        IconClass = "fas fa-user-graduate"
                     }
                 );
             

@@ -12,7 +12,7 @@
             <!-- Profile picture card-->
             <div class="card mb-4 mb-xl-0">
                 <div>
-                    <form asp-action="UpdatePhotoUser" asp-area="Teacher" asp-controller="User"
+                    <form asp-action="UpdatePhotoUser" asp-area="Student" asp-controller="User"
                         asp-route-IdUser="@Model.Id" enctype="multipart/form-data">
                         <div class="d-flex justify-content-center mb-4">
                             @{
@@ -56,31 +56,26 @@
             <div class="card mb-4">
                 <div class="card-header">Account Details</div>
                 <div class="card-body">
-                    <form asp-action="UpdateUser" asp-area="Teacher" asp-controller="User" method="post">
-                        <div class="mb-3">
+                    <form asp-action="UpdateUser" asp-area="Student" asp-controller="User" method="post">
+                        @* <div class="mb-3">
                             <label class="small mb-1" asp-for="FirstName">First Name</label>
                             <input asp-for="FirstName" class="form-control" placeholder="Your First Name"
                                 value="@Model.FirstName">
                             <span asp-validation-for="FirstName" class="text-danger"></span>
-                        </div>
+                        </div> *@
                         <div class="mb-3">
-                            <label class="small mb-1" asp-for="LastName">Last Name</label>
-                            <input asp-for="LastName" class="form-control" placeholder="Your Last Name"
-                                value="@Model.LastName">
-                            <span asp-validation-for="LastName" class="text-danger"></span>
+                            <label class="small mb-1" asp-for="FullName">Full Name</label>
+                            <input asp-for="FullName" class="form-control" placeholder="Your Full Name"
+                                value="@Model.FullName">
+                            <span asp-validation-for="FullName" class="text-danger"></span>
                         </div>
-                        <!-- Form Group (email)-->
+                        <!-- Form Group (NgaySinh)-->
+
                         <div class="mb-3">
-                            <label class="small mb-1" asp-for="Email">Email</label>
-                            <input asp-for="Email" class="form-control" placeholder="Enter your email"
-                                value="@Model.Email">
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label class="small mb-1" asp-for="PhoneNumber">Phone Number</label>
-                            <input asp-for="PhoneNumber" class="form-control" placeholder="Your Phone Number"
-                                value="@Model.PhoneNumber">
-                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            <label class="small mb-1" asp-for="Lop">Lớp</label>
+                            <input asp-for="Lop" class="form-control" placeholder="Lớp"
+                                value="@Model.Lop">
+                            <span asp-validation-for="Lop" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
                             <label class="small mb-1" asp-for="Address">Address</label>
@@ -94,12 +89,71 @@
                         <button class="btn btn-primary" type="submit">Save changes</button>
                     </form>
                 </div>
+
+            </div>
+            <div class="card mb-4">
+                <div class="card-header">Thay Đổi Mật Khẩu</div>
+                <div class="card-body">
+                    <form id="changePasswordForm">
+                        <div class="mb-3">
+                            <label class="small mb-1" for="oldPassword">Mật Khẩu Hiện Tại</label>
+                            <input class="form-control" id="oldPassword" type="password"
+                                placeholder="Enter your current password">
+                        </div>
+                        <div class="mb-3">
+                            <label class="small mb-1" for="newPassword">Mật Khẩu Mới</label>
+                            <input class="form-control" id="newPassword" type="password"
+                                placeholder="Enter your new password">
+                        </div>
+                        <div class="mb-3">
+                            <label class="small mb-1" for="confirmPassword">Nhập Lại Mật Khẩu Mới</label>
+                            <input class="form-control" id="confirmPassword" type="password"
+                                placeholder="Confirm your new password">
+                        </div>
+                        <input hidden class="hidden" id="id" value="@Model.Id">
+                        <button class="btn btn-primary" type="button" onclick="changePassword()">Change
+                            Password</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
+    function changePassword() {
+            var oldPassword = document.getElementById("oldPassword").value;
+            var newPassword = document.getElementById("newPassword").value;
+            var confirmPassword = document.getElementById("confirmPassword").value;
+            var id = document.getElementById("id").value;
+
+            if (newPassword != confirmPassword) {
+                alert("Mật khẩu mới không trùng khớp");
+                return;
+            }
+
+            $.ajax({
+                url: '/api/SinhVien/updatepassword',
+                type: "POST",
+                headers: {
+                    'Accept': '*/*',
+                    'Content-Type': 'application/json'
+                },
+                data: JSON.stringify({
+                    idUser: id,
+                    oldPassword: oldPassword,
+                    newPassword: newPassword,
+                    confirmPassword: confirmPassword
+                }),
+                success: function (response) {
+                    alert("Thay đổi mật khẩu thành công");
+                },
+                error: function (response) {
+                    alert("Thay đổi mật khẩu thất bại");
+                    console.log(response.status, response.text);
+                }
+            });
+        }
     function displaySelectedImage(event, elementId) {
         const selectedImage = document.getElementById(elementId);
         const fileInput = event.target;
