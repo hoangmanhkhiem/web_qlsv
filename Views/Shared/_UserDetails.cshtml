@@ -57,20 +57,20 @@
                 <div class="card-header">Account Details</div>
                 <div class="card-body">
                     <form asp-action="UpdateUser" asp-area="Admin" asp-controller="User" method="post">
-                        <div class="mb-3">
+                        @* <div class="mb-3">
                             <label class="small mb-1" asp-for="FirstName">First Name</label>
                             <input asp-for="FirstName" class="form-control" placeholder="Your First Name"
                                 value="@Model.FirstName">
                             <span asp-validation-for="FirstName" class="text-danger"></span>
-                        </div>
+                        </div> *@
                         <div class="mb-3">
-                            <label class="small mb-1" asp-for="LastName">Last Name</label>
-                            <input asp-for="LastName" class="form-control" placeholder="Your Last Name"
-                                value="@Model.LastName">
-                            <span asp-validation-for="LastName" class="text-danger"></span>
+                            <label class="small mb-1" asp-for="FullName">Last Name</label>
+                            <input asp-for="FullName" class="form-control" placeholder="Your Last Name"
+                                value="@Model.FullName">
+                            <span asp-validation-for="FullName" class="text-danger"></span>
                         </div>
                         <!-- Form Group (email)-->
-                        <div class="mb-3">
+                        @* <div class="mb-3">
                             <label class="small mb-1" asp-for="Email">Email</label>
                             <input asp-for="Email" class="form-control" placeholder="Enter your email"
                                 value="@Model.Email">
@@ -81,7 +81,7 @@
                             <input asp-for="PhoneNumber" class="form-control" placeholder="Your Phone Number"
                                 value="@Model.PhoneNumber">
                             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                        </div>
+                        </div> *@
                         <div class="mb-3">
                             <label class="small mb-1" asp-for="Address">Address</label>
                             <input asp-for="Address" class="form-control" placeholder="Your Address"

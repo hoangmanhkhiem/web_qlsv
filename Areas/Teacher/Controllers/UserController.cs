@@ -6,6 +6,7 @@ using qlsv.Models;
 using qlsv.ViewModels;
 using qlsv.Data;
 using qlsv.Services;
+using qlsv.Dto;
 
 
 namespace qlsv.Teacher.Controllers;
@@ -15,21 +16,25 @@ public class UserController : Controller
 {
     // Variable
     private readonly ILogger<UserController> _logger;
-    private readonly qlsv.Data.IdentityDbContext _context;
+    private readonly qlsv.Data.IdentityDbContext _identityContext;
+
+    private readonly qlsv.Data.QuanLySinhVienDbContext _context;
+    private readonly qlsv.Helpers.SecurityHelper _securityHelper;
 
     // Constructor
     public UserController(
-        ILogger<UserController> logger,
-        qlsv.Data.IdentityDbContext context)
+        QuanLySinhVienDbContext quanLySinhVienDbContext,
+        qlsv.Data.IdentityDbContext identityDbContext,
+        qlsv.Helpers.SecurityHelper securityHelper)
     {
-        _logger = logger;
-        _context = context;
+        _context = quanLySinhVienDbContext;
+        _identityContext = identityDbContext;
+        _securityHelper = securityHelper;
     }
-
     // GET: Admin/UserDetails
     public IActionResult UserDetails(string id)
     {   
-        var user = _context.Users.FirstOrDefault(u => u.Id == id);
+        var user = _identityContext.Users.FirstOrDefault(u => u.Id == id);
         if (user == null)
         {
             return NotFound();
@@ -37,10 +42,7 @@ public class UserController : Controller
         UpdateUser updateUser = new UpdateUser()
         {
             Id = user.Id,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Email = user.Email,
-            PhoneNumber = user.PhoneNumber,
+            FullName = user.FullName,
             Address = user.Address,
             ProfilePicture = user.ProfilePicture
         };
@@ -59,17 +61,14 @@ public class UserController : Controller
             return View("UserDetails", updateUser);
         }
 
-        var user = _context.Users.FirstOrDefault(u => u.Id == updateUser.Id);
+        var user = _identityContext.Users.FirstOrDefault(u => u.Id == updateUser.Id);
         if (user == null)
         {
             return NotFound();
         }
-        user.FirstName = updateUser.FirstName;
-        user.LastName = updateUser.LastName;
-        user.Email = updateUser.Email;
-        user.PhoneNumber = updateUser.PhoneNumber;
+        user.FullName = updateUser.FullName;
         user.Address = updateUser.Address;
-        _context.SaveChanges();
+        _identityContext.SaveChanges();
 
         return RedirectToAction("UserDetails", new { id = updateUser.Id });
     }
@@ -79,7 +78,7 @@ public class UserController : Controller
     public async Task<ActionResult> UpdatePhotoUser(string IdUser, IFormFile file)
     {
         const int maxFileSize = 1024 * 1024; // 2MB
-        var user = await _context.Users.FindAsync(IdUser);
+        var user = await _identityContext.Users.FindAsync(IdUser);
         if (user == null)
         {
             return NotFound();
@@ -91,7 +90,7 @@ public class UserController : Controller
         ImageService imageService = new ImageService();
         byte[] imageData = await imageService.ToByteAsync(file);
 
-        List<string> dotImage = new List<string>() { "png", "webp", "jpeg", "jpg", "heic" };
+        List<string> dotImage = new List<string>() { "jfif","png", "webp", "jpeg", "jpg", "heic" };
 
         string[] fileExtension = file.FileName.Split(".");
         string extension = fileExtension[fileExtension.Length - 1];
@@ -101,10 +100,55 @@ public class UserController : Controller
             if (imageData.Length <= maxFileSize)
             {
                 user.ProfilePicture = imageData;
-                _context.SaveChanges();
+                _identityContext.SaveChanges();
             }
         }
         return RedirectToAction("UserDetails", new { id = IdUser });
+    }
+
+    // POST: api/sinhvien/updatepassword
+    [HttpPost("updatepassword")]
+    public IActionResult UpdatePassword([FromBody] UpdatePasswordDto updatePasswordDto)
+    {
+        if (string.IsNullOrWhiteSpace(updatePasswordDto.NewPassword) ||
+        string.IsNullOrWhiteSpace(updatePasswordDto.OldPassword) ||
+        updatePasswordDto.NewPassword != updatePasswordDto.ConfirmPassword ||
+        updatePasswordDto.IdUser == null)
+        {
+            return BadRequest("Invalid data.");
+        }
+
+        try
+        {
+            // Find the user in the Identity system by teacher ID
+            var user = _identityContext.Users.FirstOrDefault(u => u.Id == updatePasswordDto.IdUser);
+            if (user == null)
+            {
+                return NotFound("Sinh viên không tồn tại.");
+            }
+
+            // Verify the old password
+            var passwordHasher = user.PasswordHash;
+            bool verificationResult = _securityHelper.ValidateHash(updatePasswordDto.OldPassword, passwordHasher);
+
+            if (verificationResult == false)
+            {
+                return Unauthorized("Mật khẩu cũ không chính xác.");
+            }
+
+            // Hash the new password and update the user's PasswordHash field
+            user.PasswordHash = _securityHelper.Hash(updatePasswordDto.NewPassword);
+
+            // Save changes to the Identity database
+            _identityContext.Users.Update(user);
+            _identityContext.SaveChanges();
+
+            return Ok("Password updated successfully.");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "Internal server error: " + ex.Message);
+        }
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -220,5 +220,50 @@ public class SinhVienController : ControllerBase
         }
     }
 
+    // POST: api/sinhvien/updatepassword
+    [HttpPost("updatepassword")]
+    public IActionResult UpdatePassword([FromBody] UpdatePasswordDto updatePasswordDto)
+    {
+        if (string.IsNullOrWhiteSpace(updatePasswordDto.NewPassword) ||
+        string.IsNullOrWhiteSpace(updatePasswordDto.OldPassword) ||
+        updatePasswordDto.NewPassword != updatePasswordDto.ConfirmPassword ||
+        updatePasswordDto.IdUser == null)
+        {
+            return BadRequest("Invalid data.");
+        }
+
+        try
+        {
+            // Find the user in the Identity system by teacher ID
+            var user = _identityContext.Users.FirstOrDefault(u => u.Id == updatePasswordDto.IdUser);
+            if (user == null)
+            {
+                return NotFound("Sinh viên không tồn tại.");
+            }
+
+            // Verify the old password
+            var passwordHasher = user.PasswordHash;
+            bool verificationResult = _securityHelper.ValidateHash(updatePasswordDto.OldPassword, passwordHasher);
+
+            if (verificationResult == false)
+            {
+                return Unauthorized("Mật khẩu cũ không chính xác.");
+            }
+
+            // Hash the new password and update the user's PasswordHash field
+            user.PasswordHash = _securityHelper.Hash(updatePasswordDto.NewPassword);
+
+            // Save changes to the Identity database
+            _identityContext.Users.Update(user);
+            _identityContext.SaveChanges();
+
+            return Ok("Password updated successfully.");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "Internal server error: " + ex.Message);
+        }
+    }
+
 }
 

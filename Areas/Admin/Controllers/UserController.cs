@@ -6,6 +6,7 @@ using qlsv.Models;
 using qlsv.ViewModels;
 using qlsv.Data;
 using qlsv.Services;
+using qlsv.Dto;
 
 
 namespace qlsv.Admin.Controllers;
@@ -34,13 +35,10 @@ public class UserController : Controller
         {
             return NotFound();
         }
-        UpdateUser updateUser = new UpdateUser()
+        UpdateRootDto updateUser = new UpdateRootDto()
         {
             Id = user.Id,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Email = user.Email,
-            PhoneNumber = user.PhoneNumber,
+            FullName = user.FirstName + " " + user.LastName,
             Address = user.Address,
             ProfilePicture = user.ProfilePicture
         };
@@ -49,7 +47,7 @@ public class UserController : Controller
 
     // POST: Identity/UpdateUser
     [HttpPost]
-    public ActionResult UpdateUser(UpdateUser updateUser, string? base64_Avatar)
+    public ActionResult UpdateUser(UpdateRootDto updateUser, string? base64_Avatar)
     {
         if (!ModelState.IsValid)
         {   
@@ -64,10 +62,7 @@ public class UserController : Controller
         {
             return NotFound();
         }
-        user.FirstName = updateUser.FirstName;
-        user.LastName = updateUser.LastName;
-        user.Email = updateUser.Email;
-        user.PhoneNumber = updateUser.PhoneNumber;
+        user.FullName = updateUser.FullName;
         user.Address = updateUser.Address;
         _context.SaveChanges();
 
@@ -91,7 +86,7 @@ public class UserController : Controller
         ImageService imageService = new ImageService();
         byte[] imageData = await imageService.ToByteAsync(file);
 
-        List<string> dotImage = new List<string>() { "png", "webp", "jpeg", "jpg", "heic" };
+        List<string> dotImage = new List<string>() { "jfif","png", "webp", "jpeg", "jpg", "heic" };
 
         string[] fileExtension = file.FileName.Split(".");
         string extension = fileExtension[fileExtension.Length - 1];
