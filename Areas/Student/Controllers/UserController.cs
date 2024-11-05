@@ -86,10 +86,13 @@ public class UserController : Controller
         {
             return NotFound();
         }
-        user.HoTen = updateUser.FullName;
         user.DiaChi = updateUser.Address;
+        user.NgaySinh = updateUser.NgaySinh;
         user.Lop = updateUser.Lop;
+        userIdentity.FullName = updateUser.FullName;
+        
         _context.SaveChanges();
+        _identityContext.SaveChanges();
 
         return RedirectToAction("UserDetails", new { id = userIdentity.Id });
     }
