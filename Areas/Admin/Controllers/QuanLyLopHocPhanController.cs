@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 //
 using qlsv.Models;
 using qlsv.Data;
+using qlsv.Dto;
 
 namespace qlsv.Admin.Controllers;
 
@@ -45,6 +46,42 @@ public class QuanLyLopHocPhanController : Controller
 
         return View(lhp);
     }
+
+
+    private StatusUploadFileDto SinhVienExists(LopHocPhanDto _lopHocPhan)
+    {
+        // Check id
+        var id = _lopHocPhan.IdLopHocPhan;
+        var lopHp = _context.LopHocPhans.FirstOrDefault(x => x.IdLopHocPhan == id);
+        if (lopHp != null)
+        {
+            return new StatusUploadFileDto
+            {
+                Status = false,
+                Message = "Id already exists"
+            };
+        }
+        var tenLopHP = _lopHocPhan.TenLopHocPhan;
+        var tenLopHp = _context.LopHocPhans.FirstOrDefault(x => x.TenHocPhan == tenLopHP);
+        if (tenLopHp != null)
+        {
+            return new StatusUploadFileDto
+            {
+                Status = false,
+                Message = "Ten lop hoc phan already exists"
+            };
+        }
+
+        
+
+        
+        return new StatusUploadFileDto
+        {
+            Status = true,
+            Message = "Success"
+        };
+    }
+    
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
