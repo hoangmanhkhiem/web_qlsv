@@ -138,19 +138,31 @@ public class QuanLyGiaoVienController : Controller
                 var values = line.Split(",");
                 var gv = new GiaoVienDto
                 {
-                    IdGiaoVien = values[0],
-                    TenGiaoVien = values[1],
-                    SoDienThoai = values[2],
-                    Email = values[3],
-                    IdKhoa = values[4]
+                    IdGiaoVien = values[0].Trim(),
+                    TenGiaoVien = values[1].Trim(),
+                    SoDienThoai = values[2].Trim(),
+                    Email = values[3].Trim(),
+                    IdKhoa = values[4].Trim()
                 };
-                // giaoviens.Add(gv);
-                Console.WriteLine(gv);
+                if (GiaoVienExists(gv).Status)
+                {
+                    giaoviens.Add(new GiaoVien
+                    {
+                        IdGiaoVien = gv.IdGiaoVien,
+                        TenGiaoVien = gv.TenGiaoVien,
+                        SoDienThoai = gv.SoDienThoai,
+                        Email = gv.Email,
+                        IdKhoa = gv.IdKhoa
+                    });
+                }
+                else {
+                    return BadRequest(GiaoVienExists(gv).Message);
+                }
             }
         }
 
-        // _context.GiaoViens.AddRange(giaoviens);
-        // _context.SaveChanges();
+        _context.GiaoViens.AddRange(giaoviens);
+        _context.SaveChanges();
 
         return RedirectToAction("Index");
     }
@@ -160,5 +172,50 @@ public class QuanLyGiaoVienController : Controller
     public IActionResult Error()
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
+
+    // Helper check information of user
+    private StatusUploadFileDto GiaoVienExists(GiaoVienDto giaoVienDto)
+    {
+        // Check id
+        var id = giaoVienDto.IdGiaoVien;
+        var giaovien = _context.GiaoViens.FirstOrDefault(x => x.IdGiaoVien == id);
+        if (giaovien != null)
+        {
+            return new StatusUploadFileDto
+            {
+                Status = false,
+                Message = "Id already exists"
+            };
+        }
+        // Check email
+        string? email = giaoVienDto.Email;
+        // Check null email in identity context
+        var user = _identityContext.Users.FirstOrDefault(x => x.Email == email);
+        if (user != null)
+        {
+            return new StatusUploadFileDto
+            {
+                Status = false,
+                Message = "Email already exists"
+            };
+        }
+        // Check so dien thoai
+        string? soDienThoai = giaoVienDto.SoDienThoai;
+        var giaovienSoDienThoai = _identityContext.Users.FirstOrDefault(x => x.PhoneNumber == soDienThoai);
+        if (giaovienSoDienThoai != null)
+        {
+            return new StatusUploadFileDto
+            {
+                Status = false,
+                Message = "So dien thoai already exists"
+            };
+        }
+
+        return new StatusUploadFileDto
+        {
+            Status = true,
+            Message = "Success"
+        };
     }
 }
