@@ -202,6 +202,16 @@
 <div class="container-fluid">
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalThemThoiGian">
         Thêm Thời Gian</button>
+    <!-- Button load csv file -->
+    <div class="container-fluid mb-4 mt-4">
+        <form asp-action="UploadCSV" asp-controller="QuanLyLopHocPhan" asp-area="Admin"
+            method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept=".csv" />
+            <button type="submit" class="btn btn-primary" id="loadcsv">
+                Upload CSV
+            </button>
+        </form>
+    </div>
 </div>
 
 <div class="modal fade" id="modalThemThoiGian" tabindex="-1" role="dialog" aria-labelledby="modalThemThoiGianLabel"
@@ -238,6 +248,7 @@
         </div>
     </div>
 </div>
+
 
 @section Styles {
     <!-- Calendar -->

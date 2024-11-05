@@ -8,6 +8,6 @@
 | **Xử lí sinh viên trong admin** | Xử lí giáo viên trong admin          |                      |                   |
 | **Xử lí khoa trong admin**     | Xử lí lớp học phần trong admin       |                      |                   |
 | **Xử lí lớp học phần trong admin** | Xử lí môn học trong admin        |                      |                   |
-| DB Context                     |         |                      |                   |
+| DB Context                     |Xử lý nhập dữ liệu từ file         |                      |                   |
 | Setup project, thư mục         |                                      |                      |                   |
 | Set up Docker                  |                                      |                      |                   |

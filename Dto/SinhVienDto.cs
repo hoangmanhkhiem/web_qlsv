@@ -32,5 +32,9 @@ namespace qlsv.Dto
 
         [Required(ErrorMessage = "Không được để trống")]
         public string? TenKhoa { get; set; }
+
+        public string? SoDienThoai { get; set; }
+
+        public string? Email { get; set; } 
     }
 }

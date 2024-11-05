@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using qlsv.Models;
 using qlsv.Services;
 using qlsv.Dto;
+using Microsoft.AspNetCore.Identity;
 
 namespace qlsv.Admin.Controllers;
 
@@ -130,6 +131,7 @@ public class QuanLyGiaoVienController : Controller
         }
 
         var giaoviens = new List<GiaoVien>();
+        var IdentityGiaoViens = new List<UserCustom>();
         using (var reader = new StreamReader(file.OpenReadStream()))
         {
             while (reader.Peek() >= 0)
@@ -154,6 +156,15 @@ public class QuanLyGiaoVienController : Controller
                         Email = gv.Email,
                         IdKhoa = gv.IdKhoa
                     });
+                    IdentityGiaoViens.Add(new UserCustom
+                    {
+                        IdClaim = gv.IdGiaoVien,
+                        UserName = gv.IdGiaoVien,
+                        Email = gv.Email,
+                        PhoneNumber = gv.SoDienThoai,
+                        FirstName = gv.TenGiaoVien,
+                        PasswordHash = "i1CelkDpmAmgU08yFCskzfda4mWOI12kwgW571+2OiY=" // 123
+                    });
                 }
                 else {
                     return BadRequest(GiaoVienExists(gv).Message);
@@ -163,6 +174,18 @@ public class QuanLyGiaoVienController : Controller
 
         _context.GiaoViens.AddRange(giaoviens);
         _context.SaveChanges();
+        _identityContext.Users.AddRange(IdentityGiaoViens);
+        _identityContext.SaveChanges();
+
+        var giaovienRole = _identityContext.Roles.FirstOrDefault(r => r.Name == "GiaoVien");
+
+        foreach (var gv in IdentityGiaoViens)
+        {
+            _identityContext.UserRoles.AddRange(
+                new IdentityUserRole<string> { UserId = gv.Id, RoleId = giaovienRole.Id }
+            );
+        }
+        _identityContext.SaveChanges();
 
         return RedirectToAction("Index");
     }
@@ -179,7 +202,7 @@ public class QuanLyGiaoVienController : Controller
     {
         // Check id
         var id = giaoVienDto.IdGiaoVien;
-        var giaovien = _context.GiaoViens.FirstOrDefault(x => x.IdGiaoVien == id);
+        var giaovien = _identityContext.Users.FirstOrDefault(x => x.IdClaim == id);
         if (giaovien != null)
         {
             return new StatusUploadFileDto

@@ -90,4 +90,15 @@
     </div>
 
 </div>
+
+<!-- Button load csv file -->
+<div class="container-fluid mb-4">
+    <form asp-action="UploadCSV" asp-controller="QuanLySinhVien" asp-area="Admin"
+        method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".csv" />
+        <button type="submit" class="btn btn-primary" id="loadcsv">
+            Upload CSV
+        </button>
+    </form>
+</div>
 <!-- /.container-fluid -->

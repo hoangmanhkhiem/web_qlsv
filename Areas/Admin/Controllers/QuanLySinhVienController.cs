@@ -3,9 +3,10 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-//
+using qlsv.Dto;
 using qlsv.Models;
 using qlsv.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace qlsv.Admin.Controllers;
 
@@ -16,13 +17,18 @@ public class QuanLySinhVienController : Controller
     private readonly ILogger<QuanLySinhVienController> _logger;
     private readonly QuanLySinhVienDbContext _context;
 
+    private readonly IdentityDbContext _identityContext;
+
     // Constructor
     public QuanLySinhVienController(
         ILogger<QuanLySinhVienController> logger,
-        QuanLySinhVienDbContext context)
+        QuanLySinhVienDbContext context,
+        IdentityDbContext identityContext
+        )
     {
         _logger = logger;
         _context = context;
+        _identityContext = identityContext;
     }
 
     /**
@@ -95,9 +101,139 @@ public class QuanLySinhVienController : Controller
         return RedirectToAction("Details", new { IdSinhVien = sv.IdSinhVien });
     }
 
+    /**
+     * POST: /Admin/QuanLyGiaoVien/UploadCSV
+     * Upload CSV file create list giao vien
+     */
+    [HttpPost]
+    public async Task<IActionResult> UploadCSV(IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+        {
+            return BadRequest("File not found");
+        }
+
+        var sinhviens = new List<SinhVien>();
+        var _IdentitySinhviens = new List<UserCustom>();
+        using (var reader = new StreamReader(file.OpenReadStream()))
+        {
+            while (reader.Peek() >= 0)
+            {
+                var line = await reader.ReadLineAsync();
+                var values = line.Split(",");
+                var idCTH = _context.ChuongTrinhHocs.FirstOrDefault(x => x.TenChuongTrinhHoc == values[6].Trim());
+                if (idCTH == null)
+                {
+                    return BadRequest("Chuong trinh hoc not found");
+                }
+                var sv = new SinhVienDto
+                {
+                    IdSinhVien = values[0].Trim(),
+                    HoTen = values[1].Trim(),
+                    Lop = values[2].Trim(),
+                    NgaySinh = DateTime.Parse(values[3].Trim()),
+                    DiaChi = values[4].Trim(),
+                    IdKhoa = values[5].Trim(),
+                    IdChuongTrinhHoc = idCTH.IdChuongTrinhHoc,
+                    Email = values[7].Trim(),
+                    SoDienThoai = values[8].Trim()
+                };
+                if (SinhVienExists(sv).Status)
+                {
+                    sinhviens.Add(new SinhVien
+                    {
+                        IdSinhVien = sv.IdSinhVien,
+                        HoTen = sv.HoTen,
+                        Lop = sv.Lop,
+                        NgaySinh = sv.NgaySinh,
+                        DiaChi = sv.DiaChi,
+                        IdKhoa = sv.IdKhoa,
+                        IdChuongTrinhHoc = sv.IdChuongTrinhHoc
+                    });
+                    _IdentitySinhviens.Add(new UserCustom
+                    {
+                        IdClaim = sv.IdSinhVien,
+                        UserName = sv.IdSinhVien,
+                        FullName = sv.HoTen,
+                        Email = sv.Email,
+                        PhoneNumber = sv.SoDienThoai,
+                        PasswordHash = "i1CelkDpmAmgU08yFCskzfda4mWOI12kwgW571+2OiY=" // 123
+                    });
+                }
+                else {
+                    return BadRequest(SinhVienExists(sv).Message);
+                }
+            }
+        }
+
+        _context.SinhViens.AddRange(sinhviens);
+        _context.SaveChanges();
+        _identityContext.Users.AddRange(_IdentitySinhviens);
+        _identityContext.SaveChanges();
+
+        // LinQ gan role cho user trong identity
+                
+        var sinhvienRole = _identityContext.Roles.FirstOrDefault(r => r.Name == "SinhVien");
+
+        foreach (var sv in _IdentitySinhviens)
+        {
+            _identityContext.UserRoles.AddRange(
+                new IdentityUserRole<string> { UserId = sv.Id, RoleId = sinhvienRole.Id }
+            );
+        }
+        _identityContext.SaveChanges();
+
+        return RedirectToAction("Index");
+    }
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
+
+    // Helper check information of user
+    private StatusUploadFileDto SinhVienExists(SinhVienDto  _sinhVien)
+    {
+        // Check id
+        var id = _sinhVien.IdSinhVien;
+        var sinhVien = _identityContext.Users.FirstOrDefault(x => x.IdClaim == id);
+        if (sinhVien != null)
+        {
+            return new StatusUploadFileDto
+            {
+                Status = false,
+                Message = "Id already exists"
+            };
+        }
+        // Check email
+        string? email = _sinhVien.Email;
+        // Check null email in identity context
+        var user = _identityContext.Users.FirstOrDefault(x => x.Email == email);
+        if (user != null)
+        {
+            return new StatusUploadFileDto
+            {
+                Status = false,
+                Message = "Email already exists"
+            };
+        }
+        // Check so dien thoai
+        string? soDienThoai = _sinhVien.SoDienThoai;
+        var giaovienSoDienThoai = _identityContext.Users.FirstOrDefault(x => x.PhoneNumber == soDienThoai);
+        if (giaovienSoDienThoai != null)
+        {
+            return new StatusUploadFileDto
+            {
+                Status = false,
+                Message = "So dien thoai already exists"
+            };
+        }
+
+        return new StatusUploadFileDto
+        {
+            Status = true,
+            Message = "Success"
+        };
     }
 }
