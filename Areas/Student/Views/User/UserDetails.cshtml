@@ -66,7 +66,7 @@
                         <div class="mb-3">
                             <label class="small mb-1" asp-for="FullName">Full Name</label>
                             <input asp-for="FullName" class="form-control" placeholder="Your Full Name"
-                                value="@Model.FullName">
+                                value="@Model.FullName" disabled>
                             <span asp-validation-for="FullName" class="text-danger"></span>
                         </div>
                         <!-- Form Group (NgaySinh)-->
@@ -74,19 +74,26 @@
                         <div class="mb-3">
                             <label class="small mb-1" asp-for="Lop">Lớp</label>
                             <input asp-for="Lop" class="form-control" placeholder="Lớp"
-                                value="@Model.Lop">
+                                value="@Model.Lop" disabled>
                             <span asp-validation-for="Lop" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small mb-1" asp-for="NgaySinh">Ngay Sinh</label>
+                            <input asp-for="NgaySinh" class="form-control" placeholder="Your NgaySinh"
+                                value="@(Model.NgaySinh.HasValue ? Model.NgaySinh.Value.ToString("yyyy-MM-dd") : "")" disabled>
+                            <span asp-validation-for="NgaySinh" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
                             <label class="small mb-1" asp-for="Address">Address</label>
                             <input asp-for="Address" class="form-control" placeholder="Your Address"
-                                value="@Model.Address">
+                                value="@Model.Address" disabled>
                             <span asp-validation-for="Address" class="text-danger"></span>
                         </div>
+                        
                         <!-- Save changes button-->
                         <input hidden class="hidden" asp-for="Id" value="@Model.Id">
                         <input id="base64_Avatar" hidden class="hidden" name="base64_Avatar">
-                        <button class="btn btn-primary" type="submit">Save changes</button>
+                        @* <button class="btn btn-primary" type="submit">Save changes</button> *@
                     </form>
                 </div>
 

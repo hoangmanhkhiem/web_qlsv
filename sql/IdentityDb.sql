@@ -15,7 +15,8 @@ VALUES
     (NEWID(), 'phongpd01', N'Phạm Đình Phong', '0985432167', 'phongnd@utc.edu.vn', 'i1CelkDpmAmgU08yFCskzfda4mWOI12kwgW571+2OiY=', 'phongpd01', 1, 1, 1, 1, 1),
     (NEWID(), 'tichpx01', N'Phạm Xuân Tích', '0987654321', 'tichpx@utc.edu.vn', 'i1CelkDpmAmgU08yFCskzfda4mWOI12kwgW571+2OiY=', 'tichpx01', 1, 1, 1, 1, 1),
     (NEWID(), 'tungdc01', N'Đinh Công Tùng', '0935421789', 'tungdc@utc.edu.vn', 'i1CelkDpmAmgU08yFCskzfda4mWOI12kwgW571+2OiY=', 'tungdc01', 1, 1, 1, 1, 1),
-    (NEWID(), 'thuydtl01', N'Đào Thị Lệ Thủy', '0921374856', 'thuydt@utc.edu.vn', 'i1CelkDpmAmgU08yFCskzfda4mWOI12kwgW571+2OiY=', 'thuydtl01', 1, 1, 1, 1, 1);
+    (NEWID(), 'thuydtl01', N'Đào Thị Lệ Thủy', '0921374856', 'thuydt@utc.edu.vn', 'i1CelkDpmAmgU08yFCskzfda4mWOI12kwgW571+2OiY=', 'thuydtl01', 1, 1, 1, 1, 1),
+    (NEWID(), 'abc123', N'Nguyen Van A', '0912983922', 'nguyenvana@utc.edu.vn', 'i1CelkDpmAmgU08yFCskzfda4mWOI12kwgW571+2OiY=', 'abc123', 1, 1, 1, 1, 1);
 
 
 -- Gán vai trò 'SinhVien' cho những người dùng có IdClaim bắt đầu bằng '2%'

@@ -30,7 +30,8 @@ VALUES
     ('phongpd01', N'Phạm Đình Phong', 'phongnd@utc.edu.vn', '0985432167', 'CNTT'),
     ('tichpx01', N'Phạm Xuân Tích', 'tichpx@utc.edu.vn', '0987654321', 'CNTT'),
     ('tungdc01', N'Đinh Công Tùng', 'tungdc@utc.edu.vn', '0935421789', 'CNTT'),
-    ('thuydtl01', N'Đào Thị Lệ Thủy', 'thuydt@utc.edu.vn', '0921374856', 'CNTT');
+    ('thuydtl01', N'Đào Thị Lệ Thủy', 'thuydt@utc.edu.vn', '0921374856', 'CNTT'),
+    ('abc123',N'Nguyen Van A','nguyenvana@utc.edu.vn','0912983922','KHCB');
 
 -- Thoi gian
 INSERT INTO ThoiGian (IdThoiGian, NgayBatDau, NgayKetThuc, DiaDiem) VALUES (NEWID(), '2024-09-14 07:00:00', '2024-09-14 09:25:00','503A8');

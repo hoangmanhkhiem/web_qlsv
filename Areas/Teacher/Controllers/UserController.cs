@@ -44,6 +44,8 @@ public class UserController : Controller
             Id = user.Id,
             FullName = user.FullName,
             Address = user.Address,
+            Email = user.Email,
+            PhoneNumber = user.Phone,
             ProfilePicture = user.ProfilePicture
         };
         return View(updateUser);
