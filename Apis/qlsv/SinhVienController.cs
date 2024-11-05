@@ -162,11 +162,11 @@ public class SinhVienController : ControllerBase
     {
         var qr = await (
             from lhp in _context.LopHocPhans
-            where lhp.IdLopHocPhan == id
             join svlhp in _context.SinhVienLopHocPhans on lhp.IdLopHocPhan equals svlhp.IdLopHocPhan
             join sv in _context.SinhViens on svlhp.IdSinhVien equals sv.IdSinhVien
             join k in _context.Khoas on sv.IdKhoa equals k.IdKhoa
             join cth in _context.ChuongTrinhHocs on sv.IdChuongTrinhHoc equals cth.IdChuongTrinhHoc
+            where lhp.IdLopHocPhan == id
             select new
             {
                 IdSinhVien = sv.IdSinhVien,
@@ -180,6 +180,7 @@ public class SinhVienController : ControllerBase
                 TenChuongTrinhHoc = cth.TenChuongTrinhHoc
             }
         ).ToListAsync();
+
 
         return Ok(qr);
     }
