@@ -30,8 +30,8 @@ public class InitDbContext
                     Email = "root@v.com",
                     EmailConfirmed = true,
                     ProfilePicture = new byte[] { 0 },
-                    FirstName = "Ly Tran",
-                    LastName = "Vinh",
+                    FirstName = "Admin",
+                    LastName = "Vip Pro",
                     Address = "HN",
                     Phone = "088888888"
                 };
