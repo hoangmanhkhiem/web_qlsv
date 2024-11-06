@@ -190,6 +190,13 @@ public class LopHocPhanController : ControllerBase
             return BadRequest("Thời gian không hợp lệ");
         }
 
+        // Xử lí lớp học phần tạo chỉ được tạo ở tương lai
+        if (lopHocPhan.ThoiGianBatDau < DateTime.Now 
+            || lopHocPhan.ThoiGianKetThuc < DateTime.Now)
+        {
+            return BadRequest("Thời gian truyền vào ở quá khứ");
+        }
+
         // Create new lop hoc phan
         var newLopHocPhan = new LopHocPhan
         {
