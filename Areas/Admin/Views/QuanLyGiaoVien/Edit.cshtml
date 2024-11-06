@@ -69,7 +69,7 @@
                 type: "GET",
                 success: function (data) {
                     if (data.profilePictureBase64 != null) {
-                        const src = 'data:image/png;base64,' + data;
+                        const src = 'data:image/png;base64,' + data.profilePictureBase64;
                         $('#selectedAvatar').attr('src', src);
                     } else {
                         $('#selectedAvatar').attr('src', '/sb-admin/img/undraw_profile.svg');
@@ -122,8 +122,8 @@
             <!-- Profile picture card-->
             <div class="card mb-4 mb-xl-0">
                 <div>
-                    <form asp-action="UpgraeAvatar" asp-area="Admin" asp-controller="QuanLyGiaoVien"
-                        asp-route-IdGiaoVien="@Model.IdGiaoVien" method="post" enctype="multipart/form-data">
+                    <form asp-action="UpdatePhotoUser" asp-area="Admin" asp-controller="QuanLyGiaoVien"
+                        asp-route-IdUser="@Model.IdGiaoVien" method="post" enctype="multipart/form-data">
                         <div class="d-flex justify-content-center mb-4">
                             <img class="img-fluid rounded-circle" id="selectedAvatar" src="" alt="..."
                                 style="width: 200px; height: 200px;">
