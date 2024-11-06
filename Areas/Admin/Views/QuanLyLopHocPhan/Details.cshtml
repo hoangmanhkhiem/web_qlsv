@@ -199,7 +199,7 @@
 </div>
 
 <!-- Thêm Thời Gian Lớp Học Phần Modal -->
-<div class="container-fluid">
+<div id="divThemThoiGianLopHocPhan" class="container-fluid">
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalThemThoiGian">
         Thêm Thời Gian</button>
     <!-- Button load csv file -->
@@ -225,18 +225,18 @@
             <div class="modal-body modal-body-scroll">
                 <form id="formThemThoiGian">
                     <div class="form-group">
-                        <label for="thoiGianBatDau">Thời Gian Bắt Đầu</label>
-                        <input type="datetime-local" class="form-control" id="thoiGianBatDau" name="thoiGianBatDau"
+                        <label for="themThoiGianBatDau">Thời Gian Bắt Đầu</label>
+                        <input type="datetime-local" class="form-control" id="themThoiGianBatDau" name="themThoiGianBatDau"
                             required>
                     </div>
                     <div class="form-group">
-                        <label for="thoiGianKetThuc">Thời Gian Kết Thúc</label>
-                        <input type="datetime-local" class="form-control" id="thoiGianKetThuc" name="thoiGianKetThuc"
+                        <label for="themThoiGianKetThuc">Thời Gian Kết Thúc</label>
+                        <input type="datetime-local" class="form-control" id="themThoiGianKetThuc" name="themThoiGianKetThuc"
                             required>
                     </div>
                     <div class="form-group">
-                        <label for="diaDiem">Địa Điểm</label>
-                        <input type="text" class="form-control" id="diaDiem" name="diaDiem" required>
+                        <label for="themDiaDiem">Địa Điểm</label>
+                        <input type="text" class="form-control" id="themDiaDiem" name="themDiaDiem" required>
                     </div>
                     <input type="hidden" id="idLopHocPhan" name="idLopHocPhan" value="@Model.IdLopHocPhan">
                 </form>
@@ -569,9 +569,9 @@
              */
             var checkThemTh_lhp = true;
             // Kiểm tra xem lớp học phần diễn ra chưa, nếu rồi thì tắt nút thêm
-            if (new Date('@Model.ThoiGianBatDau') <= new Date()) {
+            if (new Date('@Model.ThoiGianBatDau.Value.ToString("MM/dd/yyyy")') <= new Date()) {
                 $('#modalThemThoiGian').hide();
-                $('button[data-toggle="modal"][data-target="#modalThemThoiGian"]').hide();
+                $('#divThemThoiGianLopHocPhan').hide();
                 checkThemTh_lhp = false;
             }
             // Kiểm tra đã đủ tiết chưa, nếu rồi thì tắt nút thêm
@@ -581,7 +581,7 @@
                 success: function (data) {
                     if (data.length * 3 >= @Model.MonHocs.SoTietHoc) {
                         $('#modalThemThoiGian').hide();
-                        $('button[data-toggle="modal"][data-target="#modalThemThoiGian"]').hide();
+                        $('#divThemThoiGianLopHocPhan').hide();
                         checkThemTh_lhp = false;
                     }
                 },
@@ -598,9 +598,9 @@
                         type: 'POST',
                         contentType: 'application/json',
                         data: JSON.stringify({
-                            ThoiGianBatDau: $('#thoiGianBatDau').val(),
-                            ThoiGianKetThuc: $('#thoiGianKetThuc').val(),
-                            DiaDiem: $('#diaDiem').val(),
+                            ThoiGianBatDau: $('#themThoiGianBatDau').val(),
+                            ThoiGianKetThuc: $('#themThoiGianKetThuc').val(),
+                            DiaDiem: $('#themDiaDiem').val(),
                             IdLopHocPhan: '@Model.IdLopHocPhan'
                         }),
                         success: function (data) {
