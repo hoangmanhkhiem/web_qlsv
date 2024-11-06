@@ -185,6 +185,7 @@ public class QuanLyLopHocPhanController : Controller
                 var values = line.Split(",");
                 var sinhVien = new SinhVienLopHocPhan
                 {
+                    IdSinhVienLopHp = Guid.NewGuid().ToString(),
                     IdSinhVien = values[0],
                     IdLopHocPhan = IdLopHocPhan
                 };
