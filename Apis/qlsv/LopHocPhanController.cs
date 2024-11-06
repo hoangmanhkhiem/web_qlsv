@@ -239,7 +239,7 @@ public class LopHocPhanController : ControllerBase
      */
     [HttpPut("{IdLopHocPhan}")]
     public async Task<IActionResult> UpdateLopHocPhan(
-        string IdLopHocPhan, 
+        string IdLopHocPhan,
         [FromBody] LopHocPhanDto lopHocPhan)
     {
         // find lhp
@@ -305,7 +305,8 @@ public class LopHocPhanController : ControllerBase
             from lhp in _context.LopHocPhans
             where lhp.IdLopHocPhan == idLopHocPhan
             join gv in _context.GiaoViens on lhp.IdGiaoVien equals gv.IdGiaoVien
-            select new {
+            select new
+            {
                 IdLopHocPhan = lhp.IdLopHocPhan,
                 IdGiaoVien = gv.IdGiaoVien,
                 IdMonHoc = lhp.IdMonHoc,
@@ -328,10 +329,10 @@ public class LopHocPhanController : ControllerBase
         [FromBody] ThayDoiThoiGianLopHocPhanDto thayDoiThoiGian)
     {
         // find lhp
-        ThoiGian? tg = await _context.ThoiGians.FirstOrDefaultAsync(x => 
+        ThoiGian? tg = await _context.ThoiGians.FirstOrDefaultAsync(x =>
             x.IdThoiGian == thayDoiThoiGian.IdThoiGian);
         // find lhp
-        LopHocPhan? lhp = await _context.LopHocPhans.FirstOrDefaultAsync(x => 
+        LopHocPhan? lhp = await _context.LopHocPhans.FirstOrDefaultAsync(x =>
             x.IdLopHocPhan == thayDoiThoiGian.IdLopHocPhan);
 
         if (tg == null)
@@ -357,20 +358,21 @@ public class LopHocPhanController : ControllerBase
 
         // check thoi gian lophoc phan co bi trung khong 
         var th_lhp_check = (from tl in _context.ThoiGianLopHocPhans
-                            join tgCheck in _context.ThoiGians 
+                            join tgCheck in _context.ThoiGians
                                 on tl.IdThoiGian equals tgCheck.IdThoiGian
                             where tl.IdLopHocPhan == thayDoiThoiGian.IdLopHocPhan &&
                                 (
-                                    (thayDoiThoiGian.ThoiGianBatDau < tgCheck.NgayKetThuc && thayDoiThoiGian.ThoiGianBatDau > tgCheck.NgayBatDau) 
+                                    (thayDoiThoiGian.ThoiGianBatDau < tgCheck.NgayKetThuc && thayDoiThoiGian.ThoiGianBatDau > tgCheck.NgayBatDau)
                                     ||
                                     (thayDoiThoiGian.ThoiGianKetThuc < tgCheck.NgayKetThuc && thayDoiThoiGian.ThoiGianKetThuc > tgCheck.NgayBatDau)
-                                )   
-                            select tgCheck).Any();   
-        if (th_lhp_check) {
+                                )
+                            select tgCheck).Any();
+        if (th_lhp_check)
+        {
             return BadRequest("Thời gian bị trùng lịch hiện tại");
-        } 
+        }
         // Check thoi trong khoang cho phep
-        if (lhp.ThoiGianBatDau > thayDoiThoiGian.ThoiGianBatDau || 
+        if (lhp.ThoiGianBatDau > thayDoiThoiGian.ThoiGianBatDau ||
             lhp.ThoiGianKetThuc < thayDoiThoiGian.ThoiGianKetThuc)
         {
             return BadRequest("Thời gian không nằm trong khoảng cho phép");
@@ -398,5 +400,85 @@ public class LopHocPhanController : ControllerBase
                 IdLopHocPhan = lhp.IdLopHocPhan
             }
         });
+    }
+
+    /**
+     * POST: /api/lophocphan/themthoigian
+     * Thêm thời gian cho lớp học phần
+     */
+    [HttpPost("themthoigian")]
+    public async Task<IActionResult> CreateThoiGianLopHocPhan(TaoThoiGianLopHocPhanDto thoigian)
+    {
+        // if id thoigian is null
+        if (thoigian.IdThoiGian == null)
+        {
+            thoigian.IdThoiGian = Guid.NewGuid().ToString();
+        }
+        // find lhp
+        LopHocPhan? lhp = await _context.LopHocPhans.FirstOrDefaultAsync(x =>
+            x.IdLopHocPhan == thoigian.IdLopHocPhan);
+        if (lhp == null)
+        {
+            return NotFound("Không tìm thấy lớp học phần");
+        }
+        // find id thoi gian 
+        ThoiGian? tg = await _context.ThoiGians.FirstOrDefaultAsync(x =>
+            x.IdThoiGian == thoigian.IdThoiGian);
+        if (tg != null)
+        {
+            thoigian.IdThoiGian = Guid.NewGuid().ToString();
+        }
+
+        // Check thoi gian co thoa man khong
+        if (thoigian.ThoiGianBatDau >= thoigian.ThoiGianKetThuc)
+        {
+            return BadRequest("Thời gian không hợp lệ");
+        }
+
+        // Xử Lí Thời Gian Truyền Vào Ở Quá Khứ
+        if (thoigian.ThoiGianBatDau < DateTime.Now || thoigian.ThoiGianKetThuc < DateTime.Now)
+        {
+            return BadRequest("Thời gian truyền vào ở quá khứ");
+        }
+
+        // check thoi gian lophoc phan co bi trung khong 
+        var th_lhp_check = (from tl in _context.ThoiGianLopHocPhans
+                            join tgCheck in _context.ThoiGians
+                                on tl.IdThoiGian equals tgCheck.IdThoiGian
+                            where tl.IdLopHocPhan == thoigian.IdLopHocPhan &&
+                                (
+                                    (thoigian.ThoiGianBatDau < tgCheck.NgayKetThuc && thoigian.ThoiGianBatDau > tgCheck.NgayBatDau)
+                                    ||
+                                    (thoigian.ThoiGianKetThuc < tgCheck.NgayKetThuc && thoigian.ThoiGianKetThuc > tgCheck.NgayBatDau)
+                                )
+                            select tgCheck).Any();
+        // Check thoi trong khoang cho phep
+        if (lhp.ThoiGianBatDau > thoigian.ThoiGianBatDau ||
+            lhp.ThoiGianKetThuc < thoigian.ThoiGianKetThuc)
+        {
+            return BadRequest("Thời gian không nằm trong khoảng cho phép");
+        }
+
+        // Create new thoi gian
+        ThoiGian newThoiGian = new ThoiGian
+        {
+            IdThoiGian = thoigian.IdThoiGian,
+            NgayBatDau = thoigian.ThoiGianBatDau,
+            NgayKetThuc = thoigian.ThoiGianKetThuc,
+            DiaDiem = thoigian.DiaDiem
+        };
+
+        // Add new thoi gian
+        _context.ThoiGians.Add(newThoiGian);
+        // Add new thoi gian lop hoc phan
+        _context.ThoiGianLopHocPhans.Add(new ThoiGianLopHocPhan
+        {
+            IdThoiGian = newThoiGian.IdThoiGian,
+            IdLopHocPhan = lhp.IdLopHocPhan
+        });
+
+        await _context.SaveChangesAsync();
+        
+        return Ok("Thời gian lớp học phần đã được thêm");
     }
 }
