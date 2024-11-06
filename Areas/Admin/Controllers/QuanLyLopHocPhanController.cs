@@ -47,6 +47,124 @@ public class QuanLyLopHocPhanController : Controller
         return View(lhp);
     }
 
+    /**
+     * POST: /Admin/QuanLyLopHocPhan/UploadThoiGianCSV
+     * UploadThoiGianCSV: Xử lý upload file csv thời gian học vào lớp học phần
+     */
+    [HttpPost]
+    public async Task<IActionResult> UploadThoiGianCSV(IFormFile file){
+        if (file == null || file.Length == 0)
+        {
+            return BadRequest("File not found");
+        } 
+        var listThoiGian = new List<TaoThoiGianLopHocPhanDto>();
+        var listThoiGian_LopHocPhan = new List<ThoiGianLopHocPhan>();
+        using (var reader = new StreamReader(file.OpenReadStream()))
+        {
+            while (reader.Peek() >= 0)
+            {
+                var line = await reader.ReadLineAsync();
+                var values = line.Split(",");
+
+                var thoiGian = new TaoThoiGianLopHocPhanDto
+                {
+                    IdThoiGian = Guid.NewGuid().ToString(),
+                    IdLopHocPhan = values[1],
+                    ThoiGianBatDau = DateTime.Parse(values[2]),
+                    ThoiGianKetThuc = DateTime.Parse(values[3]),
+                    DiaDiem = values[4]
+                };
+                if (ThoiGianLopHocPhanExists(thoiGian).Status)
+                {
+                    listThoiGian.Add(thoiGian);
+                } else {
+                    return BadRequest(ThoiGianLopHocPhanExists(thoiGian).Message);
+                }
+            }
+        }
+
+        // add thoi gian
+        _context.ThoiGians.AddRange(listThoiGian.Select(x => new ThoiGian
+        {
+            IdThoiGian = x.IdThoiGian,
+            NgayBatDau = x.ThoiGianBatDau,
+            NgayKetThuc = x.ThoiGianKetThuc,
+            DiaDiem = x.DiaDiem
+        }));
+        // gan thoi gian vao lop hoc phan
+        _context.ThoiGianLopHocPhans.AddRange(listThoiGian.Select(x => new ThoiGianLopHocPhan
+        {
+            IdThoiGian = x.IdThoiGian,
+            IdLopHocPhan = x.IdLopHocPhan
+        }));
+
+        _context.SaveChanges();
+
+        return RedirectToAction("Details", new { IdLopHocPhan = listThoiGian.FirstOrDefault().IdLopHocPhan });
+    }
+
+    private StatusUploadFileDto ThoiGianLopHocPhanExists(TaoThoiGianLopHocPhanDto thoigian)
+    {
+        // Check id
+        var id = thoigian.IdLopHocPhan;
+        var lopHp = _context.LopHocPhans.FirstOrDefault(x => x.IdLopHocPhan == id);
+        if (lopHp == null)
+        {
+            return new StatusUploadFileDto
+            {
+                Status = false,
+                Message = "Không tồn tại lớp học phần"
+            };
+        }
+        // Check thoi gian co thoa man khong
+        if (thoigian.ThoiGianBatDau >= thoigian.ThoiGianKetThuc)
+        {
+            return new StatusUploadFileDto
+            {
+                Status = false,
+                Message = "Thời gian bắt đầu phải nhỏ hơn thời gian kết thúc"
+            };
+        }
+
+        // Xử Lí Thời Gian Truyền Vào Ở Quá Khứ
+        if (thoigian.ThoiGianBatDau < DateTime.Now || thoigian.ThoiGianKetThuc < DateTime.Now)
+        {
+            return new StatusUploadFileDto
+            {
+                Status = false,
+                Message = "Thời gian không thể ở quá khứ"
+            };
+        }
+
+        // check thoi gian lophoc phan co bi trung khong 
+        var th_lhp_check = (from tl in _context.ThoiGianLopHocPhans
+                            join tgCheck in _context.ThoiGians
+                                on tl.IdThoiGian equals tgCheck.IdThoiGian
+                            where tl.IdLopHocPhan == thoigian.IdLopHocPhan &&
+                                (
+                                    (thoigian.ThoiGianBatDau < tgCheck.NgayKetThuc && thoigian.ThoiGianBatDau > tgCheck.NgayBatDau)
+                                    ||
+                                    (thoigian.ThoiGianKetThuc < tgCheck.NgayKetThuc && thoigian.ThoiGianKetThuc > tgCheck.NgayBatDau)
+                                )
+                            select tgCheck).Any();
+        // Check thoi trong khoang cho phep
+        if (lopHp.ThoiGianBatDau > thoigian.ThoiGianBatDau ||
+            lopHp.ThoiGianKetThuc < thoigian.ThoiGianKetThuc)
+        {
+            return new StatusUploadFileDto
+            {
+                Status = false,
+                Message = "Thời gian không nằm trong khoảng thời gian của lớp học phần"
+            };
+        }
+
+        return new StatusUploadFileDto
+        {
+            Status = true,
+            Message = "Success"
+        };
+    }
+
 
     private StatusUploadFileDto SinhVienExists(LopHocPhanDto _lopHocPhan)
     {
@@ -71,9 +189,6 @@ public class QuanLyLopHocPhanController : Controller
                 Message = "Ten lop hoc phan already exists"
             };
         }
-
-        
-
         
         return new StatusUploadFileDto
         {

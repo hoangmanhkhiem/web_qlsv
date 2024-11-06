@@ -86,6 +86,17 @@
     </div>
 </div>
 
+<!-- Button load csv file up sinh vien -->
+<div id="UploadSinhVienCSV" class="container-fluid mb-4 mt-4">
+    <form asp-action="UploadSinhVienCSV" asp-controller="QuanLyLopHocPhan" asp-area="Admin" method="post"
+        enctype="multipart/form-data">
+        <input type="file" name="file" accept=".csv" />
+        <button type="submit" class="btn btn-primary" id="loadcsv">
+            Upload CSV
+        </button>
+    </form>
+</div>
+
 <!-- Dialog modal sua diem -->
 <div class="modal fade" id="modalSuaDiem" tabindex="-1" role="dialog" aria-labelledby="modalSuaDiemLabel"
     aria-hidden="true">
@@ -204,8 +215,8 @@
         Thêm Thời Gian</button>
     <!-- Button load csv file -->
     <div class="container-fluid mb-4 mt-4">
-        <form asp-action="UploadCSV" asp-controller="QuanLyLopHocPhan" asp-area="Admin"
-            method="post" enctype="multipart/form-data">
+        <form asp-action="UploadThoiGianCSV" asp-controller="QuanLyLopHocPhan" asp-area="Admin" method="post"
+            enctype="multipart/form-data">
             <input type="file" name="file" accept=".csv" />
             <button type="submit" class="btn btn-primary" id="loadcsv">
                 Upload CSV
@@ -226,13 +237,13 @@
                 <form id="formThemThoiGian">
                     <div class="form-group">
                         <label for="themThoiGianBatDau">Thời Gian Bắt Đầu</label>
-                        <input type="datetime-local" class="form-control" id="themThoiGianBatDau" name="themThoiGianBatDau"
-                            required>
+                        <input type="datetime-local" class="form-control" id="themThoiGianBatDau"
+                            name="themThoiGianBatDau" required>
                     </div>
                     <div class="form-group">
                         <label for="themThoiGianKetThuc">Thời Gian Kết Thúc</label>
-                        <input type="datetime-local" class="form-control" id="themThoiGianKetThuc" name="themThoiGianKetThuc"
-                            required>
+                        <input type="datetime-local" class="form-control" id="themThoiGianKetThuc"
+                            name="themThoiGianKetThuc" required>
                     </div>
                     <div class="form-group">
                         <label for="themDiaDiem">Địa Điểm</label>
@@ -401,15 +412,15 @@
                         data: null,
                         render: function (data, type, row) {
                             return `
-                                                                    <button class="btn btn-primary btn-sm" 
-                                                                        data-toggle="modal" data-target="#modalSuaDiem" 
-                                                                        data-idDiem="${row.idDiem}" 
-                                                                        data-diem-qua-trinh="${row.diemQuaTrinh}" 
-                                                                        data-diem-ket-thuc="${row.diemKetThuc}" 
-                                                                        data-diem-tong-ket="${row.diemTongKet}">
-                                                                    Sửa
-                                                                    </button>
-                                                                `;
+                                                                        <button class="btn btn-primary btn-sm" 
+                                                                            data-toggle="modal" data-target="#modalSuaDiem" 
+                                                                            data-idDiem="${row.idDiem}" 
+                                                                            data-diem-qua-trinh="${row.diemQuaTrinh}" 
+                                                                            data-diem-ket-thuc="${row.diemKetThuc}" 
+                                                                            data-diem-tong-ket="${row.diemTongKet}">
+                                                                        Sửa
+                                                                        </button>
+                                                                    `;
                         }
                     }
                 ],
@@ -508,15 +519,15 @@
                             }
                             else {
                                 return `
-                                                                    <button class="btn btn-primary btn-sm" 
-                                                                        data-toggle="modal" data-target="#modalSuaThoiGian"
-                                                                        data-idThoiGian="${row.id}"
-                                                                        data-thoi-gian-bat-dau="${formatDateTimeForInput(row.start)}"
-                                                                        data-thoi-gian-ket-thuc="${formatDateTimeForInput(row.end)}" 
-                                                                        >
-                                                                    Sửa
-                                                                    </button>
-                                                                `;
+                                                                        <button class="btn btn-primary btn-sm" 
+                                                                            data-toggle="modal" data-target="#modalSuaThoiGian"
+                                                                            data-idThoiGian="${row.id}"
+                                                                            data-thoi-gian-bat-dau="${formatDateTimeForInput(row.start)}"
+                                                                            data-thoi-gian-ket-thuc="${formatDateTimeForInput(row.end)}" 
+                                                                            >
+                                                                        Sửa
+                                                                        </button>
+                                                                    `;
                             }
                         },
                         searchable: false,
@@ -572,6 +583,7 @@
             if (new Date('@Model.ThoiGianBatDau.Value.ToString("MM/dd/yyyy")') <= new Date()) {
                 $('#modalThemThoiGian').hide();
                 $('#divThemThoiGianLopHocPhan').hide();
+                $('#UploadSinhVienCSV').hide();
                 checkThemTh_lhp = false;
             }
             // Kiểm tra đã đủ tiết chưa, nếu rồi thì tắt nút thêm
@@ -582,6 +594,7 @@
                     if (data.length * 3 >= @Model.MonHocs.SoTietHoc) {
                         $('#modalThemThoiGian').hide();
                         $('#divThemThoiGianLopHocPhan').hide();
+                        $('#UploadSinhVienCSV').hide();
                         checkThemTh_lhp = false;
                     }
                 },
