@@ -2,11 +2,13 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+
 
 using qlsv.Dto;
 using qlsv.Models;
 using qlsv.Data;
-using Microsoft.AspNetCore.Identity;
+using qlsv.Services;
 
 namespace qlsv.Admin.Controllers;
 
@@ -235,5 +237,41 @@ public class QuanLySinhVienController : Controller
             Status = true,
             Message = "Success"
         };
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> UpdatePhotoUser(string IdUser, IFormFile file)
+    {
+        const int maxFileSize = 1024 * 1024 * 10; // 20MB
+        var user = await _identityContext.Users.FirstOrDefaultAsync(u => u.IdClaim == IdUser);
+        var userSinhVien = _context.SinhViens.FirstOrDefault(u => u.IdSinhVien == IdUser);
+        
+        if (user == null)
+        {
+            return NotFound();
+        }
+        if (file == null || file.Length == 0)
+        {
+            return RedirectToAction("Edit", new { idSinhVien = IdUser });
+        }
+        ImageService imageService = new ImageService();
+        byte[] imageData = await imageService.ToByteAsync(file);
+
+        List<string> dotImage = new List<string>() { "jfif","png", "webp", "jpeg", "jpg", "heic" };
+
+        string[] fileExtension = file.FileName.Split(".");
+        string extension = fileExtension[fileExtension.Length - 1];
+
+        if (imageData != null && dotImage.Contains(extension))
+        {
+            if (imageData.Length <= maxFileSize)
+            {
+                user.ProfilePicture = imageData;
+                // Convert base 64
+                user.ProfilePictureBase64 = Convert.ToBase64String(imageData);
+                _identityContext.SaveChanges();
+            }
+        }
+        return RedirectToAction("Edit", new { idSinhVien = IdUser });
     }
 }

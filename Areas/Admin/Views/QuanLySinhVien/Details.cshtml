@@ -218,7 +218,7 @@
                 async: false,
                 success: function (data) {
                     if (data.profilePictureBase64 != null) {
-                        const src = 'data:image/png;base64,' + data;
+                        const src = 'data:image/png;base64,' + data.profilePictureBase64;
                         $('#avt_user').attr('src', src);
                     } else {
                         $('#avt_user').attr('src', '/sb-admin/img/undraw_profile.svg');
