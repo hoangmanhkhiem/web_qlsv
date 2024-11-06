@@ -170,7 +170,7 @@ public class QuanLyLopHocPhanController : Controller
      * UploadSinhVienCSV: Xử lý upload file csv lớp học phần
      */
     [HttpPost]
-    public async Task<IActionResult> UploadSinhVienCSV(IFormFile file)
+    public async Task<IActionResult> UploadSinhVienCSV(IFormFile file, string IdLopHocPhan)
     {
         if (file == null || file.Length == 0)
         {
@@ -186,8 +186,14 @@ public class QuanLyLopHocPhanController : Controller
                 var sinhVien = new SinhVienLopHocPhan
                 {
                     IdSinhVien = values[0],
-                    IdLopHocPhan = values[1]
+                    IdLopHocPhan = IdLopHocPhan
                 };
+                if (SinhVienExists(sinhVien).Status)
+                {
+                    listSinhVien.Add(sinhVien);
+                } else {
+                    return BadRequest(SinhVienExists(sinhVien).Message);
+                }
             }
         }
 
@@ -198,35 +204,24 @@ public class QuanLyLopHocPhanController : Controller
             IdLopHocPhan = x.IdLopHocPhan
         }));
 
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         return RedirectToAction("Details", new { IdLopHocPhan = listSinhVien.FirstOrDefault().IdLopHocPhan });
     }
 
-    private StatusUploadFileDto SinhVienExists(LopHocPhanDto _lopHocPhan)
+    private StatusUploadFileDto SinhVienExists(SinhVienLopHocPhan svlhp)
     {
-        // Check id
-        var id = _lopHocPhan.IdLopHocPhan;
-        var lopHp = _context.LopHocPhans.FirstOrDefault(x => x.IdLopHocPhan == id);
-        if (lopHp != null)
+        // check sinh vien exists
+        var sv = _context.SinhViens.FirstOrDefault(x => x.IdSinhVien == svlhp.IdSinhVien);
+        if (sv == null)
         {
             return new StatusUploadFileDto
             {
                 Status = false,
-                Message = "Id already exists"
+                Message = "Không tồn tại sinh viên"
             };
         }
-        var tenLopHP = _lopHocPhan.TenLopHocPhan;
-        var tenLopHp = _context.LopHocPhans.FirstOrDefault(x => x.TenHocPhan == tenLopHP);
-        if (tenLopHp != null)
-        {
-            return new StatusUploadFileDto
-            {
-                Status = false,
-                Message = "Ten lop hoc phan already exists"
-            };
-        }
-        
+
         return new StatusUploadFileDto
         {
             Status = true,
@@ -234,7 +229,6 @@ public class QuanLyLopHocPhanController : Controller
         };
     }
     
-
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
