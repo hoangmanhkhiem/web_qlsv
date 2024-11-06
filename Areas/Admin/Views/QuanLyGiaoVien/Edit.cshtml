@@ -67,9 +67,12 @@
             $.ajax({
                 url: '/api/avatar/user/@Model.IdGiaoVien',
                 type: "GET",
-                success: function (response) {
-                    if (response != null) {
-                        document.getElementById("selectedAvatar").src = response;
+                success: function (data) {
+                    if (data.profilePictureBase64 != null) {
+                        const src = 'data:image/png;base64,' + data;
+                        $('#selectedAvatar').attr('src', src);
+                    } else {
+                        $('#selectedAvatar').attr('src', '/sb-admin/img/undraw_profile.svg');
                     }
                 }
             });
