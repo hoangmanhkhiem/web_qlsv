@@ -29,7 +29,7 @@ public class InitDbContext
                     UserName = "admin",
                     Email = "root@v.com",
                     EmailConfirmed = true,
-                    ProfilePicture = new byte[] { 0 },
+                    ProfilePicture = null,
                     FirstName = "Admin",
                     LastName = "Vip Pro",
                     Address = "HN",
