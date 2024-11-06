@@ -177,6 +177,7 @@ public class QuanLyLopHocPhanController : Controller
             return BadRequest("File not found");
         }
         var listSinhVien = new List<SinhVienLopHocPhan>();
+        var listDiem = new List<Diem>();
         using (var reader = new StreamReader(file.OpenReadStream()))
         {
             while (reader.Peek() >= 0)
@@ -192,6 +193,16 @@ public class QuanLyLopHocPhanController : Controller
                 if (SinhVienExists(sinhVien).Status)
                 {
                     listSinhVien.Add(sinhVien);
+                    listDiem.Add(new Diem
+                    {
+                        IdDiem = Guid.NewGuid().ToString(),
+                        IdLopHocPhan = IdLopHocPhan,
+                        IdSinhVien = values[0],
+                        DiemQuaTrinh = 0,
+                        DiemKetThuc = 0,
+                        DiemTongKet = 0,
+                        LanHoc = 1
+                    });
                 } else {
                     return BadRequest(SinhVienExists(sinhVien).Message);
                 }
@@ -203,6 +214,18 @@ public class QuanLyLopHocPhanController : Controller
         {
             IdSinhVien = x.IdSinhVien,
             IdLopHocPhan = x.IdLopHocPhan
+        }));
+
+        // add diem
+        _context.Diems.AddRange(listDiem.Select(x => new Diem
+        {
+            IdDiem = x.IdDiem,
+            IdLopHocPhan = x.IdLopHocPhan,
+            IdSinhVien = x.IdSinhVien,
+            DiemQuaTrinh = x.DiemQuaTrinh,
+            DiemKetThuc = x.DiemKetThuc,
+            DiemTongKet = x.DiemTongKet,
+            LanHoc = x.LanHoc
         }));
 
         await _context.SaveChangesAsync();
