@@ -218,6 +218,7 @@
         <form asp-action="UploadThoiGianCSV" asp-controller="QuanLyLopHocPhan" asp-area="Admin" method="post"
             enctype="multipart/form-data">
             <input type="file" name="file" accept=".csv" />
+            <input hidden="true" type="text" name="idLopHocPhan" value="@Model.IdLopHocPhan" />
             <button type="submit" class="btn btn-primary" id="loadcsv">
                 Upload CSV
             </button>

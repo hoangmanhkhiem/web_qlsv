@@ -52,7 +52,7 @@ public class QuanLyLopHocPhanController : Controller
      * UploadThoiGianCSV: Xử lý upload file csv thời gian học vào lớp học phần
      */
     [HttpPost]
-    public async Task<IActionResult> UploadThoiGianCSV(IFormFile file){
+    public async Task<IActionResult> UploadThoiGianCSV(IFormFile file, string IdLopHocPhan){
         if (file == null || file.Length == 0)
         {
             return BadRequest("File not found");
@@ -69,7 +69,7 @@ public class QuanLyLopHocPhanController : Controller
                 var thoiGian = new TaoThoiGianLopHocPhanDto
                 {
                     IdThoiGian = Guid.NewGuid().ToString(),
-                    IdLopHocPhan = values[1],
+                    IdLopHocPhan = IdLopHocPhan,
                     ThoiGianBatDau = DateTime.Parse(values[2]),
                     ThoiGianKetThuc = DateTime.Parse(values[3]),
                     DiaDiem = values[4]
@@ -165,6 +165,43 @@ public class QuanLyLopHocPhanController : Controller
         };
     }
 
+    /**
+     * POST: /Admin/QuanLyLopHocPhan/UploadSinhVienCSV
+     * UploadSinhVienCSV: Xử lý upload file csv lớp học phần
+     */
+    [HttpPost]
+    public async Task<IActionResult> UploadSinhVienCSV(IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+        {
+            return BadRequest("File not found");
+        }
+        var listSinhVien = new List<SinhVienLopHocPhan>();
+        using (var reader = new StreamReader(file.OpenReadStream()))
+        {
+            while (reader.Peek() >= 0)
+            {
+                var line = await reader.ReadLineAsync();
+                var values = line.Split(",");
+                var sinhVien = new SinhVienLopHocPhan
+                {
+                    IdSinhVien = values[0],
+                    IdLopHocPhan = values[1]
+                };
+            }
+        }
+
+        // add sinh vien
+        _context.SinhVienLopHocPhans.AddRange(listSinhVien.Select(x => new SinhVienLopHocPhan
+        {
+            IdSinhVien = x.IdSinhVien,
+            IdLopHocPhan = x.IdLopHocPhan
+        }));
+
+        _context.SaveChanges();
+
+        return RedirectToAction("Details", new { IdLopHocPhan = listSinhVien.FirstOrDefault().IdLopHocPhan });
+    }
 
     private StatusUploadFileDto SinhVienExists(LopHocPhanDto _lopHocPhan)
     {
