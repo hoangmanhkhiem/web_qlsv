@@ -70,9 +70,9 @@ public class QuanLyLopHocPhanController : Controller
                 {
                     IdThoiGian = Guid.NewGuid().ToString(),
                     IdLopHocPhan = IdLopHocPhan,
-                    ThoiGianBatDau = DateTime.Parse(values[2]),
-                    ThoiGianKetThuc = DateTime.Parse(values[3]),
-                    DiaDiem = values[4]
+                    ThoiGianBatDau = DateTime.Parse(values[0]),
+                    ThoiGianKetThuc = DateTime.Parse(values[1]),
+                    DiaDiem = values[2]
                 };
                 if (ThoiGianLopHocPhanExists(thoiGian).Status)
                 {
