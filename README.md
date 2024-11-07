@@ -1,13 +1,13 @@
-# Contact:
+# <div align="center"> Contact </div>
 - **Mail**: *lytranvinh.work@gmail.com*
 - **Mail**: *khiemhm04@gmail.com*
 
-# TODO:
+# <div align="center"> TODO </div>
 - Input data with file
 - Auth ...  
 - ....
 
-# How to run:
+# <div align="center"> How to run  </div>
 - Run database in docker:
     + **Note**: changle path volume.
     + After running
@@ -54,4 +54,9 @@
     dotnet run
 ```
 
-# [DEMO](https://youtu.be/7JjGT8xnrl4)
+# <div align="center">[DEMO](https://youtu.be/7JjGT8xnrl4) </div>
+
+# <div align="center">Contribute</div>
+<a href="https://github.com/Youknow2509/web_qlsv/graphs/contributors">
+<img height="50" src="https://contrib.rocks/image?repo=Youknow2509/web_qlsv" alt="Ultralytics open-source contributors"></a>
+
