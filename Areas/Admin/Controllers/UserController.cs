@@ -29,7 +29,7 @@ public class UserController : Controller
 
     // GET: Admin/UserDetails
     public IActionResult UserDetails(string id)
-    {   
+    {
         var user = _context.Users.FirstOrDefault(u => u.Id == id);
         if (user == null)
         {
@@ -42,6 +42,11 @@ public class UserController : Controller
             Address = user.Address,
             ProfilePicture = user.ProfilePicture
         };
+
+        // Pass TempData values to ViewBag for display
+        ViewBag.MessageUpLoadAvatar = TempData["MessageUpLoadAvatar"];
+        ViewBag.StatusUpdateAvatar = TempData["StatusUpdateAvatar"];
+
         return View(updateUser);
     }
 
@@ -50,8 +55,9 @@ public class UserController : Controller
     public ActionResult UpdateUser(UpdateRootDto updateUser, string? base64_Avatar)
     {
         if (!ModelState.IsValid)
-        {   
-            if (base64_Avatar != null) {
+        {
+            if (base64_Avatar != null)
+            {
                 ViewBag.Base64_Avatar = base64_Avatar;
             }
             return View("UserDetails", updateUser);
@@ -77,16 +83,20 @@ public class UserController : Controller
         var user = await _context.Users.FindAsync(IdUser);
         if (user == null)
         {
+            TempData["MessageUpLoadAvatar"] = "Don't find user upgrade avatar.";
+            TempData["StatusUpdateAvatar"] = false;
             return NotFound();
         }
         if (file == null || file.Length == 0)
         {
+            TempData["MessageUpLoadAvatar"] = "Please Upload A Picture.";
+            TempData["StatusUpdateAvatar"] = false;
             return RedirectToAction("UserDetails", new { id = IdUser });
         }
         ImageService imageService = new ImageService();
         byte[] imageData = await imageService.ToByteAsync(file);
 
-        List<string> dotImage = new List<string>() { "jfif","png", "webp", "jpeg", "jpg", "heic" };
+        List<string> dotImage = new List<string>() { "jfif", "png", "webp", "jpeg", "jpg", "heic" };
 
         string[] fileExtension = file.FileName.Split(".");
         string extension = fileExtension[fileExtension.Length - 1];
@@ -97,7 +107,19 @@ public class UserController : Controller
             {
                 user.ProfilePicture = imageData;
                 _context.SaveChanges();
+                TempData["MessageUpLoadAvatar"] = "File Upload Successful.";
+                TempData["StatusUpdateAvatar"] = true;
             }
+            else
+            {
+                TempData["MessageUpLoadAvatar"] = "Please Upload A Picture Smaller Than 2 MB.";
+                TempData["StatusUpdateAvatar"] = false;
+            }
+        }
+        else
+        {
+            TempData["MessageUpLoadAvatar"] = "File Upload Failed, Please Upload A Picture.";
+            TempData["StatusUpdateAvatar"] = false;
         }
         return RedirectToAction("UserDetails", new { id = IdUser });
     }

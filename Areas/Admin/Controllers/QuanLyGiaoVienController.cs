@@ -68,6 +68,10 @@ public class QuanLyGiaoVienController : Controller
             }
         ).FirstOrDefault();
 
+        // Pass TempData values to ViewBag for display
+        ViewBag.MessageUpLoadAvatar = TempData["MessageUpLoadAvatar"];
+        ViewBag.StatusUpdateAvatar = TempData["StatusUpdateAvatar"];
+
         return View(giaovien);
     }
 
@@ -166,7 +170,8 @@ public class QuanLyGiaoVienController : Controller
                         PasswordHash = "i1CelkDpmAmgU08yFCskzfda4mWOI12kwgW571+2OiY=" // 123
                     });
                 }
-                else {
+                else
+                {
                     return BadRequest(GiaoVienExists(gv).Message);
                 }
             }
@@ -246,22 +251,26 @@ public class QuanLyGiaoVienController : Controller
     [HttpPost]
     public async Task<ActionResult> UpdatePhotoUser(string IdUser, IFormFile file)
     {
-        const int maxFileSize = 1024 * 1024 * 10; // 20MB
+        const int maxFileSize = 1024 * 1024; // 2MB
         var user = await _identityContext.Users.FirstOrDefaultAsync(u => u.IdClaim == IdUser);
         var userGiaoVien = _context.GiaoViens.FirstOrDefault(u => u.IdGiaoVien == IdUser);
-        
+
         if (user == null)
         {
+            TempData["MessageUpLoadAvatar"] = "Don't find user upgrade avatar.";
+            TempData["StatusUpdateAvatar"] = false;
             return NotFound();
         }
         if (file == null || file.Length == 0)
         {
+            TempData["MessageUpLoadAvatar"] = "File not found.";
+            TempData["StatusUpdateAvatar"] = false;
             return RedirectToAction("Edit", new { idGiaoVien = IdUser });
         }
         ImageService imageService = new ImageService();
         byte[] imageData = await imageService.ToByteAsync(file);
 
-        List<string> dotImage = new List<string>() { "jfif","png", "webp", "jpeg", "jpg", "heic" };
+        List<string> dotImage = new List<string>() { "jfif", "png", "webp", "jpeg", "jpg", "heic" };
 
         string[] fileExtension = file.FileName.Split(".");
         string extension = fileExtension[fileExtension.Length - 1];
@@ -274,8 +283,21 @@ public class QuanLyGiaoVienController : Controller
                 // Convert base 64
                 user.ProfilePictureBase64 = Convert.ToBase64String(imageData);
                 _identityContext.SaveChanges();
+                TempData["MessageUpLoadAvatar"] = "File Upload Successful.";
+                TempData["StatusUpdateAvatar"] = true;
+            }
+            else
+            {
+                TempData["MessageUpLoadAvatar"] = "Please Upload A Picture Smaller Than 2 MB.";
+                TempData["StatusUpdateAvatar"] = false;
             }
         }
+        else
+        {
+            TempData["MessageUpLoadAvatar"] = "File Upload Failed, Please Upload A Picture.";
+            TempData["StatusUpdateAvatar"] = false;
+        }
+
         return RedirectToAction("Edit", new { idGiaoVien = IdUser });
     }
 }

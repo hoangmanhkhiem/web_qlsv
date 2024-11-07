@@ -138,6 +138,24 @@
                                 <button class="btn btn-warning" type="submit">Upload new image</button>
                             </div>
                         </div>
+                        @if (ViewBag.MessageUpLoadAvatar != null)
+                        {
+                            string message = "";
+                            string css = "";
+                            if (ViewBag.StatusUpdateAvatar)
+                            {
+                                message = @ViewBag.MessageUpLoadAvatar;
+                                css = "alert alert-success";
+                            }
+                            else
+                            {
+                                message = @ViewBag.MessageUpLoadAvatar;
+                                css = "alert alert-danger";
+                            }
+                            <div class="@css" role="alert">
+                                @message
+                            </div>
+                        }
                     </form>
                 </div>
             </div>

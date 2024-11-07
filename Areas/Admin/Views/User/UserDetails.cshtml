@@ -16,19 +16,16 @@
                         asp-route-IdUser="@Model.Id" enctype="multipart/form-data">
                         <div class="d-flex justify-content-center mb-4">
                             @{
-                                if (ViewBag.Base64_Avatar != null) {
+                                if (ViewBag.Base64_Avatar != null)
+                                {
                                     var base64_Avatar = ViewBag.Base64_Avatar;
-                                    <img id="selectedAvatar"
-                                        src="@base64_Avatar"
-                                        class="rounded-circle" style="width: 200px; height: 200px; object-fit: cover;"
-                                        alt="User Photo" />
+                                    <img id="selectedAvatar" src="@base64_Avatar" class="rounded-circle"
+                                        style="width: 200px; height: 200px; object-fit: cover;" alt="User Photo" />
                                 }
                                 else if (Model.ProfilePicture == null)
                                 {
-                                    <img id="selectedAvatar"
-                                        src="~/sb-admin/img/undraw_profile.svg"
-                                        class="rounded-circle" style="width: 200px; height: 200px; object-fit: cover;"
-                                        alt="User Photo" />
+                                    <img id="selectedAvatar" src="~/sb-admin/img/undraw_profile.svg" class="rounded-circle"
+                                        style="width: 200px; height: 200px; object-fit: cover;" alt="User Photo" />
                                 }
                                 else
                                 {
@@ -47,6 +44,24 @@
                                 <button class="btn btn-warning" type="submit">Upload new image</button>
                             </div>
                         </div>
+                        @if (ViewBag.MessageUpLoadAvatar != null)
+                        {
+                            string message = "";
+                            string css = "";
+                            if (ViewBag.StatusUpdateAvatar)
+                            {
+                                message = @ViewBag.MessageUpLoadAvatar;
+                                css = "alert alert-success";
+                            }
+                            else
+                            {
+                                message = @ViewBag.MessageUpLoadAvatar;
+                                css = "alert alert-danger";
+                            }
+                            <div class="@css" role="alert">
+                                @message
+                            </div>
+                        }
                     </form>
                 </div>
             </div>
@@ -58,10 +73,10 @@
                 <div class="card-body">
                     <form asp-action="UpdateUser" asp-area="Admin" asp-controller="User" method="post">
                         @* <div class="mb-3">
-                            <label class="small mb-1" asp-for="FirstName">First Name</label>
-                            <input asp-for="FirstName" class="form-control" placeholder="Your First Name"
-                                value="@Model.FirstName">
-                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        <label class="small mb-1" asp-for="FirstName">First Name</label>
+                        <input asp-for="FirstName" class="form-control" placeholder="Your First Name"
+                        value="@Model.FirstName">
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
                         </div> *@
                         <div class="mb-3">
                             <label class="small mb-1" asp-for="FullName">Full Name</label>
@@ -71,16 +86,16 @@
                         </div>
                         <!-- Form Group (email)-->
                         @* <div class="mb-3">
-                            <label class="small mb-1" asp-for="Email">Email</label>
-                            <input asp-for="Email" class="form-control" placeholder="Enter your email"
-                                value="@Model.Email">
-                            <span asp-validation-for="Email" class="text-danger"></span>
+                        <label class="small mb-1" asp-for="Email">Email</label>
+                        <input asp-for="Email" class="form-control" placeholder="Enter your email"
+                        value="@Model.Email">
+                        <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <label class="small mb-1" asp-for="PhoneNumber">Phone Number</label>
-                            <input asp-for="PhoneNumber" class="form-control" placeholder="Your Phone Number"
-                                value="@Model.PhoneNumber">
-                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        <label class="small mb-1" asp-for="PhoneNumber">Phone Number</label>
+                        <input asp-for="PhoneNumber" class="form-control" placeholder="Your Phone Number"
+                        value="@Model.PhoneNumber">
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                         </div> *@
                         <div class="mb-3">
                             <label class="small mb-1" asp-for="Address">Address</label>
@@ -126,38 +141,38 @@
 
 <script>
     function changePassword() {
-            var oldPassword = document.getElementById("oldPassword").value;
-            var newPassword = document.getElementById("newPassword").value;
-            var confirmPassword = document.getElementById("confirmPassword").value;
-            var id = document.getElementById("id").value;
+        var oldPassword = document.getElementById("oldPassword").value;
+        var newPassword = document.getElementById("newPassword").value;
+        var confirmPassword = document.getElementById("confirmPassword").value;
+        var id = document.getElementById("id").value;
 
-            if (newPassword != confirmPassword) {
-                alert("Mật khẩu mới không trùng khớp");
-                return;
-            }
-
-            $.ajax({
-                url: '/api/Admin/updatepassword',
-                type: "POST",
-                headers: {
-                    'Accept': '*/*',
-                    'Content-Type': 'application/json'
-                },
-                data: JSON.stringify({
-                    idUser: id,
-                    oldPassword: oldPassword,
-                    newPassword: newPassword,
-                    confirmPassword: confirmPassword
-                }),
-                success: function (response) {
-                    alert("Thay đổi mật khẩu thành công");
-                },
-                error: function (response) {
-                    alert("Thay đổi mật khẩu thất bại");
-                    console.log(response.status, response.text);
-                }
-            });
+        if (newPassword != confirmPassword) {
+            alert("Mật khẩu mới không trùng khớp");
+            return;
         }
+
+        $.ajax({
+            url: '/api/Admin/updatepassword',
+            type: "POST",
+            headers: {
+                'Accept': '*/*',
+                'Content-Type': 'application/json'
+            },
+            data: JSON.stringify({
+                idUser: id,
+                oldPassword: oldPassword,
+                newPassword: newPassword,
+                confirmPassword: confirmPassword
+            }),
+            success: function (response) {
+                alert("Thay đổi mật khẩu thành công");
+            },
+            error: function (response) {
+                alert("Thay đổi mật khẩu thất bại");
+                console.log(response.status, response.text);
+            }
+        });
+    }
 
     function displaySelectedImage(event, elementId) {
         const selectedImage = document.getElementById(elementId);
@@ -179,4 +194,3 @@
     });
 
 </script>
-
