@@ -26,7 +26,7 @@ public class HomeController : Controller
      */
     public IActionResult Index()
     {
-        return View();
+        return RedirectToAction("Index", "QuanLyLopHocPhan", new { area = "Admin" });
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
