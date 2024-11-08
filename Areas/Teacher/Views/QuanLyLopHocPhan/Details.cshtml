@@ -148,15 +148,15 @@
                                 }
                                 else {
                                     return `
-                                                                        <button class="btn btn-primary btn-sm" 
-                                                                            data-toggle="modal" data-target="#modalThayDoiLich"
-                                                                            data-idThoiGian="${row.id}"
-                                                                            data-thoi-gian-bat-dau-hien="${formatDateTimeForInput(row.start)}"
-                                                                            data-thoi-gian-ket-thuc="${formatDateTimeForInput(row.end)}" 
-                                                                            >
-                                                                        Yêu Cầu Đổi Lịch
-                                                                        </button>
-                                                                    `;
+                                                                                <button class="btn btn-primary btn-sm" 
+                                                                                    data-toggle="modal" data-target="#modalThayDoiLich"
+                                                                                    data-idThoiGian="${row.id}"
+                                                                                    data-thoi-gian-bat-dau-hien="${formatDateTimeForInput(row.start)}"
+                                                                                    data-thoi-gian-ket-thuc="${formatDateTimeForInput(row.end)}" 
+                                                                                    >
+                                                                                Yêu Cầu Đổi Lịch
+                                                                                </button>
+                                                                            `;
                                 }
                             }
                         },
@@ -181,8 +181,16 @@
                 console.log(thoiGianBatDauHienTai);
                 console.log(thoiGianKetThucHienTai);
                 // set
-                $('#thoiGianBatDauMoi').val(new Date(thoiGianBatDauHienTai).toISOString().slice(0, 10));
-                $('#thoiGianKetThucMoi').val(new Date(thoiGianKetThucHienTai).toISOString().slice(0, 10));
+                const thoiGianBatDau = new Date(thoiGianBatDauHienTai);
+                const thoiGianKetThuc = new Date(thoiGianKetThucHienTai);
+
+                $('#thoiGianBatDauMoi').val(
+                    thoiGianBatDau.toLocaleString('sv-SE', { hour12: false }).replace(' ', 'T')
+                );
+                $('#thoiGianKetThucMoi').val(
+                    thoiGianKetThuc.toLocaleString('sv-SE', { hour12: false }).replace(' ', 'T')
+                );
+
             });
 
             // handle ajax request
@@ -211,7 +219,7 @@
                         idThoiGian: idThoiGian,
                         thoiGianBatDauMoi: thoiGianBatDauMoi,
                         thoiGianKetThucMoi: thoiGianKetThucMoi,
-                        thoiGianBatDauHienTai: thoiGianBatDauHienTai, 
+                        thoiGianBatDauHienTai: thoiGianBatDauHienTai,
                         thoiGianKetThucHienTai: thoiGianKetThucHienTai
                     }),
                     success: function (response) {
@@ -346,13 +354,13 @@
                 <form id="formDangKyThayDoiLich">
                     <div class="form-group">
                         <label for="thoiGianBatDauMoi">Thời Gian Bắt Đầu Mới</label>
-                        <input type="datetime-local" class="form-control" id="thoiGianBatDauMoi" name="thoiGianBatDauMoi"
-                            required>
+                        <input type="datetime-local" class="form-control" id="thoiGianBatDauMoi"
+                            name="thoiGianBatDauMoi" required>
                     </div>
                     <div class="form-group">
                         <label for="thoiGianKetThucMoi">Thời Gian Kết Thúc Mới</label>
-                        <input type="datetime-local" class="form-control" id="thoiGianKetThucMoi" name="thoiGianKetThucMoi"
-                            required>
+                        <input type="datetime-local" class="form-control" id="thoiGianKetThucMoi"
+                            name="thoiGianKetThucMoi" required>
                     </div>
                     <input type="hidden" id="idThoiGian" name="idThoiGian">
                     <input type="hidden" id="idThoiGianBatDauHienTai" name="idThoiGianBatDauHienTai">
