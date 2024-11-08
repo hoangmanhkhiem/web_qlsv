@@ -10,14 +10,19 @@
 
     <!-- data table quan ly nguyen vong -->
     <script>
-        function formatDate(dateString) {
-            if (!dateString) return "N/A"; // Handle empty or null dates
-            const date = new Date(dateString);
-            return date.toLocaleDateString("vi-VN", {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-            });
+        function formatDate(date) {
+            const localDate = new Date(date);
+
+            // Format components individually for 'yyyy-MM-ddThh:mm:ss'
+            const year = localDate.getFullYear();
+            const month = String(localDate.getMonth() + 1).padStart(2, '0'); // Month is zero-based
+            const day = String(localDate.getDate()).padStart(2, '0');
+            const hours = String(localDate.getHours()).padStart(2, '0');
+            const minutes = String(localDate.getMinutes()).padStart(2, '0');
+            const seconds = String(localDate.getSeconds()).padStart(2, '0');
+
+            // Return in 'yyyy-MM-ddThh:mm:ss' format
+            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
         }
 
         $(document).ready(function () {
