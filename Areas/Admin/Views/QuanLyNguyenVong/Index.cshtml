@@ -161,6 +161,14 @@
                         },
                         sortable: false,
                         searchable: false
+                    },
+                    {
+                        data: null,
+                        render: function (data, type, row) {
+                            return `<button class="btn btn-danger btn-sm del-btn" data-id="${row.idDangKyDoiLich}">Xóa</button>`;
+                        },
+                        sortable: false,
+                        searchable: false
                     }
                 ]
             });
@@ -181,6 +189,7 @@
                     }
                 });
             });
+
 
             $('#dataTable').on('click', '.reject-btn', function () {
                 const idNguyenVong = $(this).data('id');
@@ -232,6 +241,24 @@
                 $.ajax({
                     url: `/api/nguyenvongthaydoilich/${idDangKyDoiLich}/accpet`, // Note: "accept" spelling fixed if needed
                     type: 'PUT',
+                    success: function () {
+                        location.reload();
+                    },
+                    error: function (err) {
+                        console.log(err);
+                        alert("Lỗi: Không thể chấp nhận yêu cầu");
+                    }
+                });
+            });
+
+
+            // Handle the Del button click
+            $('#dataTable_gv').on('click', '.del-btn', function () {
+                const idDangKyDoiLich = $(this).data('id');
+
+                $.ajax({
+                    url: `/api/nguyenvongthaydoilich/${idDangKyDoiLich}`, // Note: "accept" spelling fixed if needed
+                    type: 'DELETE',
                     success: function () {
                         location.reload();
                     },
@@ -318,6 +345,7 @@
                             <th>Thời Gian Kết Thúc Mới</th>
                             <th>Trạng Thái</th>
                             <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tfoot>
@@ -328,6 +356,7 @@
                             <th>Thời Gian Bắt Đầu Mới</th>
                             <th>Thời Gian Kết Thúc Mới</th>
                             <th>Trạng Thái</th>
+                            <th></th>
                             <th></th>
                         </tr>
                     </tfoot>
